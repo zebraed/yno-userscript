@@ -5,6 +5,8 @@
 
 ## YNO Expeditions Enhancer [en]
 
+![image](https://github.com/user-attachments/assets/976d4926-bf14-4300-a564-510fe2990b1c)
+
 ### Overview
 
 YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the expeditions feature on [YNO Project](https://ynoproject.net). You will be able to check the next destination on the screen without having to click on the Expeditions window to display it.
