@@ -21,7 +21,9 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   Clicking the Expedition icon(like this 🌟) button triggers the display of the location depth as star icons, making it easy to visualize the target maps's depth.
 
 - **Settings:**
-- <img src="https://github.com/user-attachments/assets/038adbeb-8dc1-4102-bfba-1f012fb24cef" width="50%" />
+  <p align="center">
+  <img src="https://github.com/user-attachments/assets/038adbeb-8dc1-4102-bfba-1f012fb24cef" width="50%" />
+  </p>
 
   Provides a settings UI where you can toggle notifications and auto-hide behavior:
   - **Fixed on Screen:** Option to fix the destination information display on the screen.
@@ -30,10 +32,13 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 ### Installation
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
-2. Create a new userscript and replace its content with the full master version code.
-3. Save the script.
-   If it doesn't work on Chrome, you will need to enable developer mode in your browser.
+  1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+  2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js and click the "Raw" button.
+  3. Click on Install. It will be installed as a Tampermonkey script.
+  4. Open any game that has the [YNO Project](https://ynoproject.net) expeditions and check that it is working. If the extension icon looks like the image below, it is working.
+
+<br>
+  ＊If it doesn't work on Google Chrome, you will need to enable developer mode in your browser.
 
 ### Configuration
 
@@ -43,11 +48,13 @@ The script provides an in-game settings UI accessible through the game's setting
 
 This project is licensed under the MIT License.
 
----
-
+<br>
 Enjoy your expeditions!
 
 ---
+
+<br>
+<br>
 
 ## YNO Expeditions Enhancer [ja]
 ![image](https://github.com/user-attachments/assets/bb0783c1-d665-4b26-9db9-f343cfb63b0d)
@@ -67,7 +74,9 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 
 - **設定機能：**
 
-  ![image](https://github.com/user-attachments/assets/7686033e-e6b9-409e-94ab-c00e66bf016b)
+  <p align="center">
+  <img src="https://github.com/user-attachments/assets/7686033e-e6b9-409e-94ab-c00e66bf016b"  width="50%"/>
+  </p>
 
   通知の切り替えや自動非表示の動作を設定できるUIを提供します。
   - **画面に固定表示：** 目的地情報の詳細表示を画面に表示するオプションです。
@@ -76,12 +85,15 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 
 ### インストール
 
-1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
-2. 新しいユーザースクリプトを作成し、その内容を最新のexpeditions-enhancerのコードに置き換えます。
-3. スクリプトを保存します。
+  1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
+  2.  https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js にアクセスし、Rawボタンをクリックします。
+  3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールがされます。
+  4. [YNO Project](https://ynoproject.net)のドリームラリーが存在する任意のゲームを開き、動作しているか確認してください。拡張機能のアイコンが以下の画像のようになっていれば動作しています。
 
-   ※ Chromeで動作しない場合、ブラウザの開発者モードを有効にする必要があります
-   参考:https://kuds.blog/google/tampermonkey-script-issue-mv3/
+<br>
+※ Chromeで動作しない場合、ブラウザの開発者モードを有効にする必要があります
+<br>
+参考:https://kuds.blog/google/tampermonkey-script-issue-mv3/
 
 ### 構成
 
@@ -90,5 +102,5 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 
 
 ---
-
+<br>
 たのしいドリームラリーを！
