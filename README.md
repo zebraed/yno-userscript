@@ -5,7 +5,7 @@
 
 ## YNO Expeditions Enhancer [en]
 
-![image](https://github.com/user-attachments/assets/976d4926-bf14-4300-a564-510fe2990b1c)
+![image](https://github.com/user-attachments/assets/e489657a-8635-4ee9-a54d-291c7ee3cd43)
 
 ### Overview
 
