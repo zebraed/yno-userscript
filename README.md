@@ -40,7 +40,12 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 
 <br>
-  ＊If it doesn't work on Google Chrome, you will need to enable developer mode in your browser.
+＊If it doesn't work on Google Chrome, you will need to enable developer mode in your browser.
+
+  1. Open Google Chrome.
+  2. Click the three dots in the top right corner of the browser window.
+  3. Select More tools > Developer tools.
+  4. In the developer tools window, click the three dots in the top right corner.Select Developer mode.
 
 ### Configuration
 
