@@ -33,6 +33,8 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
 2. Create a new userscript and replace its content with the full master version code.
 3. Save the script.
+   If it doesn't work on Chrome, you will need to enable developer mode in your browser.
+   https://kuds.blog/google/tampermonkey-script-issue-mv3/
 
 ### Configuration
 
@@ -73,6 +75,9 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
 2. 新しいユーザースクリプトを作成し、その内容を最新のexpeditions-enhancerのコードに置き換えます。
 3. スクリプトを保存します。
+
+   ※ Chromeで動作しない場合、ブラウザの開発者モードを有効にする必要があります
+   参考:https://kuds.blog/google/tampermonkey-script-issue-mv3/
 
 ### 構成
 
