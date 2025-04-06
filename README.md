@@ -50,6 +50,8 @@ Enjoy your expeditions!
 ---
 
 ## YNO Expeditions Enhancer [ja]
+![image](https://github.com/user-attachments/assets/bb0783c1-d665-4b26-9db9-f343cfb63b0d)
+
 
 ### 概要
 
@@ -64,6 +66,9 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   「ドリームラリー」アイコンボタン（🌟のようなアイコン）をクリックすると、目的地の深さを表示できます。
 
 - **設定機能：**
+
+  ![image](https://github.com/user-attachments/assets/7686033e-e6b9-409e-94ab-c00e66bf016b)
+
   通知の切り替えや自動非表示の動作を設定できるUIを提供します。
   - **画面に固定表示：** 目的地情報の詳細表示を画面に表示するオプションです。
   - **目的地到達通知を有効にする：** ドリームラリーの目的地に到達した際の次の場所名の通知を有効または無効にすることができます。
