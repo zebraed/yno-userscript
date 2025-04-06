@@ -32,10 +32,12 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 ### Installation
 
-  1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
-  2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js and click the "Raw" button.
+  1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.　
+  2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js and click the "Raw" button.<br>![image](https://github.com/user-attachments/assets/13984768-4542-4bff-a743-5412d4cc1a88)
+
   3. Click on Install. It will be installed as a Tampermonkey script.
-  4. Open any game that has the [YNO Project](https://ynoproject.net) expeditions and check that it is working. If the extension icon looks like the image below, it is working.
+  4. Open any game that has the [YNO Project](https://ynoproject.net) expeditions and check that it is working. If the extension icon looks like the image below, it is working. <br>![image](https://github.com/user-attachments/assets/ebf475ac-004e-4bb7-8e69-9340082ed8ab)
+
 
 <br>
   ＊If it doesn't work on Google Chrome, you will need to enable developer mode in your browser.
@@ -86,9 +88,9 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 ### インストール
 
   1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
-  2.  https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js にアクセスし、Rawボタンをクリックします。
+  2.  https://github.com/zebraed/yno-userscript/blob/main/monkey/expeditions-enhancer.user.js にアクセスし、Rawボタンをクリックします。<br>![image](https://github.com/user-attachments/assets/13984768-4542-4bff-a743-5412d4cc1a88)
   3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールがされます。
-  4. [YNO Project](https://ynoproject.net)のドリームラリーが存在する任意のゲームを開き、動作しているか確認してください。拡張機能のアイコンが以下の画像のようになっていれば動作しています。
+  4. [YNO Project](https://ynoproject.net)のドリームラリーが存在する任意のゲームを開き、動作しているか確認してください。拡張機能のアイコンが以下の画像のようになっていれば動作しています。<br>![image](https://github.com/user-attachments/assets/ebf475ac-004e-4bb7-8e69-9340082ed8ab)
 
 <br>
 ※ Chromeで動作しない場合、ブラウザの開発者モードを有効にする必要があります
