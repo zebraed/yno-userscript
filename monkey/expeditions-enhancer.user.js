@@ -9,7 +9,6 @@
 // @icon         https://ynoproject.net/2kki/images/badge/compass_diamond.gif
 // @license      MIT
 // @supportURL   https://github.com/Zebraed/yno-userscript
-// @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
 // @updateURL    https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
 // @downloadURL  https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
 // @grant        none
