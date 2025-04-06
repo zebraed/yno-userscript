@@ -21,6 +21,8 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   Clicking the Expedition icon(like this 🌟) button triggers the display of the location depth as star icons, making it easy to visualize the target maps's depth.
 
 - **Settings**
+  ![image](https://github.com/user-attachments/assets/038adbeb-8dc1-4102-bfba-1f012fb24cef)
+
   Provides a settings UI where you can toggle notifications and auto-hide behavior:
   - **Fixed on Screen:** Option to fix the destination information display on the screen.
   - **Enable Notification:** Toggle this to enable or disable the notification of the name of the next place when you reach a expeditions destination.
