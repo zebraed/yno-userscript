@@ -6,13 +6,11 @@
 ## YNO Expeditions Enhancer [en]
 
 ### Overview
----
 
 YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the expeditions feature on [YNO Project](https://ynoproject.net). You will be able to check the next destination on the screen without having to click on the Expeditions window to display it.
 
 
 ### Features
----
 
 - **Enhanced Destination Display**
   Provides additional visual details about the next expedition destination, including a representation of the "depth" with star icons.
@@ -27,19 +25,16 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   - **Auto-hide Notification:** When enabled, notifications will close automatically.
 
 ### Installation
----
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
 2. Create a new userscript and replace its content with the full master version code.
 3. Save the script.
 
 ### Configuration
----
 
 The script provides an in-game settings UI accessible through the game's settings modal. Your configuration is saved locally under the key `toastConfig`.
 
 ### License
----
 
 This project is licensed under the MIT License.
 
@@ -47,16 +42,15 @@ This project is licensed under the MIT License.
 
 Enjoy your expeditions!
 
+---
 
 ## YNO Expeditions Enhancer [ja]
 
 ### 概要
----
 
 YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテンツであるドリームラリーをより快適にプレイするため作成されたTampermonkeyユーザースクリプトです。いちいちドリームラリーウィンドウをクリックして表示しなくても、次の目的地を画面上で確認することができるようになります。
 
 ### 機能
----
 
 - **拡張された目的地表示**
    次のラリーの目的地の詳細情報を場所表示の下に表示します。
@@ -71,14 +65,12 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   - **目的地到達通知を自動で閉じる** 通知を自動で閉じる機能を有効または無効にすることができます。
 
 ### インストール
----
 
 1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
 2. 新しいユーザースクリプトを作成し、その内容を最新のexpeditions-enhancerのコードに置き換えます。
 3. スクリプトを保存します。
 
 ### 構成
----
 
 このスクリプトは、ゲームの設定モーダルからアクセスできるゲーム内設定UIを提供します。設定は、`toastConfig` キーの下にローカルに保存されます。
 
