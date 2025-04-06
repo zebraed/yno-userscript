@@ -14,13 +14,13 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 ### Features
 
-- **Enhanced Destination Display**
+- **Enhanced Destination Display:**
   Provides additional visual details about the next expedition destination, including a representation of the "depth" with star icons.
 
-- **Interactive Expedition Button**
+- **Interactive Expedition Button:**
   Clicking the Expedition icon(like this 🌟) button triggers the display of the location depth as star icons, making it easy to visualize the target maps's depth.
 
-- **Settings**
+- **Settings:**
 - <img src="https://github.com/user-attachments/assets/038adbeb-8dc1-4102-bfba-1f012fb24cef" width="50%" />
 
   Provides a settings UI where you can toggle notifications and auto-hide behavior:
@@ -57,17 +57,17 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 
 ### 機能
 
-- **拡張された目的地表示**
+- **拡張された目的地表示：**
    次のラリーの目的地の詳細情報を場所表示の下に表示します。
 
-- **目的地深度表示ボタン**
+- **目的地深度表示ボタン：**
   「ドリームラリー」アイコンボタン（🌟のようなアイコン）をクリックすると、目的地の深さを表示できます。
 
-- **設定機能**
+- **設定機能：**
   通知の切り替えや自動非表示の動作を設定できるUIを提供します。
-  - **画面に固定表示** 目的地情報の詳細表示を画面に表示するオプションです。
-  - **目的地到達通知を有効にする** ドリームラリーの目的地に到達した際の次の場所名の通知を有効または無効にすることができます。
-  - **目的地到達通知を自動で閉じる** 通知を自動で閉じる機能を有効または無効にすることができます。
+  - **画面に固定表示：** 目的地情報の詳細表示を画面に表示するオプションです。
+  - **目的地到達通知を有効にする：** ドリームラリーの目的地に到達した際の次の場所名の通知を有効または無効にすることができます。
+  - **目的地到達通知を自動で閉じる：** 通知を自動で閉じる機能を有効または無効にすることができます。
 
 ### インストール
 
