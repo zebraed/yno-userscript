@@ -196,7 +196,7 @@
     }
     const toastLabel = {
       ja: "次の目的地",
-      en: "Next location",
+      en: "Next destination",
       fr: "Prochaine destination",
       es: "Siguiente ubicación",
       de: "Nächster Ort",
