@@ -40,8 +40,9 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 
 <br>
-＊If it doesn't work on Google Chrome, you will need to enable developer mode in your browser.
-
+＊If it doesn't work on browser, you will need to enable developer mode in your browser.
+<br>
+Google Chrome:
   1. Open Google Chrome.
   2. Click the three dots in the top right corner of the browser window.
   3. Select More tools > Developer tools.
@@ -98,9 +99,11 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   4. [YNO Project](https://ynoproject.net)のドリームラリーが存在する任意のゲームを開き、動作しているか確認してください。拡張機能のアイコンが以下の画像のようになっていれば動作しています。<br>![image](https://github.com/user-attachments/assets/ebf475ac-004e-4bb7-8e69-9340082ed8ab)
 
 <br>
-※ Chromeで動作しない場合、ブラウザの開発者モードを有効にする必要があります
+※ 動作しない場合、ブラウザの開発者モードを有効にする必要があります
 <br>
-参考:https://kuds.blog/google/tampermonkey-script-issue-mv3/
+Google Chrome: https://kuds.blog/google/tampermonkey-script-issue-mv3/
+<br>
+Micro Soft Edge: https://platform.kobot.jp/support/solutions/articles/47001176124-%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6-edge-%E6%8B%A1%E5%BC%B5%E6%A9%9F%E8%83%BD%E3%81%AE%E8%BF%BD%E5%8A%A0%E6%96%B9%E6%B3%95
 
 ### 構成
 
