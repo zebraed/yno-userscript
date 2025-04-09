@@ -171,7 +171,7 @@
 
   const CONFIG_KEY = 'toastConfig';
   const defaultConfig = {
-      enableToast: false,
+      enableToast: true,
       autoHideToast: true,
       enableAllFeatures: true
   };
