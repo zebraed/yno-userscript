@@ -556,6 +556,7 @@ function waitForUI() {
           injectUI();
           document.getElementById('lang')?.addEventListener('change', () => {
               setTimeout(injectUI, 300);
+              setTimeout(findNextLocationAndShow, 2000);
           });
       }
   }, 400);
