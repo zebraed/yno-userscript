@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO Expeditions Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Expansion Script for Expeditions on YNO.
 // @author       Zebraed
 // @tag          Enhancement
@@ -9,8 +9,8 @@
 // @icon         https://ynoproject.net/2kki/images/badge/compass_diamond.gif
 // @license      MIT
 // @supportURL   https://github.com/Zebraed/yno-userscript
+// @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
 // @updateURL    https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
-// @downloadURL  https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/expeditions-enhancer.user.js
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==
@@ -24,60 +24,60 @@
   let temporaryPollingTimeout = null;
 
   function startTemporaryPolling() {
-    if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
-    if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
-    temporaryPollingInterval = setInterval(() => {
-      findNextLocationAndShow();
-    }, 500);
-    temporaryPollingTimeout = setTimeout(() => {
-      clearInterval(temporaryPollingInterval);
-      temporaryPollingInterval = null;
-      temporaryPollingTimeout = null;
-    }, 5000);
+      if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
+      if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
+      temporaryPollingInterval = setInterval(() => {
+          findNextLocationAndShow();
+      }, 500);
+      temporaryPollingTimeout = setTimeout(() => {
+          clearInterval(temporaryPollingInterval);
+          temporaryPollingInterval = null;
+          temporaryPollingTimeout = null;
+      }, 5000);
   }
 
   function initialPolling() {
-    let attempts = 0;
-    const maxAttempts = 10000 / 500;
-    const interval = setInterval(() => {
-      attempts++;
-      if (findNextLocationAndShow() === true || attempts >= maxAttempts) {
-        clearInterval(interval);
-      }
-    }, 500);
+      let attempts = 0;
+      const maxAttempts = 10000 / 500;
+      const interval = setInterval(() => {
+          attempts++;
+          if (findNextLocationAndShow() === true || attempts >= maxAttempts) {
+              clearInterval(interval);
+          }
+      }, 500);
   }
 
   function cloneWithComputedStyle(element) {
-    const clone = element.cloneNode(true);
-    const computedStyle = window.getComputedStyle(element);
-    let styleString = "";
-    for (let i = 0; i < computedStyle.length; i++) {
-      const prop = computedStyle[i];
-      styleString += `${prop}: ${computedStyle.getPropertyValue(prop)}; `;
-    }
-    clone.style.cssText = styleString;
-    if (
-      element.classList.contains('depthFillContainer') ||
-      element.classList.contains('maxDepthFillContainer') ||
-      element.classList.contains('minDepthFillContainer') ||
-      element.classList.contains('depthOutlineContainer')
-    ) {
-      clone.style.position = 'absolute';
-      clone.style.top = '0';
-      clone.style.left = '0';
-      clone.style.margin = '0';
-      clone.style.padding = '0';
-      clone.style.transform = 'none';
-    }
-    const childIcons = clone.querySelectorAll('.starIcon.icon');
-    childIcons.forEach(icon => {
-      icon.style.margin = '0';
-      icon.style.padding = '0';
-      icon.style.transform = 'none';
-      icon.style.top = '0';
-      icon.style.left = '0';
-    });
-    return clone;
+      const clone = element.cloneNode(true);
+      const computedStyle = window.getComputedStyle(element);
+      let styleString = "";
+      for (let i = 0; i < computedStyle.length; i++) {
+          const prop = computedStyle[i];
+          styleString += `${prop}: ${computedStyle.getPropertyValue(prop)}; `;
+      }
+      clone.style.cssText = styleString;
+      if (
+          element.classList.contains('depthFillContainer') ||
+          element.classList.contains('maxDepthFillContainer') ||
+          element.classList.contains('minDepthFillContainer') ||
+          element.classList.contains('depthOutlineContainer')
+      ) {
+          clone.style.position = 'absolute';
+          clone.style.top = '0';
+          clone.style.left = '0';
+          clone.style.margin = '0';
+          clone.style.padding = '0';
+          clone.style.transform = 'none';
+      }
+      const childIcons = clone.querySelectorAll('.starIcon.icon');
+      childIcons.forEach(icon => {
+          icon.style.margin = '0';
+          icon.style.padding = '0';
+          icon.style.transform = 'none';
+          icon.style.top = '0';
+          icon.style.left = '0';
+      });
+      return clone;
   }
 
   const styleElem = document.createElement('style');
@@ -171,276 +171,275 @@
 
   const CONFIG_KEY = 'toastConfig';
   const defaultConfig = {
-    enableToast: false,
-    autoHideToast: true,
-    enableAllFeatures: true
+      enableToast: false,
+      autoHideToast: true,
+      enableAllFeatures: true
   };
   function loadConfig() {
-    try {
-      return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
-    } catch {
-      return { ...defaultConfig };
-    }
+      try {
+          return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
+      } catch {
+          return { ...defaultConfig };
+      }
   }
   function saveConfig(cfg) {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
   }
   const config = loadConfig();
 
   function getLangKey() {
-    try {
-      return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
-    } catch {
-      return 'en';
-    }
+      try {
+          return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
+      } catch {
+          return 'en';
+      }
   }
   const toastLabel = {
-    ja: "次の目的地",
-    en: "Next destination",
-    fr: "Prochaine destination",
-    es: "Siguiente ubicación",
-    de: "Nächster Ort",
-    zh: "下一个地点",
-    ko: "다음 장소",
-    it: "Prossima destinazione",
-    pl: "Następna lokalizacja",
-    ro: "Locație următoare",
-    tr: "Sonraki konum",
-    ru: "Следующее место",
-    vi: "Địa điểm tiếp theo",
-    ar: "الموقع التالي",
-    eo: "Sekva loko",
-    pt: "Próxima localização"
+      ja: "次の目的地",
+      en: "Next destination",
+      fr: "Prochaine destination",
+      es: "Siguiente ubicación",
+      de: "Nächster Ort",
+      zh: "下一个地点",
+      ko: "다음 장소",
+      it: "Prossima destinazione",
+      pl: "Następna lokalizacja",
+      ro: "Locație următoare",
+      tr: "Sonraki konum",
+      ru: "Следующее место",
+      vi: "Địa điểm tiếp theo",
+      ar: "الموقع التالي",
+      eo: "Sekva loko",
+      pt: "Próxima localização"
   };
   const uiText = {
-    expeditionsButton: {
-      ja: 'ドリームラリー',
-      en: 'Expeditions',
-      fr: 'Expéditions',
-      es: 'Expediciones',
-      de: 'Expeditionen',
-      zh: '梦远征',
-      ko: '탐험',
-      it: 'Spedizioni',
-      pl: 'Ekspedycje',
-      ro: 'Expediții',
-      tr: 'Seyahatler',
-      ru: 'Походs',
-      vi: 'Thám hiểm',
-      ar: 'الرحلات الاستكشافية',
-      eo: 'Ekspediĉoj',
-      pt: 'Expedições'
-    },
-    title: {
-      ja: 'ドリームラリー設定',
-      en: 'Expedition Settings',
-      fr: 'Paramètres d\'expédition',
-      es: 'Configuración de Expedición',
-      de: 'Expeditionseinstellungen',
-      zh: '梦远征设置',
-      ko: '탐험 설정',
-      it: 'Impostazioni Spedizioni',
-      pl: 'Ustawienia Ekspedycji',
-      ro: 'Setări expediție',
-      tr: 'Seyahat Ayarları',
-      ru: 'Настройки походs',
-      vi: 'Cài đặt thám hiểm',
-      ar: 'إعدادات الرحلات',
-      eo: 'Ekspediĉaj agordoj',
-      pt: 'Configurações de Expedição'
-    },
-    enableToastLabel: {
-      ja: '目的地到達通知を有効にする',
-      en: 'Enable Notification',
-      fr: 'Activer la notification',
-      es: 'Habilitar notificación',
-      de: 'Benachrichtigung aktivieren',
-      zh: '启用通知',
-      ko: '알림 활성화',
-      it: 'Abilita notifica',
-      pl: 'Włącz powiadomienie',
-      ro: 'Activează notificarea',
-      tr: 'Bildirimleri etkinleştir',
-      ru: 'Включить уведомление',
-      vi: 'Bật thông báo',
-      ar: 'تفعيل الإشعار',
-      eo: 'Aktivigi notifikon',
-      pt: 'Ativar notificação'
-    },
-    autoHideToastLabel: {
-      ja: '目的地到達通知を自動で閉じる',
-      en: 'Auto-hide Notification',
-      fr: 'Masquer automatiquement la notification',
-      es: 'Ocultar automáticamente la notificación',
-      de: 'Benachrichtigung automatisch ausblenden',
-      zh: '自动关闭通知',
-      ko: '알림 자동 닫기',
-      it: 'Chiudi notifica automaticamente',
-      pl: 'Automatycznie ukryj powiadomienie',
-      ro: 'Ascundere automată notificare',
-      tr: 'Bildirimi otomatik kapat',
-      ru: 'Автоматически скрывать уведомление',
-      vi: 'Tự động ẩn thông báo',
-      ar: 'إغلاق الإشعار تلقائياً',
-      eo: 'Aŭtomate kaŝi notifikon',
-      pt: 'Ocultar notificação automaticamente'
-    },
-    reset: {
-      ja: 'リセット',
-      en: 'Reset',
-      fr: 'Réinitialiser',
-      es: 'Restablecer',
-      de: 'Zurücksetzen',
-      zh: '重置',
-      ko: '초기화',
-      it: 'Ripristina',
-      pl: 'Zresetuj',
-      ro: 'Resetare',
-      tr: 'Sıfırla',
-      ru: 'Сброс',
-      vi: 'Đặt lại',
-      ar: 'إعادة تعيين',
-      eo: 'Restarigi',
-      pt: 'Redefinir'
-    },
-    displayFixed: {
-      ja: '画面に固定表示',
-      en: 'Fixed on Screen',
-      fr: 'Fixé à l\'écran',
-      es: 'Fijado en pantalla',
-      de: 'Auf dem Bildschirm fixiert',
-      zh: '固定在屏幕上',
-      ko: '화면에 고정',
-      it: 'Fisso sullo schermo',
-      pl: 'Na stałe na ekranie',
-      ro: 'Fix pe ecran',
-      tr: 'Ekranda sabit',
-      ru: 'Закреплено на экране',
-      vi: 'Cố định trên màn',
-      ar: 'مثبت على الشاشة',
-      eo: 'Fiksita sur ekrano',
-      pt: 'Fixo na tela'
-    }
+      expeditionsButton: {
+          ja: 'ドリームラリー',
+          en: 'Expeditions',
+          fr: 'Expéditions',
+          es: 'Expediciones',
+          de: 'Expeditionen',
+          zh: '梦远征',
+          ko: '탐험',
+          it: 'Spedizioni',
+          pl: 'Ekspedycje',
+          ro: 'Expediții',
+          tr: 'Seyahatler',
+          ru: 'Походs',
+          vi: 'Thám hiểm',
+          ar: 'الرحلات الاستكشافية',
+          eo: 'Ekspediĉoj',
+          pt: 'Expedições'
+      },
+      title: {
+          ja: 'ドリームラリー設定',
+          en: 'Expedition Settings',
+          fr: 'Paramètres d\'expédition',
+          es: 'Configuración de Expedición',
+          de: 'Expeditionseinstellungen',
+          zh: '梦远征设置',
+          ko: '탐험 설정',
+          it: 'Impostazioni Spedizioni',
+          pl: 'Ustawienia Ekspedycji',
+          ro: 'Setări expediție',
+          tr: 'Seyahat Ayarları',
+          ru: 'Настройки походs',
+          vi: 'Cài đặt thám hiểm',
+          ar: 'إعدادات الرحلات',
+          eo: 'Ekspediĉaj agordoj',
+          pt: 'Configurações de Expedição'
+      },
+      enableToastLabel: {
+          ja: '目的地到達通知を有効にする',
+          en: 'Enable Notification',
+          fr: 'Activer la notification',
+          es: 'Habilitar notificación',
+          de: 'Benachrichtigung aktivieren',
+          zh: '启用通知',
+          ko: '알림 활성화',
+          it: 'Abilita notifica',
+          pl: 'Włącz powiadomienie',
+          ro: 'Activează notificarea',
+          tr: 'Bildirimleri etkinleştir',
+          ru: 'Включить уведомление',
+          vi: 'Bật thông báo',
+          ar: 'تفعيل الإشعار',
+          eo: 'Aktivigi notifikon',
+          pt: 'Ativar notificação'
+      },
+      autoHideToastLabel: {
+          ja: '目的地到達通知を自動で閉じる',
+          en: 'Auto-hide Notification',
+          fr: 'Masquer automatiquement la notification',
+          es: 'Ocultar automáticamente la notificación',
+          de: 'Benachrichtigung automatisch ausblenden',
+          zh: '自动关闭通知',
+          ko: '알림 자동 닫기',
+          it: 'Chiudi notifica automaticamente',
+          pl: 'Automatycznie ukryj powiadomienie',
+          ro: 'Ascundere automată notificare',
+          tr: 'Bildirimi otomatik kapat',
+          ru: 'Автоматически скрывать уведомление',
+          vi: 'Tự động ẩn thông báo',
+          ar: 'إغلاق الإشعار تلقائياً',
+          eo: 'Aŭtomate kaŝi notifikon',
+          pt: 'Ocultar notificação automaticamente'
+      },
+      reset: {
+          ja: 'リセット',
+          en: 'Reset',
+          fr: 'Réinitialiser',
+          es: 'Restablecer',
+          de: 'Zurücksetzen',
+          zh: '重置',
+          ko: '초기화',
+          it: 'Ripristina',
+          pl: 'Zresetuj',
+          ro: 'Resetare',
+          tr: 'Sıfırla',
+          ru: 'Сброс',
+          vi: 'Đặt lại',
+          ar: 'إعادة تعيين',
+          eo: 'Restarigi',
+          pt: 'Redefinir'
+      },
+      displayFixed: {
+          ja: '画面に固定表示',
+          en: 'Fixed on Screen',
+          fr: 'Fixé à l\'écran',
+          es: 'Fijado en pantalla',
+          de: 'Auf dem Bildschirm fixiert',
+          zh: '固定在屏幕上',
+          ko: '화면에 고정',
+          it: 'Fisso sullo schermo',
+          pl: 'Na stałe na ekranie',
+          ro: 'Fix pe ecran',
+          tr: 'Ekranda sabit',
+          ru: 'Закреплено на экране',
+          vi: 'Cố định trên màn',
+          ar: 'مثبت على الشاشة',
+          eo: 'Fiksita sur ekrano',
+          pt: 'Fixo na tela'
+      }
   };
 
-  function showMessage(html, type) {
-    let wrapper = document.getElementById('nextDestinationInfoWrapper');
-    if (!wrapper) {
-      wrapper = document.createElement('div');
-      wrapper.id = 'nextDestinationInfoWrapper';
-      wrapper.className = 'info';
+  function isGameNameElement(el) {
+      if (el.classList.contains('gameLink')) {
+        return true;
+      }
+      return false;
+    }
 
-      const toggleButton = document.createElement('button');
-      toggleButton.id = 'toggleNextDestinationIcon';
-      toggleButton.className = 'icon fillIcon iconButton';
-      toggleButton.setAttribute('data-i18n', '[title]tooltips.chat.toggleNextLocation');
-      toggleButton.setAttribute('i18n-options', '{}');
-      toggleButton.innerHTML = `
+  function showMessage(html, type) {
+      let wrapper = document.getElementById('nextDestinationInfoWrapper');
+      if (!wrapper) {
+          wrapper = document.createElement('div');
+          wrapper.id = 'nextDestinationInfoWrapper';
+          wrapper.className = 'info';
+
+          const toggleButton = document.createElement('button');
+          toggleButton.id = 'toggleNextDestinationIcon';
+          toggleButton.className = 'icon fillIcon iconButton';
+          toggleButton.setAttribute('data-i18n', '[title]tooltips.chat.toggleNextLocation');
+          toggleButton.setAttribute('i18n-options', '{}');
+          toggleButton.innerHTML = `
         <svg viewBox="0 0 18 18" width="14" height="14">
           <path d="m0 9l6.5-1.5-1.5-2.5 2.5 1.5 1.5-6.5 1.5 6.5 2.5-1.5-1.5 2.5 6.5 1.5-6.5 1.5 1.5 2.5-2.5-1.5-1.5 6.5-1.5-6.5-2.5 1.5 1.5-2.5-6.5-1.5"/>
         </svg>
       `;
-      toggleButton.addEventListener('click', () => {
-        let starsDiv = document.getElementById('nextDestinationStars');
-        if (!starsDiv) return;
-        depthVisible = !depthVisible;
-        if (depthVisible) {
-          starsDiv.classList.remove('hidden');
-        } else {
-          starsDiv.classList.add('hidden');
-        }
-      });
-      wrapper.appendChild(toggleButton);
+          toggleButton.addEventListener('click', () => {
+              let starsDiv = document.getElementById('nextDestinationStars');
+              if (!starsDiv) return;
+              depthVisible = !depthVisible;
+              if (depthVisible) {
+                  starsDiv.classList.remove('hidden');
+              } else {
+                  starsDiv.classList.add('hidden');
+              }
+          });
+          wrapper.appendChild(toggleButton);
 
-      const labelSpan = document.createElement('span');
-      labelSpan.id = 'nextDestinationLabel';
-      const refLabel = document.getElementById('locationLabel');
-      labelSpan.className = refLabel ? refLabel.className : 'infoLabel nowrap';
-      wrapper.appendChild(labelSpan);
+          const labelSpan = document.createElement('span');
+          labelSpan.id = 'nextDestinationLabel';
+          const refLabel = document.getElementById('locationLabel');
+          labelSpan.className = refLabel ? refLabel.className : 'infoLabel nowrap';
+          wrapper.appendChild(labelSpan);
 
-      const textSpan = document.createElement('span');
-      textSpan.id = 'nextDestinationText';
-      const refText = document.getElementById('locationText');
-      textSpan.className = refText ? refText.className : 'infoText nofilter';
-      textSpan.style.textAlign = 'right';
-      wrapper.appendChild(textSpan);
+          const textSpan = document.createElement('span');
+          textSpan.id = 'nextDestinationText';
+          const refText = document.getElementById('locationText');
+          textSpan.className = refText ? refText.className : 'infoText nofilter';
+          textSpan.style.textAlign = 'right';
+          wrapper.appendChild(textSpan);
 
-      const chatboxInfo = document.getElementById('chatboxInfo');
-      if (chatboxInfo) {
-        chatboxInfo.appendChild(wrapper);
-      } else {
-        document.body.appendChild(wrapper);
+          const chatboxInfo = document.getElementById('chatboxInfo');
+          if (chatboxInfo) {
+              chatboxInfo.appendChild(wrapper);
+          } else {
+              document.body.appendChild(wrapper);
+          }
       }
-    }
 
-    const lang = getLangKey();
-    const labelText = toastLabel[lang] || toastLabel.en;
-    document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
+      const lang = getLangKey();
+      const labelText = toastLabel[lang] || toastLabel.en;
+      document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
 
-    const textEl = document.getElementById('nextDestinationText');
-    textEl.innerHTML = html;
-    textEl.style.textAlign = 'right';
+      const textEl = document.getElementById('nextDestinationText');
+      textEl.innerHTML = html;
+      textEl.style.textAlign = 'right';
 
-    let starsDiv = document.getElementById('nextDestinationStars');
-    if (!starsDiv) {
-      starsDiv = document.createElement('div');
-      starsDiv.id = 'nextDestinationStars';
-      const refText = document.getElementById('locationText');
-      if (refText) {
-        starsDiv.className = refText.className;
+      let starsDiv = document.getElementById('nextDestinationStars');
+      if (!starsDiv) {
+          starsDiv = document.createElement('div');
+          starsDiv.id = 'nextDestinationStars';
+          const refText = document.getElementById('locationText');
+          if (refText) {
+              starsDiv.className = refText.className;
+          }
+          if (!depthVisible) {
+              starsDiv.classList.add('hidden');
+          }
+          const chatboxInfo = document.getElementById('chatboxInfo');
+          if (chatboxInfo) {
+              chatboxInfo.appendChild(starsDiv);
+          } else {
+              document.body.appendChild(starsDiv);
+          }
       }
-      if (!depthVisible) {
-        starsDiv.classList.add('hidden');
-      }
-      const chatboxInfo = document.getElementById('chatboxInfo');
-      if (chatboxInfo) {
-        chatboxInfo.appendChild(starsDiv);
-      } else {
-        document.body.appendChild(starsDiv);
-      }
-    }
-    starsDiv.innerHTML = nextLocationDepthHTML;
+      starsDiv.innerHTML = nextLocationDepthHTML;
   }
 
   function findNextLocationAndShow() {
-    if (!config.enableAllFeatures) {
+      if (!config.enableAllFeatures) {
+          const wrapper = document.getElementById('nextDestinationInfoWrapper');
+          if (wrapper) wrapper.style.display = 'none';
+          return false;
+      }
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
-      if (wrapper) wrapper.style.display = 'none';
-      return false;
-    }
-    const wrapper = document.getElementById('nextDestinationInfoWrapper');
-    if (wrapper) wrapper.style.display = '';
+      if (wrapper) wrapper.style.display = '';
 
-    const entries = document.querySelectorAll('.eventLocationListEntry');
-    for (const entry of entries) {
-      const checkbox = entry.querySelector('.checkbox');
-      const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
-      if (!isIncomplete) continue;
-    
-      const links = entry.querySelectorAll('.detailsContainer a.wikiLink');
-      let placeHTML = "";
-      
-      if (links.length === 0) {
-        // if not exists href...
+      const entries = document.querySelectorAll('.eventLocationListEntry');
+      for (const entry of entries) {
+        const checkbox = entry.querySelector('.checkbox');
+        const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
+        if (!isIncomplete) continue;
+
         const detailsContainer = entry.querySelector('.detailsContainer');
         if (!detailsContainer) continue;
-        placeHTML = `<div>${detailsContainer.innerText.trim()}</div>`;
-      } else {
-        const firstLink = links[0];
-        const lang = getLangKey();
-        placeHTML = `<a href="${firstLink.href}" target="_blank" class="wikiLink">${firstLink.innerText.trim()}</a>`;
-        if (links.length > 1) {
-          const engName = `<a href="${links[1].href}" target="_blank" class="wikiLink">${links[1].innerText.trim()}</a>`;
-          if (lang === 'ja') {
-            placeHTML += ` 「${engName}」`;
-          } else if (lang === 'ko' || lang === 'zh') {
-            placeHTML += ` (${engName})`;
-          }
+
+        let placeElement = null;
+        for (const child of detailsContainer.children) {
+          if (!child.innerText.trim()) continue;
+          if (isGameNameElement(child)) continue;
+          placeElement = child;
+          break;
         }
-      }
-      
+        if (!placeElement) continue;
+        const clone = placeElement.cloneNode(true);
+        let placeHTML = `<div>${clone.outerHTML}</div>`;
+
       const gameLinkEl = entry.querySelector('.gameLink');
-      if (gameLinkEl) {
+      if (gameLinkEl && gameLinkEl.href) {
         const match = gameLinkEl.href.match(/https:\/\/ynoproject\.net\/([^\/]+)\//);
         if (match && match[1]) {
           placeHTML += ` (<a href="${gameLinkEl.href}" target="_blank">${gameLinkEl.innerText.trim()}</a>)`;
@@ -451,107 +450,148 @@
       const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
 
       const fillElements = entry.querySelectorAll(
-        '.detailsContainer .depthContainer.depthFillContainer, ' +
-        '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
-        '.detailsContainer .depthContainer.minDepthFillContainer'
+          '.detailsContainer .depthContainer.depthFillContainer, ' +
+          '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
+          '.detailsContainer .depthContainer.minDepthFillContainer'
       );
       let fillHTML = '';
       fillElements.forEach(el => {
-        const cloneEl = cloneWithComputedStyle(el);
-        fillHTML += cloneEl.outerHTML;
+          const cloneEl = cloneWithComputedStyle(el);
+          fillHTML += cloneEl.outerHTML;
       });
 
       if (outlineHTML) {
-        nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
+          nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
       } else {
-        nextLocationDepthHTML = '';
+          nextLocationDepthHTML = '';
       }
       showMessage(placeHTML, 'expedition');
       return true;
-    }
-    nextLocationDepthHTML = '';
-    return false;
   }
+  nextLocationDepthHTML = '';
+  return false;
+}
 
-  let lastToastTime = 0;
-  const TOAST_INTERVAL = 3000;
-  function hookExpedition() {
-    const interval = setInterval(() => {
-      if (typeof window.onClaimEventLocationPoints === 'function') {
-        clearInterval(interval);
-        const originalFn = window.onClaimEventLocationPoints;
-        window.onClaimEventLocationPoints = function (loc, free, result) {
-          originalFn.call(this, loc, free, result);
+let lastToastTime = 0;
+const TOAST_INTERVAL = 3000;
 
-          startTemporaryPolling();
-
-          setTimeout(() => {
-            if (findNextLocationAndShow() && config.enableToast && config.enableAllFeatures) {
-              const now = Date.now();
-              if (now - lastToastTime > TOAST_INTERVAL) {
-                lastToastTime = now;
-                const lang = getLangKey();
-                const labelText = toastLabel[lang] || toastLabel.en;
-                const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
-                showToastMessage?.(
+function callExpeditionUpdate() {
+  setTimeout(() => {
+      if (findNextLocationAndShow() && config.enableToast && config.enableAllFeatures) {
+          const now = Date.now();
+          if (now - lastToastTime > TOAST_INTERVAL) {
+              lastToastTime = now;
+              const lang = getLangKey();
+              const labelText = toastLabel[lang] || toastLabel.en;
+              const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
+              showToastMessage?.(
                   labelText + ': ' + nextDestinationHTML,
                   'expedition',
                   true,
                   undefined,
                   !config.autoHideToast
-                );
-              }
+              );
+          }
+      }
+  }, 600);
+}
+
+function hookExpedition() {
+  const interval = setInterval(() => {
+      let wrappedCount = 0;
+
+      if (typeof window.onClaimEventLocationPoints === 'function') {
+        if (!window.onClaimEventLocationPoints._expeditionWrapped) {
+          const origFn = window.onClaimEventLocationPoints;
+          window.onClaimEventLocationPoints = function(loc, free, result) {
+            origFn.call(this, loc, free, result);
+            startTemporaryPolling();
+            callExpeditionUpdate();
+          };
+          window.onClaimEventLocationPoints._expeditionWrapped = true;
+        }
+        wrappedCount++;
+      }
+
+      if (typeof window.onUpdateEventPeriod === 'function') {
+        if (!window.onUpdateEventPeriod._expeditionWrapped) {
+          const origFn = window.onUpdateEventPeriod;
+          window.onUpdateEventPeriod = function(eventPeriod) {
+            origFn.call(this, eventPeriod);
+            callExpeditionUpdate();
+          };
+          window.onUpdateEventPeriod._expeditionWrapped = true;
+        }
+        wrappedCount++;
+      }
+
+      if (typeof window.fetchAndUpdatePlayerInfo === 'function') {
+        if (!window.fetchAndUpdatePlayerInfo._expeditionWrapped) {
+          const origFn = window.fetchAndUpdatePlayerInfo;
+          window.fetchAndUpdatePlayerInfo = function() {
+            const ret = origFn.apply(this, arguments);
+            if (ret && typeof ret.then === 'function') {
+              ret.then(() => callExpeditionUpdate());
+            } else {
+              setTimeout(callExpeditionUpdate, 2000);
             }
-          }, 600);
-        };
+            return ret;
+          };
+          window.fetchAndUpdatePlayerInfo._expeditionWrapped = true;
+        }
+        wrappedCount++;
+      }
+
+      if (wrappedCount === 3) {
+        clearInterval(interval);
       }
     }, 300);
-  }
+}
 
-  function waitForUI() {
-    const uiInterval = setInterval(() => {
+function waitForUI() {
+  const uiInterval = setInterval(() => {
       const settingsModal = document.getElementById('settingsModal');
       if (settingsModal?.querySelector('.buttonRow')) {
-        clearInterval(uiInterval);
-        injectUI();
-        document.getElementById('lang')?.addEventListener('change', () => {
-          setTimeout(injectUI, 300);
-        });
+          clearInterval(uiInterval);
+          injectUI();
+          document.getElementById('lang')?.addEventListener('change', () => {
+              setTimeout(injectUI, 300);
+          });
       }
-    }, 400);
-  }
+  }, 400);
+}
 
-  hookExpedition();
-  waitForUI();
-  if (document.readyState === "complete") {
-    initialPolling();
-  } else {
-    window.addEventListener('load', () => {
+hookExpedition();
+waitForUI();
+if (document.readyState === "complete") {
+  initialPolling();
+} else {
+  window.addEventListener('load', () => {
       initialPolling();
-    });
-  }
+  });
+}
 
-  function injectUI() {
-    document.getElementById('expeditionSettingsModal')?.remove();
-    document.getElementById('openExpeditionSettingsButton')?.remove();
+function injectUI() {
+  document.getElementById('expeditionSettingsModal')?.remove();
+  document.getElementById('openExpeditionSettingsButton')?.remove();
 
-    const settingsModal = document.getElementById('settingsModal');
-    const buttonRow = settingsModal?.querySelector('.buttonRow');
-    if (!buttonRow) return;
+  const settingsModal = document.getElementById('settingsModal');
+  const buttonRow = settingsModal?.querySelector('.buttonRow');
+  if (!buttonRow) return;
 
-    const lang = getLangKey();
-    const openButton = document.createElement('button');
-    openButton.type = 'button';
-    openButton.id = 'openExpeditionSettingsButton';
-    openButton.innerText = uiText.expeditionsButton[lang] || uiText.expeditionsButton.en;
-    openButton.classList.add('unselectable');
-    buttonRow.appendChild(openButton);
+  const lang = getLangKey();
+  const openButton = document.createElement('button');
+  openButton.type = 'button';
+  openButton.id = 'openExpeditionSettingsButton';
+  openButton.innerText = uiText.expeditionsButton[lang] || uiText.expeditionsButton.en;
+  openButton.classList.add('unselectable');
+  buttonRow.appendChild(openButton);
 
-    const modal = document.createElement('div');
-    modal.id = 'expeditionSettingsModal';
-    modal.classList.add('modal', 'hidden');
-    modal.style.opacity = '1';
-    modal.innerHTML = `
+  const modal = document.createElement('div');
+  modal.id = 'expeditionSettingsModal';
+  modal.classList.add('modal', 'hidden');
+  modal.style.opacity = '1';
+  modal.innerHTML = `
       <div class="modalHeader">
         <h1 class="modalTitle">${uiText.title[lang]}</h1>
         <a href="javascript:void(0);" class="modalClose">✖</a>
@@ -588,40 +628,40 @@
         <button id="resetExpeditionSettings" class="unselectable" type="button">${uiText.reset[lang]}</button>
       </div>
     `;
-    settingsModal.insertAdjacentElement('afterend', modal);
+  settingsModal.insertAdjacentElement('afterend', modal);
 
-    const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
-    enableAllFeaturesToggleButton.onclick = () => {
+  const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
+  enableAllFeaturesToggleButton.onclick = () => {
       config.enableAllFeatures = !config.enableAllFeatures;
       enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
       saveConfig(config);
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
       if (wrapper) {
-        wrapper.style.display = config.enableAllFeatures ? '' : 'none';
+          wrapper.style.display = config.enableAllFeatures ? '' : 'none';
       }
-    };
+  };
 
-    const enableToastToggleButton = modal.querySelector('#enableToastToggleButton');
-    enableToastToggleButton.onclick = () => {
+  const enableToastToggleButton = modal.querySelector('#enableToastToggleButton');
+  enableToastToggleButton.onclick = () => {
       config.enableToast = !config.enableToast;
       enableToastToggleButton.classList.toggle('toggled', config.enableToast);
 
       const autoHideRow = modal.querySelector('#autoHideToastRow');
       if (autoHideRow) {
-        autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
+          autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
       }
       saveConfig(config);
-    };
+  };
 
-    const autoHideToastToggleButton = modal.querySelector('#autoHideToastToggleButton');
-    autoHideToastToggleButton.onclick = () => {
+  const autoHideToastToggleButton = modal.querySelector('#autoHideToastToggleButton');
+  autoHideToastToggleButton.onclick = () => {
 
       config.autoHideToast = !config.autoHideToast;
       autoHideToastToggleButton.classList.toggle('toggled', config.autoHideToast);
       saveConfig(config);
-    };
+  };
 
-    modal.querySelector('#resetExpeditionSettings').onclick = () => {
+  modal.querySelector('#resetExpeditionSettings').onclick = () => {
       config.enableToast = defaultConfig.enableToast;
       config.autoHideToast = defaultConfig.autoHideToast;
       config.enableAllFeatures = defaultConfig.enableAllFeatures;
@@ -630,19 +670,19 @@
       enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
       const autoHideRow = modal.querySelector('#autoHideToastRow');
       if (autoHideRow) {
-        autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
+          autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
       }
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
       if (wrapper) {
-        wrapper.style.display = config.enableAllFeatures ? '' : 'none';
+          wrapper.style.display = config.enableAllFeatures ? '' : 'none';
       }
       saveConfig(config);
       findNextLocationAndShow();
-    };
+  };
 
-    openButton.onclick = () => openModal('expeditionSettingsModal', null, 'settingsModal');
-    modal.querySelector('.modalClose')?.addEventListener('click', () => {
+  openButton.onclick = () => openModal('expeditionSettingsModal', null, 'settingsModal');
+  modal.querySelector('.modalClose')?.addEventListener('click', () => {
       closeModal(modal.id, 'settingsModal');
-    });
-  }
+  });
+}
 })();
