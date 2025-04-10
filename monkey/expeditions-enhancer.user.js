@@ -631,15 +631,20 @@ function injectUI() {
     `;
   settingsModal.insertAdjacentElement('afterend', modal);
 
+
   const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
   enableAllFeaturesToggleButton.onclick = () => {
-      config.enableAllFeatures = !config.enableAllFeatures;
-      enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
-      saveConfig(config);
-      const wrapper = document.getElementById('nextDestinationInfoWrapper');
-      if (wrapper) {
-          wrapper.style.display = config.enableAllFeatures ? '' : 'none';
-      }
+    config.enableAllFeatures = !config.enableAllFeatures;
+    enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
+    saveConfig(config);
+    const wrapper = document.getElementById('nextDestinationInfoWrapper');
+    if (wrapper) {
+      wrapper.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
+    }
+    const starsDiv = document.getElementById('nextDestinationStars');
+    if (starsDiv) {
+      starsDiv.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
+    }
   };
 
   const enableToastToggleButton = modal.querySelector('#enableToastToggleButton');
