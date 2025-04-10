@@ -1,5 +1,10 @@
 # Changelog
 
+## [2025-04-10] - Version 1.0.2
+
+### Fixed
+- Fixed an issue where the depth display would not be hidden even if the “Fixed on Screen” button was clicked.
+
 ## [2025-04-10] - Version 1.0.1
 
 ### Fixed
