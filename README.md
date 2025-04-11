@@ -32,7 +32,7 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 - **"Destination Log" Recording Feature:**
   <br>
   <p align="center">
-  <img src="https://github.com/user-attachments/assets/06ab9bbf-7b3c-421b-9b3c-3863b5b30fb2" width="20%" />
+  <img src="https://github.com/user-attachments/assets/06ab9bbf-7b3c-421b-9b3c-3863b5b30fb2" width="30%" />
   </p>
   When you check "Enable Destination Logs", the destinations you reach will be recorded.
   Each log entry includes the map name and depth (actual depth and max depth without shortcuts).
@@ -104,7 +104,7 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
 - **"到達場所ログ" 記録機能：**
  <br>
   <p align="center">
-    <img src="https://github.com/user-attachments/assets/3a6ed910-c8af-4871-8865-fc46fe42b05b"  width="20%"/>
+    <img src="https://github.com/user-attachments/assets/3a6ed910-c8af-4871-8865-fc46fe42b05b"  width="30%"/>
   </p>
 
   「到達場所ログを有効にする」にチェックをいれると、到達した目的地のログを記録することができます。
