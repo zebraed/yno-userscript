@@ -22,6 +22,8 @@
   let nextLocationDepthHTML = '';
   let temporaryPollingInterval = null;
   let temporaryPollingTimeout = null;
+  window._latestDepthInfo = null;
+  window._latestMapName = null;
 
   function startTemporaryPolling() {
       if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
@@ -173,7 +175,8 @@
   const defaultConfig = {
       enableToast: true,
       autoHideToast: true,
-      enableAllFeatures: true
+      enableAllFeatures: true,
+      enableExpeditionsLog: true
   };
   function loadConfig() {
       try {
@@ -320,6 +323,132 @@
           ar: 'مثبت على الشاشة',
           eo: 'Fiksita sur ekrano',
           pt: 'Fixo na tela'
+      },
+      expeditionsLogHeader: {
+        ja: '到達場所ログ',
+        en: 'Destination Logs',
+        fr: 'Journaux de destination',
+        es: 'Registros de destino',
+        de: 'Zielprotokolle',
+        zh: '目的地日志',
+        ko: '도달 위치 로그',
+        it: 'Registri delle destinazioni',
+        pl: 'Rejestry miejsc docelowych',
+        ro: 'Jurnale de destinație',
+        tr: 'Hedef Kayıtları',
+        ru: 'Журналы пунктов назначения',
+        vi: 'Nhật ký điểm đến',
+        ar: 'سجلات الوجهة',
+        eo: 'Protokoloj de celolokoj',
+        pt: 'Registros de Destino'
+      },
+      selectDate: {
+        ja: '日付選択',
+        en: 'Select Date',
+        fr: 'Sélectionner la date',
+        es: 'Seleccionar fecha',
+        de: 'Datum auswählen',
+        zh: '选择日期',
+        ko: '날짜 선택',
+        it: 'Seleziona data',
+        pl: 'Wybierz datę',
+        ro: 'Selectează data',
+        tr: 'Tarih Seç',
+        ru: 'Выбрать дату',
+        vi: 'Chọn ngày',
+        ar: 'اختر التاريخ',
+        eo: 'Elektu daton',
+        pt: 'Selecionar data'
+      },
+      readLog: {
+        ja: 'ログ表示',
+        en: 'Show Log',
+        fr: 'Afficher le journal',
+        es: 'Mostrar registro',
+        de: 'Protokoll anzeigen',
+        zh: '显示日志',
+        ko: '로그 표시',
+        it: 'Mostra registro',
+        pl: 'Pokaż dziennik',
+        ro: 'Afișează jurnalul',
+        tr: 'Günlüğü göster',
+        ru: 'Показать журнал',
+        vi: 'Hiển thị nhật ký',
+        ar: 'عرض السجل',
+        eo: 'Montri protokolon',
+        pt: 'Exibir registro'
+      },
+      downloadLog: {
+        ja: 'ダウンロード',
+        en: 'Download',
+        fr: 'Télécharger',
+        es: 'Descargar',
+        de: 'Herunterladen',
+        zh: '下载',
+        ko: '다운로드',
+        it: 'Scarica',
+        pl: 'Pobierz',
+        ro: 'Descarcă',
+        tr: 'İndir',
+        ru: 'Скачать',
+        vi: 'Tải xuống',
+        ar: 'تنزيل',
+        eo: 'Elŝuti',
+        pt: 'Baixar'
+      },
+      deleteLog: {
+        ja: '削除',
+        en: 'Delete',
+        fr: 'Supprimer',
+        es: 'Eliminar',
+        de: 'Löschen',
+        zh: '删除',
+        ko: '삭제',
+        it: 'Elimina',
+        pl: 'Usuń',
+        ro: 'Ștergere',
+        tr: 'Sil',
+        ru: 'Удалить',
+        vi: 'Xóa',
+        ar: 'حذف',
+        eo: 'Forigi',
+        pt: 'Excluir'
+      },
+      noLog: {
+        ja: '(ログがありません)',
+        en: '(No log data)',
+        fr: '(Aucune donnée de journal)',
+        es: '(Sin datos de registro)',
+        de: '(Keine Protokolldaten)',
+        zh: '(无日志数据)',
+        ko: '(로그 데이터 없음)',
+        it: '(Nessun dato di registro)',
+        pl: '(Brak danych dziennika)',
+        ro: '(Nu există date de jurnal)',
+        tr: '(Günlük verisi yok)',
+        ru: '(Никаких журналов)',
+        vi: '(Không có dữ liệu nhật ký)',
+        ar: '(لا يوجد سجل)',
+        eo: '(Neniu protokoldato disponebla)',
+        pt: '(Sem dados de registro)'
+      },
+      enableLogLabel: {
+        ja: '到達場所ログを有効にする',
+        en: 'Enable Destination Logs',
+        fr: 'Activer les journaux de destination',
+        es: 'Habilitar registros de destino',
+        de: 'Zielprotokolle aktivieren',
+        zh: '启用目的地日志',
+        ko: '도달 위치 로그 활성화',
+        it: 'Abilita registri delle destinazioni',
+        pl: 'Włącz rejestry miejsc docelowych',
+        ro: 'Activează jurnalele de destinație',
+        tr: 'Hedef Günlüklerini Etkinleştir',
+        ru: 'Включить журнал пунктов назначения',
+        vi: 'Bật nhật ký điểm đến',
+        ar: 'قم بتمكين سجلات الوجهة',
+        eo: 'Ebligi cellokajn protokolojn',
+        pt: 'Ativar registros de destino'
       }
   };
 
@@ -329,6 +458,27 @@
       }
       return false;
     }
+
+  function getLocalizedMapName(detailsContainer) {
+    if (!detailsContainer) return '';
+
+    let candidateChildren = Array.from(detailsContainer.children);
+
+    candidateChildren = candidateChildren.filter(el => {
+      if (isGameNameElement(el)) return false;
+      if (!el.innerText.trim()) return false;
+      return true;
+    });
+
+    if (candidateChildren.length === 0) {
+      return '';
+    } else if (candidateChildren.length === 1) {
+      return candidateChildren[0].innerText.trim();
+    } else {
+      // is this necessary?
+      return candidateChildren[0].innerText.trim();
+    }
+  }
 
   function showMessage(html, type) {
       let wrapper = document.getElementById('nextDestinationInfoWrapper');
@@ -427,6 +577,11 @@
         const detailsContainer = entry.querySelector('.detailsContainer');
         if (!detailsContainer) continue;
 
+        const mapName = getLocalizedMapName(detailsContainer);
+        const depthInfo = getDepthInfo(detailsContainer)
+        window._latestMapName = mapName;
+        window._latestDepthInfo = [depthInfo[0], depthInfo[1]];
+
         let placeElement = null;
         for (const child of detailsContainer.children) {
           if (!child.innerText.trim()) continue;
@@ -469,6 +624,9 @@
       return true;
   }
   nextLocationDepthHTML = '';
+  window._latestDepthInfo = null;
+  window._latestMapName = null;
+
   return false;
 }
 
@@ -476,24 +634,30 @@ let lastToastTime = 0;
 const TOAST_INTERVAL = 3000;
 
 function callExpeditionUpdate() {
-  setTimeout(() => {
-      if (findNextLocationAndShow() && config.enableToast && config.enableAllFeatures) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const foundNext = findNextLocationAndShow();
+      requestAnimationFrame(() => {
+        if (foundNext && config.enableToast && config.enableAllFeatures) {
           const now = Date.now();
           if (now - lastToastTime > TOAST_INTERVAL) {
-              lastToastTime = now;
-              const lang = getLangKey();
-              const labelText = toastLabel[lang] || toastLabel.en;
-              const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
-              showToastMessage?.(
-                  labelText + ': ' + nextDestinationHTML,
-                  'expedition',
-                  true,
-                  undefined,
-                  !config.autoHideToast
-              );
+            lastToastTime = now;
+            const lang = getLangKey();
+            const labelText = toastLabel[lang] || toastLabel.en;
+            const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
+            showToastMessage(
+              labelText + ': ' + nextDestinationHTML,
+              'expedition',
+              true,
+              undefined,
+              !config.autoHideToast
+            );
           }
-      }
-  }, 600);
+        }
+        resolve();
+      });
+    }, 600);
+  });
 }
 
 function hookExpedition() {
@@ -505,9 +669,19 @@ function hookExpedition() {
           const origFn = window.onClaimEventLocationPoints;
           window.onClaimEventLocationPoints = function(loc, free, result) {
             origFn.call(this, loc, free, result);
+            const mapName = window._latestMapName || loc;
+            const depthInfo = window._latestDepthInfo || [0, 0];
             startTemporaryPolling();
-            callExpeditionUpdate();
-          };
+            callExpeditionUpdate()
+              .then( () => {
+                if (config.enableExpeditionsLog) {
+                  addExpeditionsLog(gameId, mapName, depthInfo);
+                }
+              })
+              .catch(err => {
+                console.error("callExpeditionUpdate Error:", err);
+              });
+            };
           window.onClaimEventLocationPoints._expeditionWrapped = true;
         }
         wrappedCount++;
@@ -572,6 +746,105 @@ if (document.readyState === "complete") {
   });
 }
 
+function getCurrentUTCDateString() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
+}
+
+function addExpeditionsLog(gameId, locationName, depthInfo) {
+  let logText = '';
+  if ( !depthInfo[1] ){
+    logText = `${locationName} (${depthInfo[0]})`;
+  } else {
+    logText = `${locationName} (${depthInfo[0]}, ${depthInfo[1]})`;
+  }
+  const dateStr = getCurrentUTCDateString();
+  const key = `expeditionsLog_${gameId}_${dateStr}`;
+
+  const rawData = localStorage.getItem(key);
+  let logArr = [];
+  try {
+    logArr = rawData ? JSON.parse(rawData) : [];
+  } catch (err) {
+    console.warn("[DEBUG] parse error on existing data:", err);
+    logArr = [];
+  }
+
+  logArr.push(logText);
+
+  localStorage.setItem(key, JSON.stringify(logArr));
+}
+
+function refreshExpeditionsLogDates(gameId) {
+  const modal = document.getElementById('expeditionSettingsModal');
+  if (!modal) return;
+
+  const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
+  if (!expeditionsLogDateSelect) return;
+
+  expeditionsLogDateSelect.innerHTML = '';
+
+  const dateList = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const keyName = localStorage.key(i);
+    if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
+      const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
+      dateList.push(dateStr);
+    }
+  }
+
+  dateList.sort().reverse();
+
+  for (let dateStr of dateList) {
+    const option = document.createElement('option');
+    option.value = dateStr;
+    option.textContent = dateStr;
+    expeditionsLogDateSelect.appendChild(option);
+  }
+}
+
+function parseDepth(containerEl) {
+  if (!containerEl) return 0;
+
+  const starIcons = containerEl.querySelectorAll('.starIcon.icon');
+  let depthTotal = 0;
+
+  starIcons.forEach(iconEl => {
+    if (iconEl.classList.contains('fillIcon')) {
+      depthTotal += 1.0;
+    } else {
+      depthTotal += 0.5;
+    }
+  });
+  return depthTotal;
+}
+
+function getDepthInfo(detailsContainer) {
+  if (!detailsContainer) return [0, 0];
+
+  const minEl = detailsContainer.querySelector('.depthContainer.minDepthFillContainer');
+  const maxEl = detailsContainer.querySelector('.depthContainer.maxDepthFillContainer');
+  const fallbackEl = detailsContainer.querySelector('.depthContainer.depthFillContainer');
+
+  let actualDepth = 0;
+  let maxDepth    = 0;
+
+  if (minEl) {
+    actualDepth = parseDepth(minEl);
+  } else if (fallbackEl) {
+    actualDepth = parseDepth(fallbackEl);
+  }
+
+  if (maxEl) {
+    maxDepth = parseDepth(maxEl);
+  }
+
+  return [actualDepth, maxDepth];
+}
+
 function injectUI() {
   document.getElementById('expeditionSettingsModal')?.remove();
   document.getElementById('openExpeditionSettingsButton')?.remove();
@@ -588,49 +861,94 @@ function injectUI() {
   openButton.classList.add('unselectable');
   buttonRow.appendChild(openButton);
 
+  function getUiLogText(textObj, key, lang) {
+    if (textObj[key]?.[lang]) {
+      return textObj[key][lang];
+    } else {
+      return textObj[key].en;
+    }
+  }
+
   const modal = document.createElement('div');
   modal.id = 'expeditionSettingsModal';
   modal.classList.add('modal', 'hidden');
   modal.style.opacity = '1';
-  modal.innerHTML = `
-      <div class="modalHeader">
-        <h1 class="modalTitle">${uiText.title[lang]}</h1>
-        <a href="javascript:void(0);" class="modalClose">✖</a>
-      </div>
-      <div class="modalContent">
-        <ul class="formControls" style="width:100%">
-          <li class="formControlRow">
-            <label class="unselectable">${uiText.displayFixed[lang] || uiText.displayFixed.en}</label>
-            <div>
-              <button id="enableAllFeaturesToggleButton" class="checkboxButton unselectable ${config.enableAllFeatures ? 'toggled' : ''}">
-                <span></span>
-              </button>
-            </div>
-          </li>
-          <li class="formControlRow">
-            <label class="unselectable">${uiText.enableToastLabel[lang]}</label>
-            <div>
-              <button id="enableToastToggleButton" class="checkboxButton unselectable ${config.enableToast ? 'toggled' : ''}">
-                <span></span>
-              </button>
-            </div>
-          </li>
-          <li class="formControlRow toast-child" id="autoHideToastRow" style="display: ${config.enableToast ? 'flex' : 'none'};">
-            <label class="unselectable">${uiText.autoHideToastLabel[lang]}</label>
-            <div>
-              <button id="autoHideToastToggleButton" class="checkboxButton unselectable ${config.autoHideToast ? 'toggled' : ''}">
-                <span></span>
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="modalFooter">
-        <button id="resetExpeditionSettings" class="unselectable" type="button">${uiText.reset[lang]}</button>
-      </div>
-    `;
-  settingsModal.insertAdjacentElement('afterend', modal);
 
+  modal.innerHTML = `
+  <div class="modalHeader">
+    <h1 class="modalTitle">${uiText.title[lang]}</h1>
+    <a href="javascript:void(0);" class="modalClose">✖</a>
+  </div>
+  <div class="modalContent">
+    <ul class="formControls" style="width:100%">
+      <li class="formControlRow">
+        <label class="unselectable">${uiText.displayFixed[lang] || uiText.displayFixed.en}</label>
+        <div>
+          <button id="enableAllFeaturesToggleButton" class="checkboxButton unselectable ${config.enableAllFeatures ? 'toggled' : ''}">
+            <span></span>
+          </button>
+        </div>
+      </li>
+      <li class="formControlRow">
+        <label class="unselectable">${uiText.enableToastLabel[lang]}</label>
+        <div>
+          <button id="enableToastToggleButton" class="checkboxButton unselectable ${config.enableToast ? 'toggled' : ''}">
+            <span></span>
+          </button>
+        </div>
+      </li>
+      <li class="formControlRow toast-child" id="autoHideToastRow" style="display: ${config.enableToast ? 'flex' : 'none'};">
+        <label class="unselectable">${uiText.autoHideToastLabel[lang]}</label>
+        <div>
+          <button id="autoHideToastToggleButton" class="checkboxButton unselectable ${config.autoHideToast ? 'toggled' : ''}">
+            <span></span>
+          </button>
+        </div>
+      </li>
+
+      <li class="formControlRow">
+        <label class="unselectable">${ getUiLogText(uiText, 'enableLogLabel', lang) }</label>
+        <div>
+          <button id="enableExpeditionsLogToggleButton" class="checkboxButton unselectable ${config.enableExpeditionsLog ? 'toggled' : ''}">
+            <span></span>
+          </button>
+        </div>
+      </li>
+    </ul>
+
+    <h2 style="margin-top:16px;" id="expeditionsLogHeader">
+      ${ getUiLogText(uiText, 'expeditionsLogHeader', lang) }
+    </h2>
+    <div id="expeditionsLogControls">
+      <label class="unselectable">${ getUiLogText(uiText, 'selectDate', lang) }:
+        <select id="expeditionsLogDateSelect" style="margin-left:4px;" class="infoText"></select>
+      </label>
+      <button id="readExpeditionsLogButton" type="button" class="unselectable" style="margin-left:8px;">
+        ${ getUiLogText(uiText, 'readLog', lang) }
+      </button>
+      <button id="downloadExpeditionsLogButton" type="button" class="unselectable" style="margin-left:8px;">
+        ${ getUiLogText(uiText, 'downloadLog', lang) }
+      </button>
+      <button id="deleteExpeditionsLogButton" type="button" class="unselectable" style="margin-left:8px;">
+        ${ getUiLogText(uiText, 'deleteLog', lang) }
+      </button>
+      <div id="expeditionsLogDisplay" style="
+        margin-top: 12px;
+        border: 1px solid #ccc;
+        padding: 8px;
+        min-height: 80px;
+        max-height: 200px;
+        overflow-x: auto;
+      ">
+        ${ getUiLogText(uiText, 'noLog', lang) }
+      </div>
+    </div>
+  </div>
+  <div class="modalFooter">
+    <button id="resetExpeditionSettings" class="unselectable" type="button">${uiText.reset[lang]}</button>
+  </div>
+  `;
+  settingsModal.insertAdjacentElement('afterend', modal);
 
   const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
   enableAllFeaturesToggleButton.onclick = () => {
@@ -667,13 +985,34 @@ function injectUI() {
       saveConfig(config);
   };
 
+  const enableExpeditionsLogToggleButton = modal.querySelector('#enableExpeditionsLogToggleButton');
+  enableExpeditionsLogToggleButton.onclick = () => {
+    config.enableExpeditionsLog = !config.enableExpeditionsLog;
+    enableExpeditionsLogToggleButton.classList.toggle('toggled', config.enableExpeditionsLog);
+    saveConfig(config);
+
+    const expeditionsLogHeader = document.getElementById('expeditionsLogHeader');
+    const expeditionsLogControls = document.getElementById('expeditionsLogControls');
+    if (!config.enableExpeditionsLog) {
+      expeditionsLogHeader.classList.add('hidden');
+      expeditionsLogControls.classList.add('hidden');
+    } else {
+      expeditionsLogHeader.classList.remove('hidden');
+      expeditionsLogControls.classList.remove('hidden');
+    }
+  };
+
   modal.querySelector('#resetExpeditionSettings').onclick = () => {
       config.enableToast = defaultConfig.enableToast;
       config.autoHideToast = defaultConfig.autoHideToast;
       config.enableAllFeatures = defaultConfig.enableAllFeatures;
+      config.enableExpeditionsLog = defaultConfig.enableExpeditionsLog;
+
       enableToastToggleButton.classList.toggle('toggled', config.enableToast);
       autoHideToastToggleButton.classList.toggle('toggled', config.autoHideToast);
       enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
+      enableExpeditionsLogToggleButton.classList.toggle('toggled', config.enableExpeditionsLog);
+
       const autoHideRow = modal.querySelector('#autoHideToastRow');
       if (autoHideRow) {
           autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
@@ -683,12 +1022,108 @@ function injectUI() {
           wrapper.style.display = config.enableAllFeatures ? '' : 'none';
       }
       saveConfig(config);
+
       findNextLocationAndShow();
+
+      const expeditionsLogHeader = document.getElementById('expeditionsLogHeader');
+      const expeditionsLogControls = document.getElementById('expeditionsLogControls');
+      if (!config.enableExpeditionsLog) {
+        expeditionsLogHeader.classList.add('hidden');
+        expeditionsLogControls.classList.add('hidden');
+      } else {
+        expeditionsLogHeader.classList.remove('hidden');
+        expeditionsLogControls.classList.remove('hidden');
+      }
   };
 
-  openButton.onclick = () => openModal('expeditionSettingsModal', null, 'settingsModal');
+  openButton.onclick = () => {
+    refreshExpeditionsLogDates(gameId);
+    openModal('expeditionSettingsModal', null, 'settingsModal');
+  };
   modal.querySelector('.modalClose')?.addEventListener('click', () => {
       closeModal(modal.id, 'settingsModal');
   });
+
+  const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
+  expeditionsLogDateSelect.innerHTML = '';
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const keyName = localStorage.key(i);
+    if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
+      const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
+      const option = document.createElement('option');
+      option.value = dateStr;
+      option.textContent = dateStr;
+      expeditionsLogDateSelect.appendChild(option);
+    }
+  }
+
+  const expeditionsLogDisplay = modal.querySelector('#expeditionsLogDisplay');
+  function showExpeditionsLog(gameId, dateStr) {
+    const key = `expeditionsLog_${gameId}_${dateStr}`;
+    const raw = localStorage.getItem(key);
+    let logArr = [];
+    if (raw) {
+      try {
+        logArr = JSON.parse(raw);
+      } catch (err) {
+        logArr = [];
+      }
+    }
+    if (!logArr.length) {
+      expeditionsLogDisplay.innerHTML = uiText.noLog[lang];
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    logArr.forEach((locationName) => {
+      const li = document.createElement('li');
+      li.textContent = locationName;
+      ul.appendChild(li);
+    });
+    expeditionsLogDisplay.innerHTML = '';
+    expeditionsLogDisplay.appendChild(ul);
+  }
+
+  const readExpeditionsLogButton = modal.querySelector('#readExpeditionsLogButton');
+  readExpeditionsLogButton.onclick = () => {
+    const dateStr = expeditionsLogDateSelect.value;
+    if (!dateStr) return;
+    showExpeditionsLog(gameId, dateStr);
+  };
+
+  const downloadExpeditionsLogButton = modal.querySelector('#downloadExpeditionsLogButton');
+  downloadExpeditionsLogButton.onclick = () => {
+    const dateStr = expeditionsLogDateSelect.value;
+    if (!dateStr) return;
+    const key = `expeditionsLog_${gameId}_${dateStr}`;
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    let logArr = [];
+    try {
+      logArr = JSON.parse(raw);
+    } catch (err) {
+      logArr = [];
+    }
+    const content = logArr.join('\n');
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `expeditionsLog_${gameId}_${dateStr}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const deleteExpeditionsLogButton = modal.querySelector('#deleteExpeditionsLogButton');
+  deleteExpeditionsLogButton.onclick = () => {
+    const dateStr = expeditionsLogDateSelect.value;
+    if (!dateStr) return;
+    const key = `expeditionsLog_${gameId}_${dateStr}`;
+    if (localStorage.getItem(key)) {
+      localStorage.removeItem(key);
+      showExpeditionsLog(gameId, dateStr);
+    }
+  };
 }
 })();
