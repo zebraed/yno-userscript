@@ -36,7 +36,7 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   </p>
   When you check "Enable Destination Logs", the destinations you reach will be recorded.
   Each log entry includes the map name and depth (actual depth and max depth without shortcuts).
-  Logs are listed by date (based on UTC) for each game session. You can download or delete them.
+  Logs are listed by date (based on UTC) for each game. You can download or delete them.
 
 ### Installation
 
