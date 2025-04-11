@@ -4,8 +4,7 @@
 **License:** MIT
 
 ## YNO Expeditions Enhancer [en]
-
-![image](https://github.com/user-attachments/assets/e489657a-8635-4ee9-a54d-291c7ee3cd43)
+![image](https://github.com/user-attachments/assets/3eb505c4-9a5d-45b9-b5f6-3f0b873464aa)
 
 ### Overview
 
@@ -31,6 +30,9 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   - **Auto-hide Notification:** When enabled, notifications will close automatically.
 
 - **"Destination Log" Recording Feature:**
+  <p align="center">
+  <img src="https://github.com/user-attachments/assets/06ab9bbf-7b3c-421b-9b3c-3863b5b30fb2" width="50%" />
+  </p>
   When you check "Enable Destination Logs", the destinations you reach will be recorded.
   Each log entry includes the map name and depth (actual depth and max depth without shortcuts).
   Logs are listed by date (based on UTC) for each game session. You can download or delete them.
@@ -99,6 +101,11 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   - **目的地到達通知を自動で閉じる：** 通知を自動で閉じる機能を有効または無効にすることができます。
 
 - **"到達場所ログ" 記録機能：**
+ 
+  <p align="center">
+    <img src="https://github.com/user-attachments/assets/3a6ed910-c8af-4871-8865-fc46fe42b05b"  width="50%"/>
+  </p>
+
   「到達場所ログを有効にする」にチェックをいれると、到達した目的地のログを記録することができます。
   ログは、マップ名と深度(実際の深度, ショートカットなしでの深度)が記録されます。
   ログは、各ゲーム毎にUTCを基準に日付でリストアップされます。ダウンロードと削除が可能です。
