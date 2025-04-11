@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-04-12] - Version 1.1.0
+
+### Added
+- Added new feature: "Destination Log Recording".
+- Added function to convert star depth display into numerical values.
+
 ## [2025-04-10] - Version 1.0.2
 
 ### Fixed

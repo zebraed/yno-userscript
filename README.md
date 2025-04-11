@@ -30,6 +30,11 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   - **Enable Notification:** Toggle this to enable or disable the notification of the name of the next place when you reach a expeditions destination.
   - **Auto-hide Notification:** When enabled, notifications will close automatically.
 
+- **"Destination Log" Recording Feature:**
+  When you check "Enable Destination Logs", the destinations you reach will be recorded.
+  Each log entry includes the map name and depth (actual depth and max depth without shortcuts).
+  Logs are listed by date (based on UTC) for each game session. You can download or delete them.
+
 ### Installation
 
   1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.　
@@ -51,6 +56,8 @@ Google Chrome:
 ### Configuration
 
 The script provides an in-game settings UI accessible through the game's settings modal. Your configuration is saved locally under the key `toastConfig`.
+The destination logs are saved in localStorage.
+
 
 ### License
 
@@ -91,6 +98,12 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   - **目的地到達通知を有効にする：** ドリームラリーの目的地に到達した際の次の場所名の通知を有効または無効にすることができます。
   - **目的地到達通知を自動で閉じる：** 通知を自動で閉じる機能を有効または無効にすることができます。
 
+- **"到達場所ログ" 記録機能：**
+  「到達場所ログを有効にする」にチェックをいれると、到達した目的地のログを記録することができます。
+  ログは、マップ名と深度(実際の深度, ショートカットなしでの深度)が記録されます。
+  ログは、各ゲーム毎にUTCを基準に日付でリストアップされます。ダウンロードと削除が可能です。
+
+
 ### インストール
 
   1. [Tampermonkey](https://www.tampermonkey.net/) をブラウザ拡張機能としてインストール、または使用しているブラウザ用の別のユーザースクリプトマネージャー（violentmonkeyなど）をブラウザ拡張機能としてインストールします。
@@ -108,6 +121,7 @@ Micro Soft Edge: https://platform.kobot.jp/support/solutions/articles/4700117612
 ### 構成
 
 このスクリプトは、ゲームの設定モーダルからアクセスできるゲーム内設定UIを提供します。設定は、`toastConfig` キーの下にローカルに保存されます。
+マップの到達ログは`localStorage`に保存されます。
 
 
 
