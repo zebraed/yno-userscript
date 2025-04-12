@@ -22,6 +22,9 @@
   let nextLocationDepthHTML = '';
   let temporaryPollingInterval = null;
   let temporaryPollingTimeout = null;
+  let lastRecordedLoc = null;
+  let lastRecordedTime = 0;
+  const THRESHOLD_MS = 2000;
   window._latestDepthInfo = null;
   window._latestMapName = null;
 
@@ -659,7 +662,6 @@ function callExpeditionUpdate() {
     }, 600);
   });
 }
-
 function hookExpedition() {
   const interval = setInterval(() => {
       let wrappedCount = 0;
@@ -669,11 +671,29 @@ function hookExpedition() {
           const origFn = window.onClaimEventLocationPoints;
           window.onClaimEventLocationPoints = function(loc, free, result) {
             origFn.call(this, loc, free, result);
+            console.log("onClaimEventLocationPoints called:", loc, free, result);
+
+            if (result < 0) {
+              console.log("Result <= 0; skipping additional processing");
+              return;
+            }
+
+            const now = Date.now();
+            if (loc === lastRecordedLoc && (now - lastRecordedTime) < THRESHOLD_MS) {
+              console.log("Same location within threshold; skipping logging");
+              return;
+            }
+            lastRecordedLoc = loc;
+            lastRecordedTime = now;
+
             const mapName = window._latestMapName || loc;
             const depthInfo = window._latestDepthInfo || [0, 0];
+            console.log("Proceeding to update: mapName=", mapName, " depthInfo=", depthInfo);
+
             startTemporaryPolling();
             callExpeditionUpdate()
-              .then( () => {
+              .then(() => {
+                console.log("callExpeditionUpdate finished successfully");
                 if (config.enableExpeditionsLog) {
                   addExpeditionsLog(gameId, mapName, depthInfo);
                 }
@@ -681,7 +701,7 @@ function hookExpedition() {
               .catch(err => {
                 console.error("callExpeditionUpdate Error:", err);
               });
-            };
+          };
           window.onClaimEventLocationPoints._expeditionWrapped = true;
         }
         wrappedCount++;
