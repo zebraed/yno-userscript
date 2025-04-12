@@ -671,16 +671,13 @@ function hookExpedition() {
           const origFn = window.onClaimEventLocationPoints;
           window.onClaimEventLocationPoints = function(loc, free, result) {
             origFn.call(this, loc, free, result);
-            console.log("onClaimEventLocationPoints called:", loc, free, result);
 
             if (result < 0) {
-              console.log("Result <= 0; skipping additional processing");
               return;
             }
 
             const now = Date.now();
             if (loc === lastRecordedLoc && (now - lastRecordedTime) < THRESHOLD_MS) {
-              console.log("Same location within threshold; skipping logging");
               return;
             }
             lastRecordedLoc = loc;
@@ -688,12 +685,10 @@ function hookExpedition() {
 
             const mapName = window._latestMapName || loc;
             const depthInfo = window._latestDepthInfo || [0, 0];
-            console.log("Proceeding to update: mapName=", mapName, " depthInfo=", depthInfo);
 
             startTemporaryPolling();
             callExpeditionUpdate()
               .then(() => {
-                console.log("callExpeditionUpdate finished successfully");
                 if (config.enableExpeditionsLog) {
                   addExpeditionsLog(gameId, mapName, depthInfo);
                 }
