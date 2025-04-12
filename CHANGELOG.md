@@ -1,5 +1,10 @@
 # Changelog
 
+## [2025-04-13] - Version 1.1.1
+
+### Fixed
+- Fixed an issue where destination logs were duplicated multiple times.
+
 ## [2025-04-12] - Version 1.1.0
 
 ### Added
