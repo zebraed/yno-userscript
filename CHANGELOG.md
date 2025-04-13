@@ -1,5 +1,10 @@
 # Changelog
 
+## [2025-04-14] - Version 1.1.2
+
+### Fixed
+- Fixed Firefox rendering bug where toast message links appeared blank during animation.
+
 ## [2025-04-13] - Version 1.1.1
 
 ### Fixed
