@@ -636,6 +636,32 @@
 let lastToastTime = 0;
 const TOAST_INTERVAL = 3000;
 
+function observeToastForRedraw(toastElement) {
+  if (!toastElement || !navigator.userAgent.includes('Firefox')) return;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const links = toastElement.querySelectorAll('a');
+
+        links.forEach(link => {
+          link.style.willChange = 'transform';
+          link.style.transform = 'translateZ(0.1px)';
+
+          requestAnimationFrame(() => {
+            link.style.transform = '';
+            link.style.willChange = '';
+          });
+        });
+        console.log('get it on');
+        obs.disconnect();
+      }
+    }
+  });
+
+  observer.observe(toastElement);
+}
+
 function callExpeditionUpdate() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -648,8 +674,9 @@ function callExpeditionUpdate() {
             const lang = getLangKey();
             const labelText = toastLabel[lang] || toastLabel.en;
             const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
-            showToastMessage(
-              labelText + ': ' + nextDestinationHTML,
+
+            const toast = showToastMessage(
+              '',
               'expedition',
               true,
               undefined,
@@ -657,26 +684,22 @@ function callExpeditionUpdate() {
             );
 
             if (navigator.userAgent.includes('Firefox')) {
-              const toastEls = document.querySelectorAll('.toast');
-              const toastEl = toastEls[toastEls.length - 1];
-              if (toastEl) {
-                let handled = false;
-
-                const fix = () => {
-                  if (handled) return;
-                  handled = true;
-                  const range = document.createRange();
-                  range.selectNodeContents(toastEl);
-                  const selection = window.getSelection();
-                  selection.removeAllRanges();
-                  selection.addRange(range);
-                  setTimeout(() => {
-                    selection.removeAllRanges();
-                  }, 50);
-                };
-
-                toastEl.addEventListener('animationend', fix, { once: true });
-                setTimeout(fix, 200);
+              setTimeout(() => {
+                const messageEl = toast.querySelector('.toastMessage');
+                if (messageEl) {
+                  messageEl.innerHTML = `${labelText}: ${nextDestinationHTML}`;
+                  messageEl.style.transform = 'translateZ(0.1px)';
+                  messageEl.style.willChange = 'transform';
+                }
+                messageEl.style.visibility = 'hidden';
+                setTimeout(() => {
+                  messageEl.style.visibility = 'visible';
+                }, 250);
+              }, 250);
+            } else {
+              const messageEl = toast.querySelector('.toastMessage');
+              if (messageEl) {
+                messageEl.innerHTML = `${labelText}: ${nextDestinationHTML}`;
               }
             }
           }
