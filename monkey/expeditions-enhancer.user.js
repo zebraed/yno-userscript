@@ -25,8 +25,8 @@
   let lastRecordedLoc = null;
   let lastRecordedTime = 0;
   const THRESHOLD_MS = 2000;
-  window._latestDepthInfo = null;
-  window._latestMapName = null;
+  let latestDepthInfo = null;
+  let latestMapName = null;
 
   function startTemporaryPolling() {
       if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
@@ -582,8 +582,8 @@
 
         const mapName = getLocalizedMapName(detailsContainer);
         const depthInfo = getDepthInfo(detailsContainer)
-        window._latestMapName = mapName;
-        window._latestDepthInfo = [depthInfo[0], depthInfo[1]];
+        latestMapName = mapName;
+        latestDepthInfo = [depthInfo[0], depthInfo[1]];
 
         let placeElement = null;
         for (const child of detailsContainer.children) {
@@ -627,8 +627,8 @@
       return true;
   }
   nextLocationDepthHTML = '';
-  window._latestDepthInfo = null;
-  window._latestMapName = null;
+  latestDepthInfo = null;
+  latestMapName = null;
 
   return false;
 }
@@ -655,6 +655,30 @@ function callExpeditionUpdate() {
               undefined,
               !config.autoHideToast
             );
+
+            if (navigator.userAgent.includes('Firefox')) {
+              const toastEls = document.querySelectorAll('.toast');
+              const toastEl = toastEls[toastEls.length - 1];
+              if (toastEl) {
+                let handled = false;
+
+                const fix = () => {
+                  if (handled) return;
+                  handled = true;
+                  const range = document.createRange();
+                  range.selectNodeContents(toastEl);
+                  const selection = window.getSelection();
+                  selection.removeAllRanges();
+                  selection.addRange(range);
+                  setTimeout(() => {
+                    selection.removeAllRanges();
+                  }, 50);
+                };
+
+                toastEl.addEventListener('animationend', fix, { once: true });
+                setTimeout(fix, 200);
+              }
+            }
           }
         }
         resolve();
@@ -662,6 +686,7 @@ function callExpeditionUpdate() {
     }, 600);
   });
 }
+
 function hookExpedition() {
   const interval = setInterval(() => {
       let wrappedCount = 0;
@@ -683,8 +708,8 @@ function hookExpedition() {
             lastRecordedLoc = loc;
             lastRecordedTime = now;
 
-            const mapName = window._latestMapName || loc;
-            const depthInfo = window._latestDepthInfo || [0, 0];
+            const mapName = latestMapName || loc;
+            const depthInfo = latestDepthInfo || [0, 0];
 
             startTemporaryPolling();
             callExpeditionUpdate()
