@@ -1,8 +1,14 @@
 # Changelog
 
+## [2025-04-14] - Version 1.1.5
+
+### Changed
+- Changed so that other games are not listed in destination. as a consequencve, only the destination for daily or free expeditions within the game is now desplayed on the screen.
+- Changed the destination cache is updated when the site is updated daily.
+
 ## [2025-04-14] - Version 1.1.4
 
-### Added
+### Changed
 - Changed so that the latest destination log is always loaded when the expeditions settings modal window is opened.
 
 ### Fixed
@@ -41,7 +47,7 @@
 - Change en translation.
 - Fixed so that language changes are reflected dynamically.
 - Separate functions.
-- Add the hook after executing specific functions timing.
+- Added the hook after executing specific functions timing.
 
 ## [2025-04-06] - Version 1.0.0
 
