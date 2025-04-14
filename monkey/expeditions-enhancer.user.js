@@ -724,6 +724,8 @@ function hookExpedition() {
           const origFn = window.onUpdateEventPeriod;
           window.onUpdateEventPeriod = function(eventPeriod) {
             origFn.call(this, eventPeriod);
+            latestMapName = null;
+            latestDepthInfo = null;
             callExpeditionUpdate();
           };
           window.onUpdateEventPeriod._expeditionWrapped = true;
