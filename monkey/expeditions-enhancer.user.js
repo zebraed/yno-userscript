@@ -15,6 +15,7 @@
 // @run-at       document-end
 // ==/UserScript==
 
+
 (function () {
   'use strict';
 
@@ -27,6 +28,7 @@
   const THRESHOLD_MS = 2000;
   let latestDepthInfo = null;
   let latestMapName = null;
+  let lastUpdateDateStr = getCurrentUTCDateString();
 
   function startTemporaryPolling() {
       if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
@@ -632,6 +634,14 @@ let lastToastTime = 0;
 const TOAST_INTERVAL = 3000;
 
 function callExpeditionUpdate() {
+  const currendDateStr = getCurrentUTCDateString();
+  if (currendDateStr !== lastUpdateDateStr) {
+    lastUpdateDateStr = currendDateStr;
+    latestMapName = null;
+    latestDepthInfo = null;
+    findNextLocationAndShow();
+  }
+
   return new Promise((resolve) => {
     setTimeout(() => {
       const foundNext = findNextLocationAndShow();
