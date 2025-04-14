@@ -577,6 +577,9 @@
         const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
         if (!isIncomplete) continue;
 
+        const gameLinkEl = entry.querySelector('.gameLink');
+        if (gameLinkEl) continue;
+
         const detailsContainer = entry.querySelector('.detailsContainer');
         if (!detailsContainer) continue;
 
@@ -596,35 +599,27 @@
         const clone = placeElement.cloneNode(true);
         let placeHTML = `<div>${clone.outerHTML}</div>`;
 
-      const gameLinkEl = entry.querySelector('.gameLink');
-      if (gameLinkEl && gameLinkEl.href) {
-        const match = gameLinkEl.href.match(/https:\/\/ynoproject\.net\/([^\/]+)\//);
-        if (match && match[1]) {
-          placeHTML += ` (<a href="${gameLinkEl.href}" target="_blank">${gameLinkEl.innerText.trim()}</a>)`;
+        const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
+        const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
+
+        const fillElements = entry.querySelectorAll(
+            '.detailsContainer .depthContainer.depthFillContainer, ' +
+            '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
+            '.detailsContainer .depthContainer.minDepthFillContainer'
+        );
+        let fillHTML = '';
+        fillElements.forEach(el => {
+            const cloneEl = cloneWithComputedStyle(el);
+            fillHTML += cloneEl.outerHTML;
+        });
+
+        if (outlineHTML) {
+            nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
+        } else {
+            nextLocationDepthHTML = '';
         }
-      }
-
-      const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
-      const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
-
-      const fillElements = entry.querySelectorAll(
-          '.detailsContainer .depthContainer.depthFillContainer, ' +
-          '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
-          '.detailsContainer .depthContainer.minDepthFillContainer'
-      );
-      let fillHTML = '';
-      fillElements.forEach(el => {
-          const cloneEl = cloneWithComputedStyle(el);
-          fillHTML += cloneEl.outerHTML;
-      });
-
-      if (outlineHTML) {
-          nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
-      } else {
-          nextLocationDepthHTML = '';
-      }
-      showMessage(placeHTML, 'expedition');
-      return true;
+        showMessage(placeHTML, 'expedition');
+        return true;
   }
   nextLocationDepthHTML = '';
   latestDepthInfo = null;
