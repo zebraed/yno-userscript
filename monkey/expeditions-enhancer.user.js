@@ -636,32 +636,6 @@
 let lastToastTime = 0;
 const TOAST_INTERVAL = 3000;
 
-function observeToastForRedraw(toastElement) {
-  if (!toastElement || !navigator.userAgent.includes('Firefox')) return;
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        const links = toastElement.querySelectorAll('a');
-
-        links.forEach(link => {
-          link.style.willChange = 'transform';
-          link.style.transform = 'translateZ(0.1px)';
-
-          requestAnimationFrame(() => {
-            link.style.transform = '';
-            link.style.willChange = '';
-          });
-        });
-        console.log('get it on');
-        obs.disconnect();
-      }
-    }
-  });
-
-  observer.observe(toastElement);
-}
-
 function callExpeditionUpdate() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -827,6 +801,8 @@ function addExpeditionsLog(gameId, locationName, depthInfo) {
   const dateStr = getCurrentUTCDateString();
   const key = `expeditionsLog_${gameId}_${dateStr}`;
 
+  console.log('[ExpeditionLog] Logging:', logText);
+
   const rawData = localStorage.getItem(key);
   let logArr = [];
   try {
@@ -906,6 +882,51 @@ function getDepthInfo(detailsContainer) {
   }
 
   return [actualDepth, maxDepth];
+}
+
+function showExpeditionsLog(gameId, dateStr, lang, retry = 10) {
+  const key = `expeditionsLog_${gameId}_${dateStr}`;
+  const raw = localStorage.getItem(key);
+  let logArr = [];
+
+  if (raw) {
+    try {
+      logArr = JSON.parse(raw);
+      if (!Array.isArray(logArr)) throw new Error('Invalid log format');
+      logArr = logArr.filter(item => typeof item === 'string' && item.trim());
+    } catch (err) {
+      console.warn('[ExpeditionLog] Failed to parse or clean log data:', err);
+      logArr = [];
+    }
+  }
+
+  const tryDisplay = () => {
+    const expeditionsLogDisplay = document.getElementById('expeditionsLogDisplay');
+    if (!expeditionsLogDisplay) {
+      if (retry > 0) {
+        setTimeout(() => showExpeditionsLog(gameId, dateStr, lang, retry - 1), 200);
+      }
+      return;
+    }
+
+    expeditionsLogDisplay.innerHTML = '';
+
+    if (!logArr.length) {
+      expeditionsLogDisplay.textContent = uiText.noLog[lang] || uiText.noLog.en;
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    logArr.forEach((locationName) => {
+      const li = document.createElement('li');
+      li.textContent = locationName;
+      ul.appendChild(li);
+    });
+
+    expeditionsLogDisplay.appendChild(ul);
+  };
+
+  tryDisplay();
 }
 
 function injectUI() {
@@ -1102,7 +1123,14 @@ function injectUI() {
   openButton.onclick = () => {
     refreshExpeditionsLogDates(gameId);
     openModal('expeditionSettingsModal', null, 'settingsModal');
+
+    const select = document.getElementById('expeditionsLogDateSelect');
+    if (select && select.options.length > 0) {
+      const latestDate = select.options[0].value;
+      showExpeditionsLog(gameId, latestDate, getLangKey());
+    }
   };
+
   modal.querySelector('.modalClose')?.addEventListener('click', () => {
       closeModal(modal.id, 'settingsModal');
   });
@@ -1121,38 +1149,11 @@ function injectUI() {
     }
   }
 
-  const expeditionsLogDisplay = modal.querySelector('#expeditionsLogDisplay');
-  function showExpeditionsLog(gameId, dateStr) {
-    const key = `expeditionsLog_${gameId}_${dateStr}`;
-    const raw = localStorage.getItem(key);
-    let logArr = [];
-    if (raw) {
-      try {
-        logArr = JSON.parse(raw);
-      } catch (err) {
-        logArr = [];
-      }
-    }
-    if (!logArr.length) {
-      expeditionsLogDisplay.innerHTML = uiText.noLog[lang];
-      return;
-    }
-
-    const ul = document.createElement('ul');
-    logArr.forEach((locationName) => {
-      const li = document.createElement('li');
-      li.textContent = locationName;
-      ul.appendChild(li);
-    });
-    expeditionsLogDisplay.innerHTML = '';
-    expeditionsLogDisplay.appendChild(ul);
-  }
-
   const readExpeditionsLogButton = modal.querySelector('#readExpeditionsLogButton');
   readExpeditionsLogButton.onclick = () => {
     const dateStr = expeditionsLogDateSelect.value;
     if (!dateStr) return;
-    showExpeditionsLog(gameId, dateStr);
+    showExpeditionsLog(gameId, dateStr, lang);
   };
 
   const downloadExpeditionsLogButton = modal.querySelector('#downloadExpeditionsLogButton');
@@ -1185,7 +1186,7 @@ function injectUI() {
     const key = `expeditionsLog_${gameId}_${dateStr}`;
     if (localStorage.getItem(key)) {
       localStorage.removeItem(key);
-      showExpeditionsLog(gameId, dateStr);
+      showExpeditionsLog(gameId, dateStr, lang);
     }
   };
 }
