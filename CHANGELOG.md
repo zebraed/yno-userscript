@@ -1,5 +1,18 @@
 # Changelog
 
+## [2025-04-14] - Version 1.1.4
+
+### Added
+- Changed so that the latest destination log is always loaded when the expeditions settings modal window is opened.
+
+### Fixed
+- Fixed a issue with the cache of destination logs.
+
+## [2025-04-14] - Version 1.1.3
+
+### Fixed
+- Refixed Firefox rendering bug where toast message links appeared blank during animation.
+
 ## [2025-04-14] - Version 1.1.2
 
 ### Fixed

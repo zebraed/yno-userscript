@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO Expeditions Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.1.3
+// @version      1.1.4
 // @description  Expansion Script for Expeditions on YNO.
 // @author       Zebraed
 // @tag          Enhancement
