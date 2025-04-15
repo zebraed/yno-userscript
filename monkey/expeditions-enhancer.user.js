@@ -29,600 +29,602 @@
   let latestDepthInfo = null;
   let latestMapName = null;
   let lastUpdateDateStr = getCurrentUTCDateString();
+  let lastToastTime = 0;
+  const TOAST_INTERVAL = 3000;
 
-  function startTemporaryPolling() {
-      if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
-      if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
-      temporaryPollingInterval = setInterval(() => {
-          findNextLocationAndShow();
-      }, 500);
-      temporaryPollingTimeout = setTimeout(() => {
-          clearInterval(temporaryPollingInterval);
-          temporaryPollingInterval = null;
-          temporaryPollingTimeout = null;
-      }, 5000);
-  }
+function startTemporaryPolling() {
+  if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
+  if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
+  temporaryPollingInterval = setInterval(() => {
+      findNextLocationAndShow();
+  }, 500);
+  temporaryPollingTimeout = setTimeout(() => {
+      clearInterval(temporaryPollingInterval);
+      temporaryPollingInterval = null;
+      temporaryPollingTimeout = null;
+  }, 5000);
+}
 
-  function initialPolling() {
-      let attempts = 0;
-      const maxAttempts = 10000 / 500;
-      const interval = setInterval(() => {
-          attempts++;
-          if (findNextLocationAndShow() === true || attempts >= maxAttempts) {
-              clearInterval(interval);
-          }
-      }, 500);
-  }
-
-  function cloneWithComputedStyle(element) {
-      const clone = element.cloneNode(true);
-      const computedStyle = window.getComputedStyle(element);
-      let styleString = "";
-      for (let i = 0; i < computedStyle.length; i++) {
-          const prop = computedStyle[i];
-          styleString += `${prop}: ${computedStyle.getPropertyValue(prop)}; `;
+function initialPolling() {
+  let attempts = 0;
+  const maxAttempts = 10000 / 500;
+  const interval = setInterval(() => {
+      attempts++;
+      if (findNextLocationAndShow() === true || attempts >= maxAttempts) {
+          clearInterval(interval);
       }
-      clone.style.cssText = styleString;
-      if (
-          element.classList.contains('depthFillContainer') ||
-          element.classList.contains('maxDepthFillContainer') ||
-          element.classList.contains('minDepthFillContainer') ||
-          element.classList.contains('depthOutlineContainer')
-      ) {
-          clone.style.position = 'absolute';
-          clone.style.top = '0';
-          clone.style.left = '0';
-          clone.style.margin = '0';
-          clone.style.padding = '0';
-          clone.style.transform = 'none';
-      }
-      const childIcons = clone.querySelectorAll('.starIcon.icon');
-      childIcons.forEach(icon => {
-          icon.style.margin = '0';
-          icon.style.padding = '0';
-          icon.style.transform = 'none';
-          icon.style.top = '0';
-          icon.style.left = '0';
-      });
-      return clone;
+  }, 500);
+}
+
+function cloneWithComputedStyle(element) {
+  const clone = element.cloneNode(true);
+  const computedStyle = window.getComputedStyle(element);
+  let styleString = "";
+  for (let i = 0; i < computedStyle.length; i++) {
+      const prop = computedStyle[i];
+      styleString += `${prop}: ${computedStyle.getPropertyValue(prop)}; `;
+  }
+  clone.style.cssText = styleString;
+  if (
+      element.classList.contains('depthFillContainer') ||
+      element.classList.contains('maxDepthFillContainer') ||
+      element.classList.contains('minDepthFillContainer') ||
+      element.classList.contains('depthOutlineContainer')
+  ) {
+      clone.style.position = 'absolute';
+      clone.style.top = '0';
+      clone.style.left = '0';
+      clone.style.margin = '0';
+      clone.style.padding = '0';
+      clone.style.transform = 'none';
+  }
+  const childIcons = clone.querySelectorAll('.starIcon.icon');
+  childIcons.forEach(icon => {
+      icon.style.margin = '0';
+      icon.style.padding = '0';
+      icon.style.transform = 'none';
+      icon.style.top = '0';
+      icon.style.left = '0';
+  });
+  return clone;
+}
+
+const styleElem = document.createElement('style');
+styleElem.textContent = `
+  .hidden {
+    display: none !important;
+  }
+  #nextDestinationInfoWrapper {
+    width: 100% !important;
+    display: flex;
+    padding-bottom: 8px;
+  }
+  #nextDestinationStars {
+    text-align: end;
+    display: flex !important;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+    transform: translateX(-60px);
+    padding-bottom: 10px !important;
+    margin-top: 4px !important;
+  }
+  .icon.fillIcon.iconButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: button;
+    appearance: button;
+    padding: 0;
+    margin-right: 4px;
+  }
+  #toggleNextDestinationIcon {
+    transition: margin-top 0.5s ease-in-out, padding 0.5s ease-in-out;
+    align-self: baseline;
+    padding: 0 4px 0 0;
+    z-index: 1;
+  }
+  #nextDestinationStars .starContainer {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    display: inline-block;
+    margin: 0 2px 0 0;
+  }
+  .starContainer .depthContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  #nextDestinationStars .starContainer .starIcon.icon {
+    width: 14px !important;
+    height: 14px !important;
+    margin: 0 !important;
+    display: inline-block !important;
+  }
+  #nextDestinationStars svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  #expeditionSettingsModal .toast-child {
+    margin-left: 20px;
+  }
+  #expeditionSettingsModal .formControls {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #expeditionSettingsModal .formControlRow {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 8px !important;
+    padding: 4px 0 !important;
+  }
+  #expeditionSettingsModal .formControlRow label {
+    margin: 0 !important;
+    margin-right: 10px !important;
+    flex: 0 0 auto !important;
+  }
+  #expeditionSettingsModal .formControlRow > div {
+    display: flex !important;
+    align-items: center !important;
+  }
+  #expeditionSettingsModal .checkboxButton {
+    vertical-align: middle !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+`;
+document.head.appendChild(styleElem);
+
+const CONFIG_KEY = 'toastConfig';
+const defaultConfig = {
+    enableToast: true,
+    autoHideToast: true,
+    enableAllFeatures: true,
+    enableExpeditionsLog: true
+};
+function loadConfig() {
+    try {
+        return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
+    } catch {
+        return { ...defaultConfig };
+    }
+}
+function saveConfig(cfg) {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+}
+const config = loadConfig();
+
+function getLangKey() {
+    try {
+        return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
+    } catch {
+        return 'en';
+    }
+}
+const toastLabel = {
+    ja: "次の目的地",
+    en: "Next destination",
+    fr: "Prochaine destination",
+    es: "Siguiente ubicación",
+    de: "Nächster Ort",
+    zh: "下一个地点",
+    ko: "다음 장소",
+    it: "Prossima destinazione",
+    pl: "Następna lokalizacja",
+    ro: "Locație următoare",
+    tr: "Sonraki konum",
+    ru: "Следующее место",
+    vi: "Địa điểm tiếp theo",
+    ar: "الموقع التالي",
+    eo: "Sekva loko",
+    pt: "Próxima localização"
+};
+const uiText = {
+    expeditionsButton: {
+        ja: 'ドリームラリー',
+        en: 'Expeditions',
+        fr: 'Expéditions',
+        es: 'Expediciones',
+        de: 'Expeditionen',
+        zh: '梦远征',
+        ko: '탐험',
+        it: 'Spedizioni',
+        pl: 'Ekspedycje',
+        ro: 'Expediții',
+        tr: 'Seyahatler',
+        ru: 'Походs',
+        vi: 'Thám hiểm',
+        ar: 'الرحلات الاستكشافية',
+        eo: 'Ekspediĉoj',
+        pt: 'Expedições'
+    },
+    title: {
+        ja: 'ドリームラリー設定',
+        en: 'Expedition Settings',
+        fr: 'Paramètres d\'expédition',
+        es: 'Configuración de Expedición',
+        de: 'Expeditionseinstellungen',
+        zh: '梦远征设置',
+        ko: '탐험 설정',
+        it: 'Impostazioni Spedizioni',
+        pl: 'Ustawienia Ekspedycji',
+        ro: 'Setări expediție',
+        tr: 'Seyahat Ayarları',
+        ru: 'Настройки походs',
+        vi: 'Cài đặt thám hiểm',
+        ar: 'إعدادات الرحلات',
+        eo: 'Ekspediĉaj agordoj',
+        pt: 'Configurações de Expedição'
+    },
+    enableToastLabel: {
+        ja: '目的地到達通知を有効にする',
+        en: 'Enable Notification',
+        fr: 'Activer la notification',
+        es: 'Habilitar notificación',
+        de: 'Benachrichtigung aktivieren',
+        zh: '启用通知',
+        ko: '알림 활성화',
+        it: 'Abilita notifica',
+        pl: 'Włącz powiadomienie',
+        ro: 'Activează notificarea',
+        tr: 'Bildirimleri etkinleştir',
+        ru: 'Включить уведомление',
+        vi: 'Bật thông báo',
+        ar: 'تفعيل الإشعار',
+        eo: 'Aktivigi notifikon',
+        pt: 'Ativar notificação'
+    },
+    autoHideToastLabel: {
+        ja: '目的地到達通知を自動で閉じる',
+        en: 'Auto-hide Notification',
+        fr: 'Masquer automatiquement la notification',
+        es: 'Ocultar automáticamente la notificación',
+        de: 'Benachrichtigung automatisch ausblenden',
+        zh: '自动关闭通知',
+        ko: '알림 자동 닫기',
+        it: 'Chiudi notifica automaticamente',
+        pl: 'Automatycznie ukryj powiadomienie',
+        ro: 'Ascundere automată notificare',
+        tr: 'Bildirimi otomatik kapat',
+        ru: 'Автоматически скрывать уведомление',
+        vi: 'Tự động ẩn thông báo',
+        ar: 'إغلاق الإشعار تلقائياً',
+        eo: 'Aŭtomate kaŝi notifikon',
+        pt: 'Ocultar notificação automaticamente'
+    },
+    reset: {
+        ja: 'リセット',
+        en: 'Reset',
+        fr: 'Réinitialiser',
+        es: 'Restablecer',
+        de: 'Zurücksetzen',
+        zh: '重置',
+        ko: '초기화',
+        it: 'Ripristina',
+        pl: 'Zresetuj',
+        ro: 'Resetare',
+        tr: 'Sıfırla',
+        ru: 'Сброс',
+        vi: 'Đặt lại',
+        ar: 'إعادة تعيين',
+        eo: 'Restarigi',
+        pt: 'Redefinir'
+    },
+    displayFixed: {
+        ja: '画面に固定表示',
+        en: 'Fixed on Screen',
+        fr: 'Fixé à l\'écran',
+        es: 'Fijado en pantalla',
+        de: 'Auf dem Bildschirm fixiert',
+        zh: '固定在屏幕上',
+        ko: '화면에 고정',
+        it: 'Fisso sullo schermo',
+        pl: 'Na stałe na ekranie',
+        ro: 'Fix pe ecran',
+        tr: 'Ekranda sabit',
+        ru: 'Закреплено на экране',
+        vi: 'Cố định trên màn',
+        ar: 'مثبت على الشاشة',
+        eo: 'Fiksita sur ekrano',
+        pt: 'Fixo na tela'
+    },
+    expeditionsLogHeader: {
+      ja: '到達場所ログ',
+      en: 'Destination Logs',
+      fr: 'Journaux de destination',
+      es: 'Registros de destino',
+      de: 'Zielprotokolle',
+      zh: '目的地日志',
+      ko: '도달 위치 로그',
+      it: 'Registri delle destinazioni',
+      pl: 'Rejestry miejsc docelowych',
+      ro: 'Jurnale de destinație',
+      tr: 'Hedef Kayıtları',
+      ru: 'Журналы пунктов назначения',
+      vi: 'Nhật ký điểm đến',
+      ar: 'سجلات الوجهة',
+      eo: 'Protokoloj de celolokoj',
+      pt: 'Registros de Destino'
+    },
+    selectDate: {
+      ja: '日付選択',
+      en: 'Select Date',
+      fr: 'Sélectionner la date',
+      es: 'Seleccionar fecha',
+      de: 'Datum auswählen',
+      zh: '选择日期',
+      ko: '날짜 선택',
+      it: 'Seleziona data',
+      pl: 'Wybierz datę',
+      ro: 'Selectează data',
+      tr: 'Tarih Seç',
+      ru: 'Выбрать дату',
+      vi: 'Chọn ngày',
+      ar: 'اختر التاريخ',
+      eo: 'Elektu daton',
+      pt: 'Selecionar data'
+    },
+    readLog: {
+      ja: 'ログ表示',
+      en: 'Show Log',
+      fr: 'Afficher le journal',
+      es: 'Mostrar registro',
+      de: 'Protokoll anzeigen',
+      zh: '显示日志',
+      ko: '로그 표시',
+      it: 'Mostra registro',
+      pl: 'Pokaż dziennik',
+      ro: 'Afișează jurnalul',
+      tr: 'Günlüğü göster',
+      ru: 'Показать журнал',
+      vi: 'Hiển thị nhật ký',
+      ar: 'عرض السجل',
+      eo: 'Montri protokolon',
+      pt: 'Exibir registro'
+    },
+    downloadLog: {
+      ja: 'ダウンロード',
+      en: 'Download',
+      fr: 'Télécharger',
+      es: 'Descargar',
+      de: 'Herunterladen',
+      zh: '下载',
+      ko: '다운로드',
+      it: 'Scarica',
+      pl: 'Pobierz',
+      ro: 'Descarcă',
+      tr: 'İndir',
+      ru: 'Скачать',
+      vi: 'Tải xuống',
+      ar: 'تنزيل',
+      eo: 'Elŝuti',
+      pt: 'Baixar'
+    },
+    deleteLog: {
+      ja: '削除',
+      en: 'Delete',
+      fr: 'Supprimer',
+      es: 'Eliminar',
+      de: 'Löschen',
+      zh: '删除',
+      ko: '삭제',
+      it: 'Elimina',
+      pl: 'Usuń',
+      ro: 'Ștergere',
+      tr: 'Sil',
+      ru: 'Удалить',
+      vi: 'Xóa',
+      ar: 'حذف',
+      eo: 'Forigi',
+      pt: 'Excluir'
+    },
+    noLog: {
+      ja: '(ログがありません)',
+      en: '(No log data)',
+      fr: '(Aucune donnée de journal)',
+      es: '(Sin datos de registro)',
+      de: '(Keine Protokolldaten)',
+      zh: '(无日志数据)',
+      ko: '(로그 데이터 없음)',
+      it: '(Nessun dato di registro)',
+      pl: '(Brak danych dziennika)',
+      ro: '(Nu există date de jurnal)',
+      tr: '(Günlük verisi yok)',
+      ru: '(Никаких журналов)',
+      vi: '(Không có dữ liệu nhật ký)',
+      ar: '(لا يوجد سجل)',
+      eo: '(Neniu protokoldato disponebla)',
+      pt: '(Sem dados de registro)'
+    },
+    enableLogLabel: {
+      ja: '到達場所ログを有効にする',
+      en: 'Enable Destination Logs',
+      fr: 'Activer les journaux de destination',
+      es: 'Habilitar registros de destino',
+      de: 'Zielprotokolle aktivieren',
+      zh: '启用目的地日志',
+      ko: '도달 위치 로그 활성화',
+      it: 'Abilita registri delle destinazioni',
+      pl: 'Włącz rejestry miejsc docelowych',
+      ro: 'Activează jurnalele de destinație',
+      tr: 'Hedef Günlüklerini Etkinleştir',
+      ru: 'Включить журнал пунктов назначения',
+      vi: 'Bật nhật ký điểm đến',
+      ar: 'قم بتمكين سجلات الوجهة',
+      eo: 'Ebligi cellokajn protokolojn',
+      pt: 'Ativar registros de destino'
+    }
+};
+
+function isGameNameElement(el) {
+  if (el.classList.contains('gameLink')) {
+    return true;
+  }
+  return false;
   }
 
-  const styleElem = document.createElement('style');
-  styleElem.textContent = `
-    .hidden {
-      display: none !important;
-    }
-    #nextDestinationInfoWrapper {
-      width: 100% !important;
-      display: flex;
-      padding-bottom: 8px;
-    }
-    #nextDestinationStars {
-      text-align: end;
-      display: flex !important;
-      justify-content: flex-end;
-      flex-wrap: nowrap;
-      align-items: center;
-      position: relative;
-      transform: translateX(-60px);
-      padding-bottom: 10px !important;
-      margin-top: 4px !important;
-    }
-    .icon.fillIcon.iconButton {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      -webkit-appearance: button;
-      appearance: button;
-      padding: 0;
-      margin-right: 4px;
-    }
-    #toggleNextDestinationIcon {
-      transition: margin-top 0.5s ease-in-out, padding 0.5s ease-in-out;
-      align-self: baseline;
-      padding: 0 4px 0 0;
-      z-index: 1;
-    }
-    #nextDestinationStars .starContainer {
-      width: 14px;
-      height: 14px;
-      position: relative;
-      display: inline-block;
-      margin: 0 2px 0 0;
-    }
-    .starContainer .depthContainer {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    #nextDestinationStars .starContainer .starIcon.icon {
-      width: 14px !important;
-      height: 14px !important;
-      margin: 0 !important;
-      display: inline-block !important;
-    }
-    #nextDestinationStars svg {
-      width: 14px !important;
-      height: 14px !important;
-    }
-    #expeditionSettingsModal .toast-child {
-      margin-left: 20px;
-    }
-    #expeditionSettingsModal .formControls {
-      list-style: none !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    #expeditionSettingsModal .formControlRow {
-      display: flex !important;
-      align-items: center !important;
-      margin-bottom: 8px !important;
-      padding: 4px 0 !important;
-    }
-    #expeditionSettingsModal .formControlRow label {
-      margin: 0 !important;
-      margin-right: 10px !important;
-      flex: 0 0 auto !important;
-    }
-    #expeditionSettingsModal .formControlRow > div {
-      display: flex !important;
-      align-items: center !important;
-    }
-    #expeditionSettingsModal .checkboxButton {
-      vertical-align: middle !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
+function getLocalizedMapName(detailsContainer) {
+  if (!detailsContainer) return '';
+
+  let candidateChildren = Array.from(detailsContainer.children);
+
+  candidateChildren = candidateChildren.filter(el => {
+    if (isGameNameElement(el)) return false;
+    if (!el.innerText.trim()) return false;
+    return true;
+  });
+
+  if (candidateChildren.length === 0) {
+    return '';
+  } else if (candidateChildren.length === 1) {
+    return candidateChildren[0].innerText.trim();
+  } else {
+    // is this necessary?
+    return candidateChildren[0].innerText.trim();
+  }
+}
+
+function showMessage(html, type) {
+  let wrapper = document.getElementById('nextDestinationInfoWrapper');
+  if (!wrapper) {
+      wrapper = document.createElement('div');
+      wrapper.id = 'nextDestinationInfoWrapper';
+      wrapper.className = 'info';
+
+      const toggleButton = document.createElement('button');
+      toggleButton.id = 'toggleNextDestinationIcon';
+      toggleButton.className = 'icon fillIcon iconButton';
+      toggleButton.setAttribute('data-i18n', '[title]tooltips.chat.toggleNextLocation');
+      toggleButton.setAttribute('i18n-options', '{}');
+      toggleButton.innerHTML = `
+    <svg viewBox="0 0 18 18" width="14" height="14">
+      <path d="m0 9l6.5-1.5-1.5-2.5 2.5 1.5 1.5-6.5 1.5 6.5 2.5-1.5-1.5 2.5 6.5 1.5-6.5 1.5 1.5 2.5-2.5-1.5-1.5 6.5-1.5-6.5-2.5 1.5 1.5-2.5-6.5-1.5"/>
+    </svg>
   `;
-  document.head.appendChild(styleElem);
-
-  const CONFIG_KEY = 'toastConfig';
-  const defaultConfig = {
-      enableToast: true,
-      autoHideToast: true,
-      enableAllFeatures: true,
-      enableExpeditionsLog: true
-  };
-  function loadConfig() {
-      try {
-          return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
-      } catch {
-          return { ...defaultConfig };
-      }
-  }
-  function saveConfig(cfg) {
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
-  }
-  const config = loadConfig();
-
-  function getLangKey() {
-      try {
-          return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
-      } catch {
-          return 'en';
-      }
-  }
-  const toastLabel = {
-      ja: "次の目的地",
-      en: "Next destination",
-      fr: "Prochaine destination",
-      es: "Siguiente ubicación",
-      de: "Nächster Ort",
-      zh: "下一个地点",
-      ko: "다음 장소",
-      it: "Prossima destinazione",
-      pl: "Następna lokalizacja",
-      ro: "Locație următoare",
-      tr: "Sonraki konum",
-      ru: "Следующее место",
-      vi: "Địa điểm tiếp theo",
-      ar: "الموقع التالي",
-      eo: "Sekva loko",
-      pt: "Próxima localização"
-  };
-  const uiText = {
-      expeditionsButton: {
-          ja: 'ドリームラリー',
-          en: 'Expeditions',
-          fr: 'Expéditions',
-          es: 'Expediciones',
-          de: 'Expeditionen',
-          zh: '梦远征',
-          ko: '탐험',
-          it: 'Spedizioni',
-          pl: 'Ekspedycje',
-          ro: 'Expediții',
-          tr: 'Seyahatler',
-          ru: 'Походs',
-          vi: 'Thám hiểm',
-          ar: 'الرحلات الاستكشافية',
-          eo: 'Ekspediĉoj',
-          pt: 'Expedições'
-      },
-      title: {
-          ja: 'ドリームラリー設定',
-          en: 'Expedition Settings',
-          fr: 'Paramètres d\'expédition',
-          es: 'Configuración de Expedición',
-          de: 'Expeditionseinstellungen',
-          zh: '梦远征设置',
-          ko: '탐험 설정',
-          it: 'Impostazioni Spedizioni',
-          pl: 'Ustawienia Ekspedycji',
-          ro: 'Setări expediție',
-          tr: 'Seyahat Ayarları',
-          ru: 'Настройки походs',
-          vi: 'Cài đặt thám hiểm',
-          ar: 'إعدادات الرحلات',
-          eo: 'Ekspediĉaj agordoj',
-          pt: 'Configurações de Expedição'
-      },
-      enableToastLabel: {
-          ja: '目的地到達通知を有効にする',
-          en: 'Enable Notification',
-          fr: 'Activer la notification',
-          es: 'Habilitar notificación',
-          de: 'Benachrichtigung aktivieren',
-          zh: '启用通知',
-          ko: '알림 활성화',
-          it: 'Abilita notifica',
-          pl: 'Włącz powiadomienie',
-          ro: 'Activează notificarea',
-          tr: 'Bildirimleri etkinleştir',
-          ru: 'Включить уведомление',
-          vi: 'Bật thông báo',
-          ar: 'تفعيل الإشعار',
-          eo: 'Aktivigi notifikon',
-          pt: 'Ativar notificação'
-      },
-      autoHideToastLabel: {
-          ja: '目的地到達通知を自動で閉じる',
-          en: 'Auto-hide Notification',
-          fr: 'Masquer automatiquement la notification',
-          es: 'Ocultar automáticamente la notificación',
-          de: 'Benachrichtigung automatisch ausblenden',
-          zh: '自动关闭通知',
-          ko: '알림 자동 닫기',
-          it: 'Chiudi notifica automaticamente',
-          pl: 'Automatycznie ukryj powiadomienie',
-          ro: 'Ascundere automată notificare',
-          tr: 'Bildirimi otomatik kapat',
-          ru: 'Автоматически скрывать уведомление',
-          vi: 'Tự động ẩn thông báo',
-          ar: 'إغلاق الإشعار تلقائياً',
-          eo: 'Aŭtomate kaŝi notifikon',
-          pt: 'Ocultar notificação automaticamente'
-      },
-      reset: {
-          ja: 'リセット',
-          en: 'Reset',
-          fr: 'Réinitialiser',
-          es: 'Restablecer',
-          de: 'Zurücksetzen',
-          zh: '重置',
-          ko: '초기화',
-          it: 'Ripristina',
-          pl: 'Zresetuj',
-          ro: 'Resetare',
-          tr: 'Sıfırla',
-          ru: 'Сброс',
-          vi: 'Đặt lại',
-          ar: 'إعادة تعيين',
-          eo: 'Restarigi',
-          pt: 'Redefinir'
-      },
-      displayFixed: {
-          ja: '画面に固定表示',
-          en: 'Fixed on Screen',
-          fr: 'Fixé à l\'écran',
-          es: 'Fijado en pantalla',
-          de: 'Auf dem Bildschirm fixiert',
-          zh: '固定在屏幕上',
-          ko: '화면에 고정',
-          it: 'Fisso sullo schermo',
-          pl: 'Na stałe na ekranie',
-          ro: 'Fix pe ecran',
-          tr: 'Ekranda sabit',
-          ru: 'Закреплено на экране',
-          vi: 'Cố định trên màn',
-          ar: 'مثبت على الشاشة',
-          eo: 'Fiksita sur ekrano',
-          pt: 'Fixo na tela'
-      },
-      expeditionsLogHeader: {
-        ja: '到達場所ログ',
-        en: 'Destination Logs',
-        fr: 'Journaux de destination',
-        es: 'Registros de destino',
-        de: 'Zielprotokolle',
-        zh: '目的地日志',
-        ko: '도달 위치 로그',
-        it: 'Registri delle destinazioni',
-        pl: 'Rejestry miejsc docelowych',
-        ro: 'Jurnale de destinație',
-        tr: 'Hedef Kayıtları',
-        ru: 'Журналы пунктов назначения',
-        vi: 'Nhật ký điểm đến',
-        ar: 'سجلات الوجهة',
-        eo: 'Protokoloj de celolokoj',
-        pt: 'Registros de Destino'
-      },
-      selectDate: {
-        ja: '日付選択',
-        en: 'Select Date',
-        fr: 'Sélectionner la date',
-        es: 'Seleccionar fecha',
-        de: 'Datum auswählen',
-        zh: '选择日期',
-        ko: '날짜 선택',
-        it: 'Seleziona data',
-        pl: 'Wybierz datę',
-        ro: 'Selectează data',
-        tr: 'Tarih Seç',
-        ru: 'Выбрать дату',
-        vi: 'Chọn ngày',
-        ar: 'اختر التاريخ',
-        eo: 'Elektu daton',
-        pt: 'Selecionar data'
-      },
-      readLog: {
-        ja: 'ログ表示',
-        en: 'Show Log',
-        fr: 'Afficher le journal',
-        es: 'Mostrar registro',
-        de: 'Protokoll anzeigen',
-        zh: '显示日志',
-        ko: '로그 표시',
-        it: 'Mostra registro',
-        pl: 'Pokaż dziennik',
-        ro: 'Afișează jurnalul',
-        tr: 'Günlüğü göster',
-        ru: 'Показать журнал',
-        vi: 'Hiển thị nhật ký',
-        ar: 'عرض السجل',
-        eo: 'Montri protokolon',
-        pt: 'Exibir registro'
-      },
-      downloadLog: {
-        ja: 'ダウンロード',
-        en: 'Download',
-        fr: 'Télécharger',
-        es: 'Descargar',
-        de: 'Herunterladen',
-        zh: '下载',
-        ko: '다운로드',
-        it: 'Scarica',
-        pl: 'Pobierz',
-        ro: 'Descarcă',
-        tr: 'İndir',
-        ru: 'Скачать',
-        vi: 'Tải xuống',
-        ar: 'تنزيل',
-        eo: 'Elŝuti',
-        pt: 'Baixar'
-      },
-      deleteLog: {
-        ja: '削除',
-        en: 'Delete',
-        fr: 'Supprimer',
-        es: 'Eliminar',
-        de: 'Löschen',
-        zh: '删除',
-        ko: '삭제',
-        it: 'Elimina',
-        pl: 'Usuń',
-        ro: 'Ștergere',
-        tr: 'Sil',
-        ru: 'Удалить',
-        vi: 'Xóa',
-        ar: 'حذف',
-        eo: 'Forigi',
-        pt: 'Excluir'
-      },
-      noLog: {
-        ja: '(ログがありません)',
-        en: '(No log data)',
-        fr: '(Aucune donnée de journal)',
-        es: '(Sin datos de registro)',
-        de: '(Keine Protokolldaten)',
-        zh: '(无日志数据)',
-        ko: '(로그 데이터 없음)',
-        it: '(Nessun dato di registro)',
-        pl: '(Brak danych dziennika)',
-        ro: '(Nu există date de jurnal)',
-        tr: '(Günlük verisi yok)',
-        ru: '(Никаких журналов)',
-        vi: '(Không có dữ liệu nhật ký)',
-        ar: '(لا يوجد سجل)',
-        eo: '(Neniu protokoldato disponebla)',
-        pt: '(Sem dados de registro)'
-      },
-      enableLogLabel: {
-        ja: '到達場所ログを有効にする',
-        en: 'Enable Destination Logs',
-        fr: 'Activer les journaux de destination',
-        es: 'Habilitar registros de destino',
-        de: 'Zielprotokolle aktivieren',
-        zh: '启用目的地日志',
-        ko: '도달 위치 로그 활성화',
-        it: 'Abilita registri delle destinazioni',
-        pl: 'Włącz rejestry miejsc docelowych',
-        ro: 'Activează jurnalele de destinație',
-        tr: 'Hedef Günlüklerini Etkinleştir',
-        ru: 'Включить журнал пунктов назначения',
-        vi: 'Bật nhật ký điểm đến',
-        ar: 'قم بتمكين سجلات الوجهة',
-        eo: 'Ebligi cellokajn protokolojn',
-        pt: 'Ativar registros de destino'
-      }
-  };
-
-  function isGameNameElement(el) {
-      if (el.classList.contains('gameLink')) {
-        return true;
-      }
-      return false;
-    }
-
-  function getLocalizedMapName(detailsContainer) {
-    if (!detailsContainer) return '';
-
-    let candidateChildren = Array.from(detailsContainer.children);
-
-    candidateChildren = candidateChildren.filter(el => {
-      if (isGameNameElement(el)) return false;
-      if (!el.innerText.trim()) return false;
-      return true;
-    });
-
-    if (candidateChildren.length === 0) {
-      return '';
-    } else if (candidateChildren.length === 1) {
-      return candidateChildren[0].innerText.trim();
-    } else {
-      // is this necessary?
-      return candidateChildren[0].innerText.trim();
-    }
-  }
-
-  function showMessage(html, type) {
-      let wrapper = document.getElementById('nextDestinationInfoWrapper');
-      if (!wrapper) {
-          wrapper = document.createElement('div');
-          wrapper.id = 'nextDestinationInfoWrapper';
-          wrapper.className = 'info';
-
-          const toggleButton = document.createElement('button');
-          toggleButton.id = 'toggleNextDestinationIcon';
-          toggleButton.className = 'icon fillIcon iconButton';
-          toggleButton.setAttribute('data-i18n', '[title]tooltips.chat.toggleNextLocation');
-          toggleButton.setAttribute('i18n-options', '{}');
-          toggleButton.innerHTML = `
-        <svg viewBox="0 0 18 18" width="14" height="14">
-          <path d="m0 9l6.5-1.5-1.5-2.5 2.5 1.5 1.5-6.5 1.5 6.5 2.5-1.5-1.5 2.5 6.5 1.5-6.5 1.5 1.5 2.5-2.5-1.5-1.5 6.5-1.5-6.5-2.5 1.5 1.5-2.5-6.5-1.5"/>
-        </svg>
-      `;
-          toggleButton.addEventListener('click', () => {
-              let starsDiv = document.getElementById('nextDestinationStars');
-              if (!starsDiv) return;
-              depthVisible = !depthVisible;
-              if (depthVisible) {
-                  starsDiv.classList.remove('hidden');
-              } else {
-                  starsDiv.classList.add('hidden');
-              }
-          });
-          wrapper.appendChild(toggleButton);
-
-          const labelSpan = document.createElement('span');
-          labelSpan.id = 'nextDestinationLabel';
-          const refLabel = document.getElementById('locationLabel');
-          labelSpan.className = refLabel ? refLabel.className : 'infoLabel nowrap';
-          wrapper.appendChild(labelSpan);
-
-          const textSpan = document.createElement('span');
-          textSpan.id = 'nextDestinationText';
-          const refText = document.getElementById('locationText');
-          textSpan.className = refText ? refText.className : 'infoText nofilter';
-          textSpan.style.textAlign = 'right';
-          wrapper.appendChild(textSpan);
-
-          const chatboxInfo = document.getElementById('chatboxInfo');
-          if (chatboxInfo) {
-              chatboxInfo.appendChild(wrapper);
+      toggleButton.addEventListener('click', () => {
+          let starsDiv = document.getElementById('nextDestinationStars');
+          if (!starsDiv) return;
+          depthVisible = !depthVisible;
+          if (depthVisible) {
+              starsDiv.classList.remove('hidden');
           } else {
-              document.body.appendChild(wrapper);
-          }
-      }
-
-      const lang = getLangKey();
-      const labelText = toastLabel[lang] || toastLabel.en;
-      document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
-
-      const textEl = document.getElementById('nextDestinationText');
-      textEl.innerHTML = html;
-      textEl.style.textAlign = 'right';
-
-      let starsDiv = document.getElementById('nextDestinationStars');
-      if (!starsDiv) {
-          starsDiv = document.createElement('div');
-          starsDiv.id = 'nextDestinationStars';
-          const refText = document.getElementById('locationText');
-          if (refText) {
-              starsDiv.className = refText.className;
-          }
-          if (!depthVisible) {
               starsDiv.classList.add('hidden');
           }
-          const chatboxInfo = document.getElementById('chatboxInfo');
-          if (chatboxInfo) {
-              chatboxInfo.appendChild(starsDiv);
-          } else {
-              document.body.appendChild(starsDiv);
-          }
+      });
+      wrapper.appendChild(toggleButton);
+
+      const labelSpan = document.createElement('span');
+      labelSpan.id = 'nextDestinationLabel';
+      const refLabel = document.getElementById('locationLabel');
+      labelSpan.className = refLabel ? refLabel.className : 'infoLabel nowrap';
+      wrapper.appendChild(labelSpan);
+
+      const textSpan = document.createElement('span');
+      textSpan.id = 'nextDestinationText';
+      const refText = document.getElementById('locationText');
+      textSpan.className = refText ? refText.className : 'infoText nofilter';
+      textSpan.style.textAlign = 'right';
+      wrapper.appendChild(textSpan);
+
+      const chatboxInfo = document.getElementById('chatboxInfo');
+      if (chatboxInfo) {
+          chatboxInfo.appendChild(wrapper);
+      } else {
+          document.body.appendChild(wrapper);
       }
-      starsDiv.innerHTML = nextLocationDepthHTML;
   }
 
-  function findNextLocationAndShow() {
-      if (!config.enableAllFeatures) {
-          const wrapper = document.getElementById('nextDestinationInfoWrapper');
-          if (wrapper) wrapper.style.display = 'none';
-          return false;
+  const lang = getLangKey();
+  const labelText = toastLabel[lang] || toastLabel.en;
+  document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
+
+  const textEl = document.getElementById('nextDestinationText');
+  textEl.innerHTML = html;
+  textEl.style.textAlign = 'right';
+
+  let starsDiv = document.getElementById('nextDestinationStars');
+  if (!starsDiv) {
+      starsDiv = document.createElement('div');
+      starsDiv.id = 'nextDestinationStars';
+      const refText = document.getElementById('locationText');
+      if (refText) {
+          starsDiv.className = refText.className;
       }
+      if (!depthVisible) {
+          starsDiv.classList.add('hidden');
+      }
+      const chatboxInfo = document.getElementById('chatboxInfo');
+      if (chatboxInfo) {
+          chatboxInfo.appendChild(starsDiv);
+      } else {
+          document.body.appendChild(starsDiv);
+      }
+  }
+  starsDiv.innerHTML = nextLocationDepthHTML;
+}
+
+function findNextLocationAndShow() {
+  if (!config.enableAllFeatures) {
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
-      if (wrapper) wrapper.style.display = '';
-
-      const entries = document.querySelectorAll('.eventLocationListEntry');
-      for (const entry of entries) {
-        const checkbox = entry.querySelector('.checkbox');
-        const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
-        if (!isIncomplete) continue;
-
-        const gameLinkEl = entry.querySelector('.gameLink');
-        if (gameLinkEl) continue;
-
-        const detailsContainer = entry.querySelector('.detailsContainer');
-        if (!detailsContainer) continue;
-
-        const mapName = getLocalizedMapName(detailsContainer);
-        const depthInfo = getDepthInfo(detailsContainer)
-        latestMapName = mapName;
-        latestDepthInfo = [depthInfo[0], depthInfo[1]];
-
-        let placeElement = null;
-        for (const child of detailsContainer.children) {
-          if (!child.innerText.trim()) continue;
-          if (isGameNameElement(child)) continue;
-          placeElement = child;
-          break;
-        }
-        if (!placeElement) continue;
-        const clone = placeElement.cloneNode(true);
-        let placeHTML = `<div>${clone.outerHTML}</div>`;
-
-        const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
-        const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
-
-        const fillElements = entry.querySelectorAll(
-            '.detailsContainer .depthContainer.depthFillContainer, ' +
-            '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
-            '.detailsContainer .depthContainer.minDepthFillContainer'
-        );
-        let fillHTML = '';
-        fillElements.forEach(el => {
-            const cloneEl = cloneWithComputedStyle(el);
-            fillHTML += cloneEl.outerHTML;
-        });
-
-        if (outlineHTML) {
-            nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
-        } else {
-            nextLocationDepthHTML = '';
-        }
-        showMessage(placeHTML, 'expedition');
-        return true;
+      if (wrapper) wrapper.style.display = 'none';
+      return false;
   }
+  const wrapper = document.getElementById('nextDestinationInfoWrapper');
+  if (wrapper) wrapper.style.display = '';
+
+  const entries = document.querySelectorAll('.eventLocationListEntry');
+  for (const entry of entries) {
+    const checkbox = entry.querySelector('.checkbox');
+    const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
+    if (!isIncomplete) continue;
+
+    const gameLinkEl = entry.querySelector('.gameLink');
+    if (gameLinkEl) continue;
+
+    const detailsContainer = entry.querySelector('.detailsContainer');
+    if (!detailsContainer) continue;
+
+    const mapName = getLocalizedMapName(detailsContainer);
+    const depthInfo = getDepthInfo(detailsContainer)
+    latestMapName = mapName;
+    latestDepthInfo = [depthInfo[0], depthInfo[1]];
+
+    let placeElement = null;
+    for (const child of detailsContainer.children) {
+      if (!child.innerText.trim()) continue;
+      if (isGameNameElement(child)) continue;
+      placeElement = child;
+      break;
+    }
+    if (!placeElement) continue;
+    const clone = placeElement.cloneNode(true);
+    let placeHTML = `<div>${clone.outerHTML}</div>`;
+
+    const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
+    const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
+
+    const fillElements = entry.querySelectorAll(
+        '.detailsContainer .depthContainer.depthFillContainer, ' +
+        '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
+        '.detailsContainer .depthContainer.minDepthFillContainer'
+    );
+    let fillHTML = '';
+    fillElements.forEach(el => {
+        const cloneEl = cloneWithComputedStyle(el);
+        fillHTML += cloneEl.outerHTML;
+    });
+
+    if (outlineHTML) {
+        nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
+    } else {
+        nextLocationDepthHTML = '';
+    }
+    showMessage(placeHTML, 'expedition');
+    return true;
+}
   nextLocationDepthHTML = '';
   latestDepthInfo = null;
   latestMapName = null;
@@ -630,13 +632,10 @@
   return false;
 }
 
-let lastToastTime = 0;
-const TOAST_INTERVAL = 3000;
-
 function callExpeditionUpdate() {
-  const currendDateStr = getCurrentUTCDateString();
-  if (currendDateStr !== lastUpdateDateStr) {
-    lastUpdateDateStr = currendDateStr;
+  const currentDateStr = getCurrentUTCDateString();
+  if (currentDateStr !== lastUpdateDateStr) {
+    lastUpdateDateStr = currentDateStr;
     latestMapName = null;
     latestDepthInfo = null;
     findNextLocationAndShow();
@@ -766,6 +765,24 @@ function hookExpedition() {
     }, 300);
 }
 
+function scheduleDailyUpdate() {
+  const now = new Date();
+  const nextUTC0 = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1,
+    0, 0, 0, 0
+  ));
+
+  const delayMs = nextUTC0.getTime() - now.getTime();
+  setTimeout(() => {
+    lastUpdateDateStr = getCurrentUTCDateString();
+    callExpeditionUpdate();
+
+    scheduleDailyUpdate();
+  }, delayMs);
+}
+
 function waitForUI() {
   const uiInterval = setInterval(() => {
       const settingsModal = document.getElementById('settingsModal');
@@ -784,9 +801,11 @@ hookExpedition();
 waitForUI();
 if (document.readyState === "complete") {
   initialPolling();
+  scheduleDailyUpdate();
 } else {
   window.addEventListener('load', () => {
       initialPolling();
+      scheduleDailyUpdate();
   });
 }
 
