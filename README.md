@@ -21,7 +21,7 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
 
 - **Settings:**
   <p align="center">
-  <img src="https://github.com/user-attachments/assets/038adbeb-8dc1-4102-bfba-1f012fb24cef" width="50%" />
+  <img src="https://github.com/user-attachments/assets/c8bed068-9fb1-4423-89f5-af1d4fb4a5e5" width="50%" />
   </p>
 
   Provides a settings UI where you can toggle notifications and auto-hide behavior:
@@ -30,11 +30,7 @@ YNO Expeditions Enhancer is a Tampermonkey userscript designed to enhance the ex
   - **Auto-hide Notification:** When enabled, notifications will close automatically.
 
 - **"Destination Log" Recording Feature:**
-  <br>
-  <p align="center">
-  <img src="https://github.com/user-attachments/assets/06ab9bbf-7b3c-421b-9b3c-3863b5b30fb2" width="30%" />
-  </p>
-  When you check "Enable Destination Logs", the destinations you reach will be recorded.
+  When you check "Enable Destination Logs", the destinations you reach will be recorded. Daily total is also recorded.
   Each log entry includes the map name and depth (actual depth and max depth without shortcuts).
   Logs are listed by date (based on UTC) for each game. You can download or delete them.
 
@@ -91,9 +87,8 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   「ドリームラリー」アイコンボタン（🌟のようなアイコン）をクリックすると、目的地の深さを表示できます。
 
 - **設定機能：**
-
   <p align="center">
-  <img src="https://github.com/user-attachments/assets/7686033e-e6b9-409e-94ab-c00e66bf016b"  width="50%"/>
+  <img src="https://github.com/user-attachments/assets/66435b4b-7fce-462a-be19-50ce0360e507"  width="50%"/>
   </p>
 
   通知の切り替えや自動非表示の動作を設定できるUIを提供します。
@@ -102,15 +97,10 @@ YNO Expeditions Enhancerは、[YNO Project](https://ynoproject.net)のコンテ�
   - **目的地到達通知を自動で閉じる：** 通知を自動で閉じる機能を有効または無効にすることができます。
 
 - **"到達場所ログ" 記録機能：**
- <br>
-  <p align="center">
-    <img src="https://github.com/user-attachments/assets/3a6ed910-c8af-4871-8865-fc46fe42b05b"  width="30%"/>
-  </p>
 
-  「到達場所ログを有効にする」にチェックをいれると、到達した目的地のログを記録することができます。
+  「到達場所ログを有効にする」にチェックをいれると、到達した目的地のログを記録することができます。その日の到達数も記録されます。
   ログは、マップ名と深度(実際の深度, ショートカットなしでの深度)が記録されます。
   ログは、各ゲーム毎にUTCを基準に日付でリストアップされます。ダウンロードと削除が可能です。
-
 
 ### インストール
 
