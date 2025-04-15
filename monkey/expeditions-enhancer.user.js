@@ -32,65 +32,65 @@
   let lastToastTime = 0;
   const TOAST_INTERVAL = 3000;
 
-function startTemporaryPolling() {
-  if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
-  if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
-  temporaryPollingInterval = setInterval(() => {
+  function startTemporaryPolling() {
+    if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
+    if (temporaryPollingTimeout) clearTimeout(temporaryPollingTimeout);
+    temporaryPollingInterval = setInterval(() => {
       findNextLocationAndShow();
-  }, 500);
-  temporaryPollingTimeout = setTimeout(() => {
+    }, 500);
+    temporaryPollingTimeout = setTimeout(() => {
       clearInterval(temporaryPollingInterval);
       temporaryPollingInterval = null;
       temporaryPollingTimeout = null;
-  }, 5000);
-}
+    }, 5000);
+  }
 
-function initialPolling() {
-  let attempts = 0;
-  const maxAttempts = 10000 / 500;
-  const interval = setInterval(() => {
+  function initialPolling() {
+    let attempts = 0;
+    const maxAttempts = 10000 / 500;
+    const interval = setInterval(() => {
       attempts++;
       if (findNextLocationAndShow() === true || attempts >= maxAttempts) {
-          clearInterval(interval);
+        clearInterval(interval);
       }
-  }, 500);
-}
+    }, 500);
+  }
 
-function cloneWithComputedStyle(element) {
-  const clone = element.cloneNode(true);
-  const computedStyle = window.getComputedStyle(element);
-  let styleString = "";
-  for (let i = 0; i < computedStyle.length; i++) {
+  function cloneWithComputedStyle(element) {
+    const clone = element.cloneNode(true);
+    const computedStyle = window.getComputedStyle(element);
+    let styleString = "";
+    for (let i = 0; i < computedStyle.length; i++) {
       const prop = computedStyle[i];
       styleString += `${prop}: ${computedStyle.getPropertyValue(prop)}; `;
-  }
-  clone.style.cssText = styleString;
-  if (
+    }
+    clone.style.cssText = styleString;
+    if (
       element.classList.contains('depthFillContainer') ||
       element.classList.contains('maxDepthFillContainer') ||
       element.classList.contains('minDepthFillContainer') ||
       element.classList.contains('depthOutlineContainer')
-  ) {
+    ) {
       clone.style.position = 'absolute';
       clone.style.top = '0';
       clone.style.left = '0';
       clone.style.margin = '0';
       clone.style.padding = '0';
       clone.style.transform = 'none';
-  }
-  const childIcons = clone.querySelectorAll('.starIcon.icon');
-  childIcons.forEach(icon => {
+    }
+    const childIcons = clone.querySelectorAll('.starIcon.icon');
+    childIcons.forEach(icon => {
       icon.style.margin = '0';
       icon.style.padding = '0';
       icon.style.transform = 'none';
       icon.style.top = '0';
       icon.style.left = '0';
-  });
-  return clone;
-}
+    });
+    return clone;
+  }
 
-const styleElem = document.createElement('style');
-styleElem.textContent = `
+  const styleElem = document.createElement('style');
+  styleElem.textContent = `
   .hidden {
     display: none !important;
   }
@@ -176,35 +176,35 @@ styleElem.textContent = `
     padding: 0 !important;
   }
 `;
-document.head.appendChild(styleElem);
+  document.head.appendChild(styleElem);
 
-const CONFIG_KEY = 'toastConfig';
-const defaultConfig = {
+  const CONFIG_KEY = 'toastConfig';
+  const defaultConfig = {
     enableToast: true,
     autoHideToast: true,
     enableAllFeatures: true,
     enableExpeditionsLog: true
-};
-function loadConfig() {
+  };
+  function loadConfig() {
     try {
-        return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
+      return Object.assign({}, defaultConfig, JSON.parse(localStorage.getItem(CONFIG_KEY)));
     } catch {
-        return { ...defaultConfig };
+      return { ...defaultConfig };
     }
-}
-function saveConfig(cfg) {
+  }
+  function saveConfig(cfg) {
     localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
-}
-const config = loadConfig();
+  }
+  const config = loadConfig();
 
-function getLangKey() {
+  function getLangKey() {
     try {
-        return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
+      return JSON.parse(localStorage.getItem('config'))?.lang || 'en';
     } catch {
-        return 'en';
+      return 'en';
     }
-}
-const toastLabel = {
+  }
+  const toastLabel = {
     ja: "次の目的地",
     en: "Next destination",
     fr: "Prochaine destination",
@@ -221,115 +221,115 @@ const toastLabel = {
     ar: "الموقع التالي",
     eo: "Sekva loko",
     pt: "Próxima localização"
-};
-const uiText = {
+  };
+  const uiText = {
     expeditionsButton: {
-        ja: 'ドリームラリー',
-        en: 'Expeditions',
-        fr: 'Expéditions',
-        es: 'Expediciones',
-        de: 'Expeditionen',
-        zh: '梦远征',
-        ko: '탐험',
-        it: 'Spedizioni',
-        pl: 'Ekspedycje',
-        ro: 'Expediții',
-        tr: 'Seyahatler',
-        ru: 'Походs',
-        vi: 'Thám hiểm',
-        ar: 'الرحلات الاستكشافية',
-        eo: 'Ekspediĉoj',
-        pt: 'Expedições'
+      ja: 'ドリームラリー',
+      en: 'Expeditions',
+      fr: 'Expéditions',
+      es: 'Expediciones',
+      de: 'Expeditionen',
+      zh: '梦远征',
+      ko: '탐험',
+      it: 'Spedizioni',
+      pl: 'Ekspedycje',
+      ro: 'Expediții',
+      tr: 'Seyahatler',
+      ru: 'Походs',
+      vi: 'Thám hiểm',
+      ar: 'الرحلات الاستكشافية',
+      eo: 'Ekspediĉoj',
+      pt: 'Expedições'
     },
     title: {
-        ja: 'ドリームラリー設定',
-        en: 'Expedition Settings',
-        fr: 'Paramètres d\'expédition',
-        es: 'Configuración de Expedición',
-        de: 'Expeditionseinstellungen',
-        zh: '梦远征设置',
-        ko: '탐험 설정',
-        it: 'Impostazioni Spedizioni',
-        pl: 'Ustawienia Ekspedycji',
-        ro: 'Setări expediție',
-        tr: 'Seyahat Ayarları',
-        ru: 'Настройки походs',
-        vi: 'Cài đặt thám hiểm',
-        ar: 'إعدادات الرحلات',
-        eo: 'Ekspediĉaj agordoj',
-        pt: 'Configurações de Expedição'
+      ja: 'ドリームラリー設定',
+      en: 'Expedition Settings',
+      fr: 'Paramètres d\'expédition',
+      es: 'Configuración de Expedición',
+      de: 'Expeditionseinstellungen',
+      zh: '梦远征设置',
+      ko: '탐험 설정',
+      it: 'Impostazioni Spedizioni',
+      pl: 'Ustawienia Ekspedycji',
+      ro: 'Setări expediție',
+      tr: 'Seyahat Ayarları',
+      ru: 'Настройки походs',
+      vi: 'Cài đặt thám hiểm',
+      ar: 'إعدادات الرحلات',
+      eo: 'Ekspediĉaj agordoj',
+      pt: 'Configurações de Expedição'
     },
     enableToastLabel: {
-        ja: '目的地到達通知を有効にする',
-        en: 'Enable Notification',
-        fr: 'Activer la notification',
-        es: 'Habilitar notificación',
-        de: 'Benachrichtigung aktivieren',
-        zh: '启用通知',
-        ko: '알림 활성화',
-        it: 'Abilita notifica',
-        pl: 'Włącz powiadomienie',
-        ro: 'Activează notificarea',
-        tr: 'Bildirimleri etkinleştir',
-        ru: 'Включить уведомление',
-        vi: 'Bật thông báo',
-        ar: 'تفعيل الإشعار',
-        eo: 'Aktivigi notifikon',
-        pt: 'Ativar notificação'
+      ja: '目的地到達通知を有効にする',
+      en: 'Enable Notification',
+      fr: 'Activer la notification',
+      es: 'Habilitar notificación',
+      de: 'Benachrichtigung aktivieren',
+      zh: '启用通知',
+      ko: '알림 활성화',
+      it: 'Abilita notifica',
+      pl: 'Włącz powiadomienie',
+      ro: 'Activează notificarea',
+      tr: 'Bildirimleri etkinleştir',
+      ru: 'Включить уведомление',
+      vi: 'Bật thông báo',
+      ar: 'تفعيل الإشعار',
+      eo: 'Aktivigi notifikon',
+      pt: 'Ativar notificação'
     },
     autoHideToastLabel: {
-        ja: '目的地到達通知を自動で閉じる',
-        en: 'Auto-hide Notification',
-        fr: 'Masquer automatiquement la notification',
-        es: 'Ocultar automáticamente la notificación',
-        de: 'Benachrichtigung automatisch ausblenden',
-        zh: '自动关闭通知',
-        ko: '알림 자동 닫기',
-        it: 'Chiudi notifica automaticamente',
-        pl: 'Automatycznie ukryj powiadomienie',
-        ro: 'Ascundere automată notificare',
-        tr: 'Bildirimi otomatik kapat',
-        ru: 'Автоматически скрывать уведомление',
-        vi: 'Tự động ẩn thông báo',
-        ar: 'إغلاق الإشعار تلقائياً',
-        eo: 'Aŭtomate kaŝi notifikon',
-        pt: 'Ocultar notificação automaticamente'
+      ja: '目的地到達通知を自動で閉じる',
+      en: 'Auto-hide Notification',
+      fr: 'Masquer automatiquement la notification',
+      es: 'Ocultar automáticamente la notificación',
+      de: 'Benachrichtigung automatisch ausblenden',
+      zh: '自动关闭通知',
+      ko: '알림 자동 닫기',
+      it: 'Chiudi notifica automaticamente',
+      pl: 'Automatycznie ukryj powiadomienie',
+      ro: 'Ascundere automată notificare',
+      tr: 'Bildirimi otomatik kapat',
+      ru: 'Автоматически скрывать уведомление',
+      vi: 'Tự động ẩn thông báo',
+      ar: 'إغلاق الإشعار تلقائياً',
+      eo: 'Aŭtomate kaŝi notifikon',
+      pt: 'Ocultar notificação automaticamente'
     },
     reset: {
-        ja: 'リセット',
-        en: 'Reset',
-        fr: 'Réinitialiser',
-        es: 'Restablecer',
-        de: 'Zurücksetzen',
-        zh: '重置',
-        ko: '초기화',
-        it: 'Ripristina',
-        pl: 'Zresetuj',
-        ro: 'Resetare',
-        tr: 'Sıfırla',
-        ru: 'Сброс',
-        vi: 'Đặt lại',
-        ar: 'إعادة تعيين',
-        eo: 'Restarigi',
-        pt: 'Redefinir'
+      ja: 'リセット',
+      en: 'Reset',
+      fr: 'Réinitialiser',
+      es: 'Restablecer',
+      de: 'Zurücksetzen',
+      zh: '重置',
+      ko: '초기화',
+      it: 'Ripristina',
+      pl: 'Zresetuj',
+      ro: 'Resetare',
+      tr: 'Sıfırla',
+      ru: 'Сброс',
+      vi: 'Đặt lại',
+      ar: 'إعادة تعيين',
+      eo: 'Restarigi',
+      pt: 'Redefinir'
     },
     displayFixed: {
-        ja: '画面に固定表示',
-        en: 'Fixed on Screen',
-        fr: 'Fixé à l\'écran',
-        es: 'Fijado en pantalla',
-        de: 'Auf dem Bildschirm fixiert',
-        zh: '固定在屏幕上',
-        ko: '화면에 고정',
-        it: 'Fisso sullo schermo',
-        pl: 'Na stałe na ekranie',
-        ro: 'Fix pe ecran',
-        tr: 'Ekranda sabit',
-        ru: 'Закреплено на экране',
-        vi: 'Cố định trên màn',
-        ar: 'مثبت على الشاشة',
-        eo: 'Fiksita sur ekrano',
-        pt: 'Fixo na tela'
+      ja: '画面に固定表示',
+      en: 'Fixed on Screen',
+      fr: 'Fixé à l\'écran',
+      es: 'Fijado en pantalla',
+      de: 'Auf dem Bildschirm fixiert',
+      zh: '固定在屏幕上',
+      ko: '화면에 고정',
+      it: 'Fisso sullo schermo',
+      pl: 'Na stałe na ekranie',
+      ro: 'Fix pe ecran',
+      tr: 'Ekranda sabit',
+      ru: 'Закреплено на экране',
+      vi: 'Cố định trên màn',
+      ar: 'مثبت على الشاشة',
+      eo: 'Fiksita sur ekrano',
+      pt: 'Fixo na tela'
     },
     expeditionsLogHeader: {
       ja: '到達場所ログ',
@@ -457,39 +457,39 @@ const uiText = {
       eo: 'Ebligi cellokajn protokolojn',
       pt: 'Ativar registros de destino'
     }
-};
+  };
 
-function isGameNameElement(el) {
-  if (el.classList.contains('gameLink')) {
-    return true;
+  function isGameNameElement(el) {
+    if (el.classList.contains('gameLink')) {
+      return true;
+    }
+    return false;
   }
-  return false;
+
+  function getLocalizedMapName(detailsContainer) {
+    if (!detailsContainer) return '';
+
+    let candidateChildren = Array.from(detailsContainer.children);
+
+    candidateChildren = candidateChildren.filter(el => {
+      if (isGameNameElement(el)) return false;
+      if (!el.innerText.trim()) return false;
+      return true;
+    });
+
+    if (candidateChildren.length === 0) {
+      return '';
+    } else if (candidateChildren.length === 1) {
+      return candidateChildren[0].innerText.trim();
+    } else {
+      // is this necessary?
+      return candidateChildren[0].innerText.trim();
+    }
   }
 
-function getLocalizedMapName(detailsContainer) {
-  if (!detailsContainer) return '';
-
-  let candidateChildren = Array.from(detailsContainer.children);
-
-  candidateChildren = candidateChildren.filter(el => {
-    if (isGameNameElement(el)) return false;
-    if (!el.innerText.trim()) return false;
-    return true;
-  });
-
-  if (candidateChildren.length === 0) {
-    return '';
-  } else if (candidateChildren.length === 1) {
-    return candidateChildren[0].innerText.trim();
-  } else {
-    // is this necessary?
-    return candidateChildren[0].innerText.trim();
-  }
-}
-
-function showMessage(html, type) {
-  let wrapper = document.getElementById('nextDestinationInfoWrapper');
-  if (!wrapper) {
+  function showMessage(html, type) {
+    let wrapper = document.getElementById('nextDestinationInfoWrapper');
+    if (!wrapper) {
       wrapper = document.createElement('div');
       wrapper.id = 'nextDestinationInfoWrapper';
       wrapper.className = 'info';
@@ -505,14 +505,14 @@ function showMessage(html, type) {
     </svg>
   `;
       toggleButton.addEventListener('click', () => {
-          let starsDiv = document.getElementById('nextDestinationStars');
-          if (!starsDiv) return;
-          depthVisible = !depthVisible;
-          if (depthVisible) {
-              starsDiv.classList.remove('hidden');
-          } else {
-              starsDiv.classList.add('hidden');
-          }
+        let starsDiv = document.getElementById('nextDestinationStars');
+        if (!starsDiv) return;
+        depthVisible = !depthVisible;
+        if (depthVisible) {
+          starsDiv.classList.remove('hidden');
+        } else {
+          starsDiv.classList.add('hidden');
+        }
       });
       wrapper.appendChild(toggleButton);
 
@@ -531,165 +531,165 @@ function showMessage(html, type) {
 
       const chatboxInfo = document.getElementById('chatboxInfo');
       if (chatboxInfo) {
-          chatboxInfo.appendChild(wrapper);
+        chatboxInfo.appendChild(wrapper);
       } else {
-          document.body.appendChild(wrapper);
+        document.body.appendChild(wrapper);
       }
-  }
+    }
 
-  const lang = getLangKey();
-  const labelText = toastLabel[lang] || toastLabel.en;
-  document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
+    const lang = getLangKey();
+    const labelText = toastLabel[lang] || toastLabel.en;
+    document.getElementById('nextDestinationLabel').textContent = labelText + ': ';
 
-  const textEl = document.getElementById('nextDestinationText');
-  textEl.innerHTML = html;
-  textEl.style.textAlign = 'right';
+    const textEl = document.getElementById('nextDestinationText');
+    textEl.innerHTML = html;
+    textEl.style.textAlign = 'right';
 
-  let starsDiv = document.getElementById('nextDestinationStars');
-  if (!starsDiv) {
+    let starsDiv = document.getElementById('nextDestinationStars');
+    if (!starsDiv) {
       starsDiv = document.createElement('div');
       starsDiv.id = 'nextDestinationStars';
       const refText = document.getElementById('locationText');
       if (refText) {
-          starsDiv.className = refText.className;
+        starsDiv.className = refText.className;
       }
       if (!depthVisible) {
-          starsDiv.classList.add('hidden');
+        starsDiv.classList.add('hidden');
       }
       const chatboxInfo = document.getElementById('chatboxInfo');
       if (chatboxInfo) {
-          chatboxInfo.appendChild(starsDiv);
+        chatboxInfo.appendChild(starsDiv);
       } else {
-          document.body.appendChild(starsDiv);
+        document.body.appendChild(starsDiv);
       }
+    }
+    starsDiv.innerHTML = nextLocationDepthHTML;
   }
-  starsDiv.innerHTML = nextLocationDepthHTML;
-}
 
-function findNextLocationAndShow() {
-  if (!config.enableAllFeatures) {
+  function findNextLocationAndShow() {
+    if (!config.enableAllFeatures) {
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
       if (wrapper) wrapper.style.display = 'none';
       return false;
-  }
-  const wrapper = document.getElementById('nextDestinationInfoWrapper');
-  if (wrapper) wrapper.style.display = '';
-
-  const entries = document.querySelectorAll('.eventLocationListEntry');
-  for (const entry of entries) {
-    const checkbox = entry.querySelector('.checkbox');
-    const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
-    if (!isIncomplete) continue;
-
-    const gameLinkEl = entry.querySelector('.gameLink');
-    if (gameLinkEl) continue;
-
-    const detailsContainer = entry.querySelector('.detailsContainer');
-    if (!detailsContainer) continue;
-
-    const mapName = getLocalizedMapName(detailsContainer);
-    const depthInfo = getDepthInfo(detailsContainer)
-    latestMapName = mapName;
-    latestDepthInfo = [depthInfo[0], depthInfo[1]];
-
-    let placeElement = null;
-    for (const child of detailsContainer.children) {
-      if (!child.innerText.trim()) continue;
-      if (isGameNameElement(child)) continue;
-      placeElement = child;
-      break;
     }
-    if (!placeElement) continue;
-    const clone = placeElement.cloneNode(true);
-    let placeHTML = `<div>${clone.outerHTML}</div>`;
+    const wrapper = document.getElementById('nextDestinationInfoWrapper');
+    if (wrapper) wrapper.style.display = '';
 
-    const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
-    const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
+    const entries = document.querySelectorAll('.eventLocationListEntry');
+    for (const entry of entries) {
+      const checkbox = entry.querySelector('.checkbox');
+      const isIncomplete = checkbox && !checkbox.classList.contains('toggled');
+      if (!isIncomplete) continue;
 
-    const fillElements = entry.querySelectorAll(
+      const gameLinkEl = entry.querySelector('.gameLink');
+      if (gameLinkEl) continue;
+
+      const detailsContainer = entry.querySelector('.detailsContainer');
+      if (!detailsContainer) continue;
+
+      const mapName = getLocalizedMapName(detailsContainer);
+      const depthInfo = getDepthInfo(detailsContainer)
+      latestMapName = mapName;
+      latestDepthInfo = [depthInfo[0], depthInfo[1]];
+
+      let placeElement = null;
+      for (const child of detailsContainer.children) {
+        if (!child.innerText.trim()) continue;
+        if (isGameNameElement(child)) continue;
+        placeElement = child;
+        break;
+      }
+      if (!placeElement) continue;
+      const clone = placeElement.cloneNode(true);
+      let placeHTML = `<div>${clone.outerHTML}</div>`;
+
+      const depthOutline = entry.querySelector('.detailsContainer .depthContainer.depthOutlineContainer');
+      const outlineHTML = depthOutline ? cloneWithComputedStyle(depthOutline).outerHTML : '';
+
+      const fillElements = entry.querySelectorAll(
         '.detailsContainer .depthContainer.depthFillContainer, ' +
         '.detailsContainer .depthContainer.maxDepthFillContainer, ' +
         '.detailsContainer .depthContainer.minDepthFillContainer'
-    );
-    let fillHTML = '';
-    fillElements.forEach(el => {
+      );
+      let fillHTML = '';
+      fillElements.forEach(el => {
         const cloneEl = cloneWithComputedStyle(el);
         fillHTML += cloneEl.outerHTML;
-    });
+      });
 
-    if (outlineHTML) {
+      if (outlineHTML) {
         nextLocationDepthHTML = `<div class="starContainer">` + outlineHTML + fillHTML + `</div>`;
-    } else {
+      } else {
         nextLocationDepthHTML = '';
+      }
+      showMessage(placeHTML, 'expedition');
+      return true;
     }
-    showMessage(placeHTML, 'expedition');
-    return true;
-}
-  nextLocationDepthHTML = '';
-  latestDepthInfo = null;
-  latestMapName = null;
-
-  return false;
-}
-
-function callExpeditionUpdate() {
-  const currentDateStr = getCurrentUTCDateString();
-  if (currentDateStr !== lastUpdateDateStr) {
-    lastUpdateDateStr = currentDateStr;
-    latestMapName = null;
+    nextLocationDepthHTML = '';
     latestDepthInfo = null;
-    findNextLocationAndShow();
+    latestMapName = null;
+
+    return false;
   }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const foundNext = findNextLocationAndShow();
-      requestAnimationFrame(() => {
-        if (foundNext && config.enableToast && config.enableAllFeatures) {
-          const now = Date.now();
-          if (now - lastToastTime > TOAST_INTERVAL) {
-            lastToastTime = now;
-            const lang = getLangKey();
-            const labelText = toastLabel[lang] || toastLabel.en;
-            const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
+  function callExpeditionUpdate() {
+    const currentDateStr = getCurrentUTCDateString();
+    if (currentDateStr !== lastUpdateDateStr) {
+      lastUpdateDateStr = currentDateStr;
+      latestMapName = null;
+      latestDepthInfo = null;
+      findNextLocationAndShow();
+    }
 
-            const toast = showToastMessage(
-              '',
-              'expedition',
-              true,
-              undefined,
-              !config.autoHideToast
-            );
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const foundNext = findNextLocationAndShow();
+        requestAnimationFrame(() => {
+          if (foundNext && config.enableToast && config.enableAllFeatures) {
+            const now = Date.now();
+            if (now - lastToastTime > TOAST_INTERVAL) {
+              lastToastTime = now;
+              const lang = getLangKey();
+              const labelText = toastLabel[lang] || toastLabel.en;
+              const nextDestinationHTML = document.getElementById('nextDestinationText').innerHTML;
 
-            if (navigator.userAgent.includes('Firefox')) {
-              setTimeout(() => {
+              const toast = showToastMessage(
+                '',
+                'expedition',
+                true,
+                undefined,
+                !config.autoHideToast
+              );
+
+              if (navigator.userAgent.includes('Firefox')) {
+                setTimeout(() => {
+                  const messageEl = toast.querySelector('.toastMessage');
+                  if (messageEl) {
+                    messageEl.innerHTML = `${labelText}: ${nextDestinationHTML}`;
+                    messageEl.style.transform = 'translateZ(0.1px)';
+                    messageEl.style.willChange = 'transform';
+                  }
+                  messageEl.style.visibility = 'hidden';
+                  setTimeout(() => {
+                    messageEl.style.visibility = 'visible';
+                  }, 250);
+                }, 250);
+              } else {
                 const messageEl = toast.querySelector('.toastMessage');
                 if (messageEl) {
                   messageEl.innerHTML = `${labelText}: ${nextDestinationHTML}`;
-                  messageEl.style.transform = 'translateZ(0.1px)';
-                  messageEl.style.willChange = 'transform';
                 }
-                messageEl.style.visibility = 'hidden';
-                setTimeout(() => {
-                  messageEl.style.visibility = 'visible';
-                }, 250);
-              }, 250);
-            } else {
-              const messageEl = toast.querySelector('.toastMessage');
-              if (messageEl) {
-                messageEl.innerHTML = `${labelText}: ${nextDestinationHTML}`;
               }
             }
           }
-        }
-        resolve();
-      });
-    }, 600);
-  });
-}
+          resolve();
+        });
+      }, 600);
+    });
+  }
 
-function hookExpedition() {
-  const interval = setInterval(() => {
+  function hookExpedition() {
+    const interval = setInterval(() => {
       let wrappedCount = 0;
 
       if (typeof window.onClaimEventLocationPoints === 'function') {
@@ -714,14 +714,14 @@ function hookExpedition() {
 
             startTemporaryPolling();
             callExpeditionUpdate()
-              .then(() => {
-                if (config.enableExpeditionsLog) {
-                  addExpeditionsLog(gameId, mapName, depthInfo);
-                }
-              })
-              .catch(err => {
-                console.error("callExpeditionUpdate Error:", err);
-              });
+            .then(() => {
+              if (config.enableExpeditionsLog) {
+                addExpeditionsLog(gameId, mapName, depthInfo);
+              }
+            })
+            .catch(err => {
+              console.error("callExpeditionUpdate Error:", err);
+            });
           };
           window.onClaimEventLocationPoints._expeditionWrapped = true;
         }
@@ -763,228 +763,228 @@ function hookExpedition() {
         clearInterval(interval);
       }
     }, 300);
-}
+  }
 
-function scheduleDailyUpdate() {
-  const now = new Date();
-  const nextUTC0 = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate() + 1,
-    0, 0, 0, 0
-  ));
+  function scheduleDailyUpdate() {
+    const now = new Date();
+    const nextUTC0 = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + 1,
+      0, 0, 0, 0
+    ));
 
-  const delayMs = nextUTC0.getTime() - now.getTime();
-  setTimeout(() => {
-    lastUpdateDateStr = getCurrentUTCDateString();
-    callExpeditionUpdate();
+    const delayMs = nextUTC0.getTime() - now.getTime();
+    setTimeout(() => {
+      lastUpdateDateStr = getCurrentUTCDateString();
+      callExpeditionUpdate();
 
-    scheduleDailyUpdate();
-  }, delayMs);
-}
+      scheduleDailyUpdate();
+    }, delayMs);
+  }
 
-function waitForUI() {
-  const uiInterval = setInterval(() => {
+  function waitForUI() {
+    const uiInterval = setInterval(() => {
       const settingsModal = document.getElementById('settingsModal');
       if (settingsModal?.querySelector('.buttonRow')) {
-          clearInterval(uiInterval);
-          injectUI();
-          document.getElementById('lang')?.addEventListener('change', () => {
-              setTimeout(injectUI, 300);
-              setTimeout(findNextLocationAndShow, 2000);
-          });
+        clearInterval(uiInterval);
+        injectUI();
+        document.getElementById('lang')?.addEventListener('change', () => {
+          setTimeout(injectUI, 300);
+          setTimeout(findNextLocationAndShow, 2000);
+        });
       }
-  }, 400);
-}
+    }, 400);
+  }
 
-hookExpedition();
-waitForUI();
-if (document.readyState === "complete") {
-  initialPolling();
-  scheduleDailyUpdate();
-} else {
-  window.addEventListener('load', () => {
+  hookExpedition();
+  waitForUI();
+  if (document.readyState === "complete") {
+    initialPolling();
+    scheduleDailyUpdate();
+  } else {
+    window.addEventListener('load', () => {
       initialPolling();
       scheduleDailyUpdate();
-  });
-}
-
-function getCurrentUTCDateString() {
-  const now = new Date();
-  const year = now.getUTCFullYear();
-  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(now.getUTCDate()).padStart(2, '0');
-  return `${year}${month}${day}`;
-}
-
-function addExpeditionsLog(gameId, locationName, depthInfo) {
-  let logText = '';
-  if ( !depthInfo[1] ){
-    logText = `${locationName} (${depthInfo[0]})`;
-  } else {
-    logText = `${locationName} (${depthInfo[0]}, ${depthInfo[1]})`;
-  }
-  const dateStr = getCurrentUTCDateString();
-  const key = `expeditionsLog_${gameId}_${dateStr}`;
-
-  console.log('[ExpeditionLog] Logging:', logText);
-
-  const rawData = localStorage.getItem(key);
-  let logArr = [];
-  try {
-    logArr = rawData ? JSON.parse(rawData) : [];
-  } catch (err) {
-    console.warn("[DEBUG] parse error on existing data:", err);
-    logArr = [];
+    });
   }
 
-  logArr.push(logText);
-
-  localStorage.setItem(key, JSON.stringify(logArr));
-}
-
-function refreshExpeditionsLogDates(gameId) {
-  const modal = document.getElementById('expeditionSettingsModal');
-  if (!modal) return;
-
-  const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
-  if (!expeditionsLogDateSelect) return;
-
-  expeditionsLogDateSelect.innerHTML = '';
-
-  const dateList = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const keyName = localStorage.key(i);
-    if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
-      const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
-      dateList.push(dateStr);
-    }
+  function getCurrentUTCDateString() {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    return `${year}${month}${day}`;
   }
 
-  dateList.sort().reverse();
-
-  for (let dateStr of dateList) {
-    const option = document.createElement('option');
-    option.value = dateStr;
-    option.textContent = dateStr;
-    expeditionsLogDateSelect.appendChild(option);
-  }
-}
-
-function parseDepth(containerEl) {
-  if (!containerEl) return 0;
-
-  const starIcons = containerEl.querySelectorAll('.starIcon.icon');
-  let depthTotal = 0;
-
-  starIcons.forEach(iconEl => {
-    if (iconEl.classList.contains('fillIcon')) {
-      depthTotal += 1.0;
+  function addExpeditionsLog(gameId, locationName, depthInfo) {
+    let logText = '';
+    if ( !depthInfo[1] ){
+      logText = `${locationName} (${depthInfo[0]})`;
     } else {
-      depthTotal += 0.5;
+      logText = `${locationName} (${depthInfo[0]}, ${depthInfo[1]})`;
     }
-  });
-  return depthTotal;
-}
+    const dateStr = getCurrentUTCDateString();
+    const key = `expeditionsLog_${gameId}_${dateStr}`;
 
-function getDepthInfo(detailsContainer) {
-  if (!detailsContainer) return [0, 0];
+    console.log('[ExpeditionLog] Logging:', logText);
 
-  const minEl = detailsContainer.querySelector('.depthContainer.minDepthFillContainer');
-  const maxEl = detailsContainer.querySelector('.depthContainer.maxDepthFillContainer');
-  const fallbackEl = detailsContainer.querySelector('.depthContainer.depthFillContainer');
-
-  let actualDepth = 0;
-  let maxDepth    = 0;
-
-  if (minEl) {
-    actualDepth = parseDepth(minEl);
-  } else if (fallbackEl) {
-    actualDepth = parseDepth(fallbackEl);
-  }
-
-  if (maxEl) {
-    maxDepth = parseDepth(maxEl);
-  }
-
-  return [actualDepth, maxDepth];
-}
-
-function showExpeditionsLog(gameId, dateStr, lang, retry = 10) {
-  const key = `expeditionsLog_${gameId}_${dateStr}`;
-  const raw = localStorage.getItem(key);
-  let logArr = [];
-
-  if (raw) {
+    const rawData = localStorage.getItem(key);
+    let logArr = [];
     try {
-      logArr = JSON.parse(raw);
-      if (!Array.isArray(logArr)) throw new Error('Invalid log format');
-      logArr = logArr.filter(item => typeof item === 'string' && item.trim());
+      logArr = rawData ? JSON.parse(rawData) : [];
     } catch (err) {
-      console.warn('[ExpeditionLog] Failed to parse or clean log data:', err);
+      console.warn("[DEBUG] parse error on existing data:", err);
       logArr = [];
     }
+
+    logArr.push(logText);
+
+    localStorage.setItem(key, JSON.stringify(logArr));
   }
 
-  const tryDisplay = () => {
-    const expeditionsLogDisplay = document.getElementById('expeditionsLogDisplay');
-    if (!expeditionsLogDisplay) {
-      if (retry > 0) {
-        setTimeout(() => showExpeditionsLog(gameId, dateStr, lang, retry - 1), 200);
+  function refreshExpeditionsLogDates(gameId) {
+    const modal = document.getElementById('expeditionSettingsModal');
+    if (!modal) return;
+
+    const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
+    if (!expeditionsLogDateSelect) return;
+
+    expeditionsLogDateSelect.innerHTML = '';
+
+    const dateList = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const keyName = localStorage.key(i);
+      if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
+        const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
+        dateList.push(dateStr);
       }
-      return;
     }
 
-    expeditionsLogDisplay.innerHTML = '';
+    dateList.sort().reverse();
 
-    if (!logArr.length) {
-      expeditionsLogDisplay.textContent = uiText.noLog[lang] || uiText.noLog.en;
-      return;
-    }
-
-    const ul = document.createElement('ul');
-    logArr.forEach((locationName) => {
-      const li = document.createElement('li');
-      li.textContent = locationName;
-      ul.appendChild(li);
-    });
-
-    expeditionsLogDisplay.appendChild(ul);
-  };
-
-  tryDisplay();
-}
-
-function injectUI() {
-  document.getElementById('expeditionSettingsModal')?.remove();
-  document.getElementById('openExpeditionSettingsButton')?.remove();
-
-  const settingsModal = document.getElementById('settingsModal');
-  const buttonRow = settingsModal?.querySelector('.buttonRow');
-  if (!buttonRow) return;
-
-  const lang = getLangKey();
-  const openButton = document.createElement('button');
-  openButton.type = 'button';
-  openButton.id = 'openExpeditionSettingsButton';
-  openButton.innerText = uiText.expeditionsButton[lang] || uiText.expeditionsButton.en;
-  openButton.classList.add('unselectable');
-  buttonRow.appendChild(openButton);
-
-  function getUiLogText(textObj, key, lang) {
-    if (textObj[key]?.[lang]) {
-      return textObj[key][lang];
-    } else {
-      return textObj[key].en;
+    for (let dateStr of dateList) {
+      const option = document.createElement('option');
+      option.value = dateStr;
+      option.textContent = dateStr;
+      expeditionsLogDateSelect.appendChild(option);
     }
   }
 
-  const modal = document.createElement('div');
-  modal.id = 'expeditionSettingsModal';
-  modal.classList.add('modal', 'hidden');
-  modal.style.opacity = '1';
+  function parseDepth(containerEl) {
+    if (!containerEl) return 0;
 
-  modal.innerHTML = `
+    const starIcons = containerEl.querySelectorAll('.starIcon.icon');
+    let depthTotal = 0;
+
+    starIcons.forEach(iconEl => {
+      if (iconEl.classList.contains('fillIcon')) {
+        depthTotal += 1.0;
+      } else {
+        depthTotal += 0.5;
+      }
+    });
+    return depthTotal;
+  }
+
+  function getDepthInfo(detailsContainer) {
+    if (!detailsContainer) return [0, 0];
+
+    const minEl = detailsContainer.querySelector('.depthContainer.minDepthFillContainer');
+    const maxEl = detailsContainer.querySelector('.depthContainer.maxDepthFillContainer');
+    const fallbackEl = detailsContainer.querySelector('.depthContainer.depthFillContainer');
+
+    let actualDepth = 0;
+    let maxDepth    = 0;
+
+    if (minEl) {
+      actualDepth = parseDepth(minEl);
+    } else if (fallbackEl) {
+      actualDepth = parseDepth(fallbackEl);
+    }
+
+    if (maxEl) {
+      maxDepth = parseDepth(maxEl);
+    }
+
+    return [actualDepth, maxDepth];
+  }
+
+  function showExpeditionsLog(gameId, dateStr, lang, retry = 10) {
+    const key = `expeditionsLog_${gameId}_${dateStr}`;
+    const raw = localStorage.getItem(key);
+    let logArr = [];
+
+    if (raw) {
+      try {
+        logArr = JSON.parse(raw);
+        if (!Array.isArray(logArr)) throw new Error('Invalid log format');
+        logArr = logArr.filter(item => typeof item === 'string' && item.trim());
+      } catch (err) {
+        console.warn('[ExpeditionLog] Failed to parse or clean log data:', err);
+        logArr = [];
+      }
+    }
+
+    const tryDisplay = () => {
+      const expeditionsLogDisplay = document.getElementById('expeditionsLogDisplay');
+      if (!expeditionsLogDisplay) {
+        if (retry > 0) {
+          setTimeout(() => showExpeditionsLog(gameId, dateStr, lang, retry - 1), 200);
+        }
+        return;
+      }
+
+      expeditionsLogDisplay.innerHTML = '';
+
+      if (!logArr.length) {
+        expeditionsLogDisplay.textContent = uiText.noLog[lang] || uiText.noLog.en;
+        return;
+      }
+
+      const ul = document.createElement('ul');
+      logArr.forEach((locationName) => {
+        const li = document.createElement('li');
+        li.textContent = locationName;
+        ul.appendChild(li);
+      });
+
+      expeditionsLogDisplay.appendChild(ul);
+    };
+
+    tryDisplay();
+  }
+
+  function injectUI() {
+    document.getElementById('expeditionSettingsModal')?.remove();
+    document.getElementById('openExpeditionSettingsButton')?.remove();
+
+    const settingsModal = document.getElementById('settingsModal');
+    const buttonRow = settingsModal?.querySelector('.buttonRow');
+    if (!buttonRow) return;
+
+    const lang = getLangKey();
+    const openButton = document.createElement('button');
+    openButton.type = 'button';
+    openButton.id = 'openExpeditionSettingsButton';
+    openButton.innerText = uiText.expeditionsButton[lang] || uiText.expeditionsButton.en;
+    openButton.classList.add('unselectable');
+    buttonRow.appendChild(openButton);
+
+    function getUiLogText(textObj, key, lang) {
+      if (textObj[key]?.[lang]) {
+        return textObj[key][lang];
+      } else {
+        return textObj[key].en;
+      }
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'expeditionSettingsModal';
+    modal.classList.add('modal', 'hidden');
+    modal.style.opacity = '1';
+
+    modal.innerHTML = `
   <div class="modalHeader">
     <h1 class="modalTitle">${uiText.title[lang]}</h1>
     <a href="javascript:void(0);" class="modalClose">✖</a>
@@ -1058,61 +1058,61 @@ function injectUI() {
     <button id="resetExpeditionSettings" class="unselectable" type="button">${uiText.reset[lang]}</button>
   </div>
   `;
-  settingsModal.insertAdjacentElement('afterend', modal);
+    settingsModal.insertAdjacentElement('afterend', modal);
 
-  const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
-  enableAllFeaturesToggleButton.onclick = () => {
-    config.enableAllFeatures = !config.enableAllFeatures;
-    enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
-    saveConfig(config);
-    const wrapper = document.getElementById('nextDestinationInfoWrapper');
-    if (wrapper) {
-      wrapper.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
-    }
-    const starsDiv = document.getElementById('nextDestinationStars');
-    if (starsDiv) {
-      starsDiv.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
-    }
-  };
+    const enableAllFeaturesToggleButton = modal.querySelector('#enableAllFeaturesToggleButton');
+    enableAllFeaturesToggleButton.onclick = () => {
+      config.enableAllFeatures = !config.enableAllFeatures;
+      enableAllFeaturesToggleButton.classList.toggle('toggled', config.enableAllFeatures);
+      saveConfig(config);
+      const wrapper = document.getElementById('nextDestinationInfoWrapper');
+      if (wrapper) {
+        wrapper.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
+      }
+      const starsDiv = document.getElementById('nextDestinationStars');
+      if (starsDiv) {
+        starsDiv.style.setProperty('display', config.enableAllFeatures ? '' : 'none', 'important');
+      }
+    };
 
-  const enableToastToggleButton = modal.querySelector('#enableToastToggleButton');
-  enableToastToggleButton.onclick = () => {
+    const enableToastToggleButton = modal.querySelector('#enableToastToggleButton');
+    enableToastToggleButton.onclick = () => {
       config.enableToast = !config.enableToast;
       enableToastToggleButton.classList.toggle('toggled', config.enableToast);
 
       const autoHideRow = modal.querySelector('#autoHideToastRow');
       if (autoHideRow) {
-          autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
+        autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
       }
       saveConfig(config);
-  };
+    };
 
-  const autoHideToastToggleButton = modal.querySelector('#autoHideToastToggleButton');
-  autoHideToastToggleButton.onclick = () => {
+    const autoHideToastToggleButton = modal.querySelector('#autoHideToastToggleButton');
+    autoHideToastToggleButton.onclick = () => {
 
       config.autoHideToast = !config.autoHideToast;
       autoHideToastToggleButton.classList.toggle('toggled', config.autoHideToast);
       saveConfig(config);
-  };
+    };
 
-  const enableExpeditionsLogToggleButton = modal.querySelector('#enableExpeditionsLogToggleButton');
-  enableExpeditionsLogToggleButton.onclick = () => {
-    config.enableExpeditionsLog = !config.enableExpeditionsLog;
-    enableExpeditionsLogToggleButton.classList.toggle('toggled', config.enableExpeditionsLog);
-    saveConfig(config);
+    const enableExpeditionsLogToggleButton = modal.querySelector('#enableExpeditionsLogToggleButton');
+    enableExpeditionsLogToggleButton.onclick = () => {
+      config.enableExpeditionsLog = !config.enableExpeditionsLog;
+      enableExpeditionsLogToggleButton.classList.toggle('toggled', config.enableExpeditionsLog);
+      saveConfig(config);
 
-    const expeditionsLogHeader = document.getElementById('expeditionsLogHeader');
-    const expeditionsLogControls = document.getElementById('expeditionsLogControls');
-    if (!config.enableExpeditionsLog) {
-      expeditionsLogHeader.classList.add('hidden');
-      expeditionsLogControls.classList.add('hidden');
-    } else {
-      expeditionsLogHeader.classList.remove('hidden');
-      expeditionsLogControls.classList.remove('hidden');
-    }
-  };
+      const expeditionsLogHeader = document.getElementById('expeditionsLogHeader');
+      const expeditionsLogControls = document.getElementById('expeditionsLogControls');
+      if (!config.enableExpeditionsLog) {
+        expeditionsLogHeader.classList.add('hidden');
+        expeditionsLogControls.classList.add('hidden');
+      } else {
+        expeditionsLogHeader.classList.remove('hidden');
+        expeditionsLogControls.classList.remove('hidden');
+      }
+    };
 
-  modal.querySelector('#resetExpeditionSettings').onclick = () => {
+    modal.querySelector('#resetExpeditionSettings').onclick = () => {
       config.enableToast = defaultConfig.enableToast;
       config.autoHideToast = defaultConfig.autoHideToast;
       config.enableAllFeatures = defaultConfig.enableAllFeatures;
@@ -1125,11 +1125,11 @@ function injectUI() {
 
       const autoHideRow = modal.querySelector('#autoHideToastRow');
       if (autoHideRow) {
-          autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
+        autoHideRow.style.setProperty('display', config.enableToast ? 'flex' : 'none', 'important');
       }
       const wrapper = document.getElementById('nextDestinationInfoWrapper');
       if (wrapper) {
-          wrapper.style.display = config.enableAllFeatures ? '' : 'none';
+        wrapper.style.display = config.enableAllFeatures ? '' : 'none';
       }
       saveConfig(config);
 
@@ -1144,76 +1144,76 @@ function injectUI() {
         expeditionsLogHeader.classList.remove('hidden');
         expeditionsLogControls.classList.remove('hidden');
       }
-  };
+    };
 
-  openButton.onclick = () => {
-    refreshExpeditionsLogDates(gameId);
-    openModal('expeditionSettingsModal', null, 'settingsModal');
+    openButton.onclick = () => {
+      refreshExpeditionsLogDates(gameId);
+      openModal('expeditionSettingsModal', null, 'settingsModal');
 
-    const select = document.getElementById('expeditionsLogDateSelect');
-    if (select && select.options.length > 0) {
-      const latestDate = select.options[0].value;
-      showExpeditionsLog(gameId, latestDate, getLangKey());
-    }
-  };
+      const select = document.getElementById('expeditionsLogDateSelect');
+      if (select && select.options.length > 0) {
+        const latestDate = select.options[0].value;
+        showExpeditionsLog(gameId, latestDate, getLangKey());
+      }
+    };
 
-  modal.querySelector('.modalClose')?.addEventListener('click', () => {
+    modal.querySelector('.modalClose')?.addEventListener('click', () => {
       closeModal(modal.id, 'settingsModal');
-  });
+    });
 
-  const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
-  expeditionsLogDateSelect.innerHTML = '';
+    const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
+    expeditionsLogDateSelect.innerHTML = '';
 
-  for (let i = 0; i < localStorage.length; i++) {
-    const keyName = localStorage.key(i);
-    if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
-      const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
-      const option = document.createElement('option');
-      option.value = dateStr;
-      option.textContent = dateStr;
-      expeditionsLogDateSelect.appendChild(option);
+    for (let i = 0; i < localStorage.length; i++) {
+      const keyName = localStorage.key(i);
+      if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
+        const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
+        const option = document.createElement('option');
+        option.value = dateStr;
+        option.textContent = dateStr;
+        expeditionsLogDateSelect.appendChild(option);
+      }
     }
-  }
 
-  const readExpeditionsLogButton = modal.querySelector('#readExpeditionsLogButton');
-  readExpeditionsLogButton.onclick = () => {
-    const dateStr = expeditionsLogDateSelect.value;
-    if (!dateStr) return;
-    showExpeditionsLog(gameId, dateStr, lang);
-  };
-
-  const downloadExpeditionsLogButton = modal.querySelector('#downloadExpeditionsLogButton');
-  downloadExpeditionsLogButton.onclick = () => {
-    const dateStr = expeditionsLogDateSelect.value;
-    if (!dateStr) return;
-    const key = `expeditionsLog_${gameId}_${dateStr}`;
-    const raw = localStorage.getItem(key);
-    if (!raw) return;
-    let logArr = [];
-    try {
-      logArr = JSON.parse(raw);
-    } catch (err) {
-      logArr = [];
-    }
-    const content = logArr.join('\n');
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `expeditionsLog_${gameId}_${dateStr}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const deleteExpeditionsLogButton = modal.querySelector('#deleteExpeditionsLogButton');
-  deleteExpeditionsLogButton.onclick = () => {
-    const dateStr = expeditionsLogDateSelect.value;
-    if (!dateStr) return;
-    const key = `expeditionsLog_${gameId}_${dateStr}`;
-    if (localStorage.getItem(key)) {
-      localStorage.removeItem(key);
+    const readExpeditionsLogButton = modal.querySelector('#readExpeditionsLogButton');
+    readExpeditionsLogButton.onclick = () => {
+      const dateStr = expeditionsLogDateSelect.value;
+      if (!dateStr) return;
       showExpeditionsLog(gameId, dateStr, lang);
-    }
-  };
-}
+    };
+
+    const downloadExpeditionsLogButton = modal.querySelector('#downloadExpeditionsLogButton');
+    downloadExpeditionsLogButton.onclick = () => {
+      const dateStr = expeditionsLogDateSelect.value;
+      if (!dateStr) return;
+      const key = `expeditionsLog_${gameId}_${dateStr}`;
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      let logArr = [];
+      try {
+        logArr = JSON.parse(raw);
+      } catch (err) {
+        logArr = [];
+      }
+      const content = logArr.join('\n');
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `expeditionsLog_${gameId}_${dateStr}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    const deleteExpeditionsLogButton = modal.querySelector('#deleteExpeditionsLogButton');
+    deleteExpeditionsLogButton.onclick = () => {
+      const dateStr = expeditionsLogDateSelect.value;
+      if (!dateStr) return;
+      const key = `expeditionsLog_${gameId}_${dateStr}`;
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+        showExpeditionsLog(gameId, dateStr, lang);
+      }
+    };
+  }
 })();
