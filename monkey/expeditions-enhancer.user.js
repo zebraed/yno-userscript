@@ -15,7 +15,6 @@
 // @run-at       document-end
 // ==/UserScript==
 
-
 (function () {
   'use strict';
 
@@ -456,6 +455,24 @@
       ar: 'قم بتمكين سجلات الوجهة',
       eo: 'Ebligi cellokajn protokolojn',
       pt: 'Ativar registros de destino'
+    },
+    reachedCountLabel: {
+      ja: '到達数',
+      en: 'Reached',
+      fr: 'Atteints',
+      es: 'Alcanzados',
+      de: 'Erreicht',
+      zh: '已到达',
+      ko: '도달함',
+      it: 'Raggiunti',
+      pl: 'Osiągnięte',
+      ro: 'Atingeri',
+      tr: 'Ulaşılan',
+      ru: 'Достигнуто',
+      vi: 'Đã đến',
+      ar: 'تم الوصول',
+      eo: 'Alvenintaj',
+      pt: 'Alcançados'
     }
   };
 
@@ -928,6 +945,8 @@
 
     const tryDisplay = () => {
       const expeditionsLogDisplay = document.getElementById('expeditionsLogDisplay');
+      const countLabel = document.getElementById('expeditionsLogCount');
+
       if (!expeditionsLogDisplay) {
         if (retry > 0) {
           setTimeout(() => showExpeditionsLog(gameId, dateStr, lang, retry - 1), 200);
@@ -936,9 +955,11 @@
       }
 
       expeditionsLogDisplay.innerHTML = '';
+      countLabel.textContent = '';
 
       if (!logArr.length) {
         expeditionsLogDisplay.textContent = uiText.noLog[lang] || uiText.noLog.en;
+        if (countLabel) countLabel.textContent = '';
         return;
       }
 
@@ -950,6 +971,7 @@
       });
 
       expeditionsLogDisplay.appendChild(ul);
+      if (countLabel) countLabel.textContent = `${uiText.reachedCountLabel[lang]}: ${logArr.length}`;
     };
 
     tryDisplay();
@@ -1032,6 +1054,7 @@
     <div id="expeditionsLogControls">
       <label class="unselectable">${ getUiLogText(uiText, 'selectDate', lang) }:
         <select id="expeditionsLogDateSelect" style="margin-left:4px;" class="infoText"></select>
+        <span id="expeditionsLogCount" class="infoText" style="margin-left:8px;"></span>
       </label>
       <button id="readExpeditionsLogButton" type="button" class="unselectable" style="margin-left:8px;">
         ${ getUiLogText(uiText, 'readLog', lang) }
@@ -1044,11 +1067,18 @@
       </button>
       <div id="expeditionsLogDisplay" style="
         margin-top: 12px;
-        border: 1px solid #ccc;
         padding: 8px;
         min-height: 80px;
         max-height: 200px;
         overflow-x: auto;
+        overflow-y: auto;
+        white-space: normal;
+        border: 8px solid transparent;
+        border-image-slice: 8;
+        border-image-source: var(--modal-border-image-url);
+        color: rgb(var(--modal-base-color));
+        background-color: transparent;
+        font-family: inherit;
       ">
         ${ getUiLogText(uiText, 'noLog', lang) }
       </div>
