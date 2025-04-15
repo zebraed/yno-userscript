@@ -1,5 +1,17 @@
 # Changelog
 
+## [2025-04-15] - Version 1.2.0
+
+### Added
+- Added a counter for the number of destinations reached in the destination log.
+
+### Changed
+- Changed log viewr's border style.
+
+### Fixed
+- Fixed an issue where the destination would not be updated when the date was changed.
+- Fixed typo.
+
 ## [2025-04-14] - Version 1.1.5
 
 ### Changed
