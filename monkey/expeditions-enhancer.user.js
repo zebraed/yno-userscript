@@ -27,7 +27,6 @@
   const THRESHOLD_MS = 2000;
   let latestDepthInfo = null;
   let latestMapName = null;
-  let lastUpdateDateStr = getCurrentUTCDateString();
   let lastToastTime = 0;
   const TOAST_INTERVAL = 3000;
 
@@ -785,7 +784,6 @@
 
     const delayMs = nextUTC0.getTime() - now.getTime();
     setTimeout(() => {
-      lastUpdateDateStr = getCurrentUTCDateString();
       latestMapName = null;
       latestDepthInfo = null;
       findNextLocationAndShow();
