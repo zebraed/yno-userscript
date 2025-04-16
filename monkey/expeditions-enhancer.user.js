@@ -650,14 +650,6 @@
   }
 
   function callExpeditionUpdate() {
-    const currentDateStr = getCurrentUTCDateString();
-    if (currentDateStr !== lastUpdateDateStr) {
-      lastUpdateDateStr = currentDateStr;
-      latestMapName = null;
-      latestDepthInfo = null;
-      findNextLocationAndShow();
-    }
-
     return new Promise((resolve) => {
       setTimeout(() => {
         const foundNext = findNextLocationAndShow();
@@ -794,8 +786,9 @@
     const delayMs = nextUTC0.getTime() - now.getTime();
     setTimeout(() => {
       lastUpdateDateStr = getCurrentUTCDateString();
-      callExpeditionUpdate();
-
+      latestMapName = null;
+      latestDepthInfo = null;
+      findNextLocationAndShow();
       scheduleDailyUpdate();
     }, delayMs);
   }
