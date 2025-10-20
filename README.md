@@ -70,6 +70,85 @@ Enjoy your expeditions!
 <br>
 <br>
 
+## YNO SSS[en]
+
+### Overview
+
+YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functionality in [YNO Project](https://ynoproject.net) chat. This script converts screenshot IDs (like `[screenshot]`) into clickable hyperlinks that open the screenshot viewer modal, **without displaying images directly in chat**.
+
+### Features
+
+- **Screenshot ID Hyperlinks:**
+  Automatically converts screenshot IDs in chat messages to clickable hyperlinks
+  - Screenshot IDs (`[XXXXXXXX]`) remain as clickable links
+  - Screenshots are not displayed in the chat
+  - Clicking the link opens the screenshot viewer modal
+
+- **Chat Scope Control:**
+  - Only works in Map and Party chats (disabled in Global chat)
+  - Respects the game's chat system design
+
+- **Respects Game Security:**
+  Does not bypass official security measures or display images directly in chat
+
+- **Cross-User Compatibility:**
+  Screenshot sharing works between users who have this script installed
+
+### Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js and click the "Raw" button.
+3. Click on Install. It will be installed as a Tampermonkey script.
+4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
+
+The script simply makes screenshot IDs clickable in chat, using the same mechanisms that the game already supports. It does not modify game state, cheat detection systems.
+
+---
+
+<br>
+<br>
+
+## YNO SSS[en]
+
+**Screenshot sharing works between users who have this script installed**
+
+### Overview
+
+YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functionality in [YNO Project](https://ynoproject.net) chat. This script converts screenshot IDs (like `[screenshot]`) into clickable hyperlinks that open the screenshot viewer modal, **without displaying images directly in chat**.
+
+### Features
+
+- **Screenshot ID Hyperlinks:**
+  Automatically converts screenshot IDs in chat messages to clickable hyperlinks
+  - Screenshot IDs (`[XXXXXXXX]`) remain as clickable links
+  - Screenshots are not displayed in the chat
+  - Clicking the link opens the screenshot viewer modal
+
+- **Chat Scope Control:**
+  - Only works in Map and Party chats (disabled in Global chat)
+  - Respects the game's chat system design
+
+- **Respects Game Security:**
+  Does not bypass official security measures or display images directly in chat
+
+- **Cross-User Compatibility:**
+  Screenshot sharing works between users who have this script installed
+
+### Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js and click the "Raw" button.
+3. Click on Install. It will be installed as a Tampermonkey script.
+4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
+
+The script simply makes screenshot IDs clickable in chat, using the same mechanisms that the game already supports. It does not modify game state, cheat detection systems.
+
+<br>
+<br>
+
+---
+
+
 ## YNO Expeditions Enhancer [ja]
 ![image](https://github.com/user-attachments/assets/bb0783c1-d665-4b26-9db9-f343cfb63b0d)
 
@@ -126,3 +205,46 @@ Micro Soft Edge: https://platform.kobot.jp/support/solutions/articles/4700117612
 ---
 <br>
 たのしいドリームラリーを！
+
+
+---
+
+<br>
+<br>
+
+## YNO SSS [ja]
+
+**このスクリプトを導入しているユーザー同士であればスクリーンショットを見せ合うことが可能です。**
+
+### 概要
+
+YNO SSSは、[YNO Project](https://ynoproject.net)のマップ、パーティーチャットでスクリーンショット共有をするTampermonkeyユーザースクリプトです。このスクリプトは、チャット内のスクリーンショットIDをクリック可能なハイパーリンクに変換し、**チャットに画像を表示せず**、スクリーンショットビューアを開くことで、スクリーンショット共有機能の代替を提供します。
+
+### 機能
+
+- **スクリーンショットIDハイパーリンク:**
+  マップ、パーティーチャットメッセージ内のスクリーンショットIDを自動的にクリック可能なハイパーリンクに変換
+  - スクリーンショットID（`[XXXXXXXX]`）はクリック可能なリンクとして表示
+  - **チャットに画像は表示されません**
+  - リンクをクリックするとスクリーンショットビューアモーダルが開きます
+
+- **チャット範囲制御:**
+  - MapとPartyチャットでのみ動作（Globalチャットでは無効です）
+  - ゲームのチャットシステム設計を尊重
+
+- **ゲームセキュリティの尊重:**
+  公式の意思を尊重し、チャットに直接画像を表示しません
+
+- **ユーザー間の互換性:**
+  このスクリプトを導入しているユーザー同士であればスクリーンショットを見せ合うことが可能です。
+
+### インストール
+
+1. [Tampermonkey](https://www.tampermonkey.net/) または他のユーザースクリプトマネージャーをブラウザにインストールします。
+2. https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js にアクセスし、「Raw」ボタンをクリックします。
+3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
+4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、チャットでスクリーンショットIDがクリック可能になっていることを確認してください。
+
+
+
+このスクリプトは、ゲームが既にサポートしている機能を使用して、スクリーンショットIDをチャット内でクリック可能にするだけです。
