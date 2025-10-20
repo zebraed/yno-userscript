@@ -97,7 +97,7 @@ YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functional
 ### Installation
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
-2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js and click the "Raw" button.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss.user.js and click the "Raw" button.
 3. Click on Install. It will be installed as a Tampermonkey script.
 4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
 
@@ -137,7 +137,7 @@ YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functional
 ### Installation
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
-2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js and click the "Raw" button.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss.user.js and click the "Raw" button.
 3. Click on Install. It will be installed as a Tampermonkey script.
 4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
 
