@@ -1,5 +1,17 @@
 # Changelog
 
+## [2025-10-21] - Version 1.3.0
+
+### Added
+- Added YNO SSS (Share Screenshot) userscript for enhanced screenshot sharing functionality
+
+### Features
+- **Screenshot ID Hyperlinks:** Automatically converts screenshot IDs to clickable links
+- **Chat Scope Control:** Only works in Map and Party chats (disabled in Global chat)
+- **Cross-User Compatibility:** Screenshot sharing works between users with the script installed
+- **Game Security Respect:** Without displaying images directly in chat
+
+
 ## [2025-04-15] - Version 1.2.0
 
 ### Added

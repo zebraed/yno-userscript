@@ -79,8 +79,6 @@
       if (messageContents.dataset.screenshotLinksAdded) {
         return;
       }
-
-      // Pattern: [tID:flags] or [ID] or [ID:flags]
       const screenshotPattern = /\[(t?)(\w{16})(?::(\d+))?\]/g;
       const urlPattern = /https:\/\/connect\.ynoproject\.net\/[^\/]+\/screenshots\/(?:temp\/)?([^\/]+)\/(\w{16})\.png/g;
       let linkCount = 0;
@@ -124,7 +122,6 @@
               const screenshotId = match[2];
               const flags = +match[3] || 0;
 
-              // メッセージコンテナから投稿者のUUIDを取得
               const posterUuid = resolveSenderUuid(container);
 
               if (match.index > lastIndex) {
@@ -204,19 +201,16 @@
   }
 
   function openScreenshotModal(screenshotId, isTemp, flags, messageContainer, uuidFromUrl = null, directUrl = null) {
-    // URLから取得したUUIDを優先使用
     let uuid = uuidFromUrl || getCurrentPlayerUuid();
     let ownerData = null;
 
     if (!uuidFromUrl && messageContainer) {
-      // メッセージコンテナから投稿者のUUIDを取得
       const posterUuid = resolveSenderUuid(messageContainer);
       if (posterUuid) {
         uuid = posterUuid;
         console.log('Found poster UUID from message container:', uuid);
       }
 
-      // 投稿者の情報を取得
       if (uuid && typeof globalPlayerData !== 'undefined' && globalPlayerData[uuid]) {
         ownerData = {
           uuid: uuid,
