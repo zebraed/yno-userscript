@@ -9,8 +9,8 @@
 // @icon         https://ynoproject.net/oneshot/images/ynomoji/oneShotLampSun.png
 // @license      MIT
 // @supportURL   https://github.com/Zebraed/yno-userscript
-// @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/share-ss-url.user.js
-// @updateURL    https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/share-ss-url.user.js
+// @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/share-ss.user.js
+// @updateURL    https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/share-ss.user.js
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==
