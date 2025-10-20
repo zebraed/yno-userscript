@@ -70,43 +70,6 @@ Enjoy your expeditions!
 <br>
 <br>
 
-## YNO SSS[en]
-
-### Overview
-
-YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functionality in [YNO Project](https://ynoproject.net) chat. This script converts screenshot IDs (like `[screenshot]`) into clickable hyperlinks that open the screenshot viewer modal, **without displaying images directly in chat**.
-
-### Features
-
-- **Screenshot ID Hyperlinks:**
-  Automatically converts screenshot IDs in chat messages to clickable hyperlinks
-  - Screenshot IDs (`[XXXXXXXX]`) remain as clickable links
-  - Screenshots are not displayed in the chat
-  - Clicking the link opens the screenshot viewer modal
-
-- **Chat Scope Control:**
-  - Only works in Map and Party chats (disabled in Global chat)
-  - Respects the game's chat system design
-
-- **Respects Game Security:**
-  Does not bypass official security measures or display images directly in chat
-
-- **Cross-User Compatibility:**
-  Screenshot sharing works between users who have this script installed
-
-### Installation
-
-1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
-2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss.user.js and click the "Raw" button.
-3. Click on Install. It will be installed as a Tampermonkey script.
-4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
-
-The script simply makes screenshot IDs clickable in chat, using the same mechanisms that the game already supports. It does not modify game state, cheat detection systems.
-
----
-
-<br>
-<br>
 
 ## YNO SSS[en]
 
@@ -141,7 +104,7 @@ YNO SSS is a Tampermonkey userscript that enhances screenshot sharing functional
 3. Click on Install. It will be installed as a Tampermonkey script.
 4. Open any [YNO Project](https://ynoproject.net) game and check that it is working by looking for clickable screenshot IDs in chat.
 
-The script simply makes screenshot IDs clickable in chat, using the same mechanisms that the game already supports. It does not modify game state, cheat detection systems.
+The script simply makes screenshot IDs clickable in chat, using the same mechanisms that the game already supports. It does not modify game state.
 
 <br>
 <br>
