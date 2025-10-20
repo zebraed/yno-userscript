@@ -27,7 +27,6 @@
   const THRESHOLD_MS = 2000;
   let latestDepthInfo = null;
   let latestMapName = null;
-  let lastUpdateDateStr = getCurrentUTCDateString();
   let lastToastTime = 0;
   const TOAST_INTERVAL = 3000;
 
@@ -650,14 +649,6 @@
   }
 
   function callExpeditionUpdate() {
-    const currentDateStr = getCurrentUTCDateString();
-    if (currentDateStr !== lastUpdateDateStr) {
-      lastUpdateDateStr = currentDateStr;
-      latestMapName = null;
-      latestDepthInfo = null;
-      findNextLocationAndShow();
-    }
-
     return new Promise((resolve) => {
       setTimeout(() => {
         const foundNext = findNextLocationAndShow();
@@ -793,9 +784,9 @@
 
     const delayMs = nextUTC0.getTime() - now.getTime();
     setTimeout(() => {
-      lastUpdateDateStr = getCurrentUTCDateString();
-      callExpeditionUpdate();
-
+      latestMapName = null;
+      latestDepthInfo = null;
+      findNextLocationAndShow();
       scheduleDailyUpdate();
     }, delayMs);
   }
