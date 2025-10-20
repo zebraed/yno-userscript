@@ -19,18 +19,27 @@
   'use strict';
 
   function resolveSenderUuid(messageContainer) {
-    if (!messageContainer) return 'unknown';
-    if (messageContainer.dataset && messageContainer.dataset.senderUuid)
+    if (!messageContainer) return null;
+
+    if (messageContainer.dataset && messageContainer.dataset.senderUuid) {
       return messageContainer.dataset.senderUuid;
-    const messageSender = messageContainer.querySelector && messageContainer.querySelector('.messageSender');
-    if (messageSender && messageSender.dataset && messageSender.dataset.uuid)
-      return messageSender.dataset.uuid;
-    if (messageContainer.dataset && messageContainer.dataset.uuid)
+    }
+
+    if (messageContainer.dataset && messageContainer.dataset.uuid) {
       return messageContainer.dataset.uuid;
-    const messageEl = messageContainer.querySelector && messageContainer.querySelector('.message');
-    if (messageEl && messageEl.dataset && messageEl.dataset.uuid)
+    }
+
+    const messageSender = messageContainer.querySelector('.messageSender');
+    if (messageSender && messageSender.dataset && messageSender.dataset.uuid) {
+      return messageSender.dataset.uuid;
+    }
+
+    const messageEl = messageContainer.querySelector('.message');
+    if (messageEl && messageEl.dataset && messageEl.dataset.uuid) {
       return messageEl.dataset.uuid;
-    return 'unknown';
+    }
+
+    return null;
   }
 
   function buildScreenshotUrl(uuid, screenshotId, forceTemp, directUrl) {
@@ -71,6 +80,7 @@
         return;
       }
 
+      // Pattern: [tID:flags] or [ID] or [ID:flags]
       const screenshotPattern = /\[(t?)(\w{16})(?::(\d+))?\]/g;
       const urlPattern = /https:\/\/connect\.ynoproject\.net\/[^\/]+\/screenshots\/(?:temp\/)?([^\/]+)\/(\w{16})\.png/g;
       let linkCount = 0;
@@ -88,6 +98,7 @@
           if (data.screenshotId != null) link.dataset.screenshotId = data.screenshotId;
           if (data.isTemp != null) link.dataset.isTemp = data.isTemp ? 'true' : 'false';
           if (data.flags != null) link.dataset.flags = String(data.flags);
+          if (data.uuid != null) link.dataset.uuid = data.uuid;
         }
         if (typeof onClick === 'function') {
           link.addEventListener('click', function(e) {
@@ -112,6 +123,10 @@
               const isTemp = !!match[1];
               const screenshotId = match[2];
               const flags = +match[3] || 0;
+
+              // メッセージコンテナから投稿者のUUIDを取得
+              const posterUuid = resolveSenderUuid(container);
+
               if (match.index > lastIndex) {
                 const beforeText = text.slice(lastIndex, match.index);
                 fragment.appendChild(document.createTextNode(beforeText));
@@ -120,14 +135,15 @@
               const link = createScreenshotLink(
                 fullMatch,
                 '#',
-                { screenshotId, isTemp, flags },
+                { screenshotId, isTemp, flags, uuid: posterUuid },
                 (self) => {
                   console.log('Link clicked - ID format:', {
                     screenshotId: self.dataset.screenshotId,
                     isTemp: self.dataset.isTemp,
-                    flags: self.dataset.flags
+                    flags: self.dataset.flags,
+                    uuid: self.dataset.uuid
                   });
-                  openScreenshotModal(self.dataset.screenshotId, self.dataset.isTemp === 'true', +self.dataset.flags, container);
+                  openScreenshotModal(self.dataset.screenshotId, self.dataset.isTemp === 'true', +self.dataset.flags, container, self.dataset.uuid);
                 }
               );
 
@@ -188,15 +204,25 @@
   }
 
   function openScreenshotModal(screenshotId, isTemp, flags, messageContainer, uuidFromUrl = null, directUrl = null) {
-    let uuid = uuidFromUrl || resolveSenderUuid(messageContainer) || getCurrentPlayerUuid();
+    // URLから取得したUUIDを優先使用
+    let uuid = uuidFromUrl || getCurrentPlayerUuid();
     let ownerData = null;
 
     if (!uuidFromUrl && messageContainer) {
+      // メッセージコンテナから投稿者のUUIDを取得
+      const posterUuid = resolveSenderUuid(messageContainer);
+      if (posterUuid) {
+        uuid = posterUuid;
+        console.log('Found poster UUID from message container:', uuid);
+      }
+
+      // 投稿者の情報を取得
       if (uuid && typeof globalPlayerData !== 'undefined' && globalPlayerData[uuid]) {
         ownerData = {
           uuid: uuid,
           name: globalPlayerData[uuid].name || 'Unknown'
         };
+        console.log('Found owner data:', ownerData);
       }
     }
 
