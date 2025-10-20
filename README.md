@@ -3,6 +3,10 @@
 **Author:** Zebraed
 **License:** MIT
 
+> **⚠️ Disclaimer**
+>
+> The scripts included in this repository are unofficial userscripts for YNO Project. The author is not responsible for any damages that may occur from using these scripts. Use the scripts at your own risk.
+
 ## YNO Expeditions Enhancer [en]
 ![image](https://github.com/user-attachments/assets/3eb505c4-9a5d-45b9-b5f6-3f0b873464aa)
 
@@ -111,6 +115,12 @@ The script simply makes screenshot IDs clickable in chat, using the same mechani
 
 ---
 
+# yno-userscript (日本語)
+
+> **⚠️ 免責事項 (Disclaimer)**
+>
+> このリポジトリに含まれるスクリプトは、YNO Projectの非公式ユーザースクリプトです。これらのスクリプトを使用して発生したいかなる損害についても、作者は一切の責任を負いません。スクリプトの使用は自己責任で行ってください。
+>
 
 ## YNO Expeditions Enhancer [ja]
 ![image](https://github.com/user-attachments/assets/bb0783c1-d665-4b26-9db9-f343cfb63b0d)
