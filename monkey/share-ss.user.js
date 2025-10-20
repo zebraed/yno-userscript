@@ -134,12 +134,6 @@
                 '#',
                 { screenshotId, isTemp, flags, uuid: posterUuid },
                 (self) => {
-                  console.log('Link clicked - ID format:', {
-                    screenshotId: self.dataset.screenshotId,
-                    isTemp: self.dataset.isTemp,
-                    flags: self.dataset.flags,
-                    uuid: self.dataset.uuid
-                  });
                   openScreenshotModal(self.dataset.screenshotId, self.dataset.isTemp === 'true', +self.dataset.flags, container, self.dataset.uuid);
                 }
               );
@@ -202,43 +196,31 @@
 
   function openScreenshotModal(screenshotId, isTemp, flags, messageContainer, uuidFromUrl = null, directUrl = null) {
     let uuid = uuidFromUrl || getCurrentPlayerUuid();
-    let ownerData = null;
 
     if (!uuidFromUrl && messageContainer) {
       const posterUuid = resolveSenderUuid(messageContainer);
       if (posterUuid) {
         uuid = posterUuid;
-        console.log('Found poster UUID from message container:', uuid);
-      }
-
-      if (uuid && typeof globalPlayerData !== 'undefined' && globalPlayerData[uuid]) {
-        ownerData = {
-          uuid: uuid,
-          name: globalPlayerData[uuid].name || 'Unknown'
-        };
-        console.log('Found owner data:', ownerData);
       }
     }
 
-    const imageUrl = buildScreenshotUrl(uuid, screenshotId, true, directUrl);
+    const imageUrl = buildScreenshotUrl(uuid, screenshotId, isTemp, directUrl);
+    const isSpoiler = !!(flags & 1);
 
     if (window.viewScreenshot) {
-      const screenshotData = {
-        id: screenshotId,
-        spoiler: !!(flags & 1),
-        owner: ownerData
-      };
+      window.viewScreenshot(imageUrl, new Date(), { spoiler: false });
 
-      console.log('openScreenshotModal debug:', {
-        screenshotId,
-        flags,
-        spoiler: screenshotData.spoiler,
-        imageUrl
-      });
+      setTimeout(() => {
+        const screenshotModal = document.getElementById('screenshotModal');
+        if (screenshotModal) {
+          const screenshotControls = screenshotModal.querySelector('.screenshotControls');
+          if (screenshotControls) {
+            screenshotControls.remove();
+          }
+        }
+      }, 10);
 
-      window.viewScreenshot(imageUrl, new Date(), screenshotData);
-
-      if (screenshotData.spoiler) {
+      if (isSpoiler) {
         setTimeout(() => {
           const screenshotModal = document.getElementById('screenshotModal');
           if (screenshotModal) {
@@ -256,6 +238,7 @@
               wrapper.style.justifyContent = 'center';
 
               screenshotImg.classList.add('imageThumbnail');
+              screenshotImg.style.filter = 'blur(50px)';
               screenshotImg.parentNode.insertBefore(wrapper, screenshotImg);
               wrapper.appendChild(screenshotImg);
 
@@ -283,6 +266,7 @@
 
               wrapper.addEventListener('click', function() {
                 this.classList.remove('spoiler');
+                screenshotImg.style.filter = '';
               }, { once: true });
             }
           }
