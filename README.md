@@ -214,7 +214,7 @@ YNO SSSは、[YNO Project](https://ynoproject.net)のマップ、パーティー
 ### インストール
 
 1. [Tampermonkey](https://www.tampermonkey.net/) または他のユーザースクリプトマネージャーをブラウザにインストールします。
-2. https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss-url.user.js にアクセスし、「Raw」ボタンをクリックします。
+2. https://github.com/zebraed/yno-userscript/blob/main/monkey/share-ss.user.js にアクセスし、「Raw」ボタンをクリックします。
 3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
 4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、チャットでスクリーンショットIDがクリック可能になっていることを確認してください。
 
