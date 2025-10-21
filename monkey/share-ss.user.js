@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO SSS (Share Screenshot)
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Add clickable links to screenshot IDs in YNO chat.
 // @author       Zebraed
 // @tag          Enhancement
