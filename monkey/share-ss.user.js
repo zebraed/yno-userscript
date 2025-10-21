@@ -19,7 +19,9 @@
   'use strict';
 
   function resolveSenderUuid(messageContainer) {
-    if (!messageContainer) return null;
+    if (!messageContainer) {
+      return null;
+    }
 
     if (messageContainer.dataset && messageContainer.dataset.senderUuid) {
       return messageContainer.dataset.senderUuid;
@@ -37,6 +39,18 @@
     const messageEl = messageContainer.querySelector('.message');
     if (messageEl && messageEl.dataset && messageEl.dataset.uuid) {
       return messageEl.dataset.uuid;
+    }
+
+    if (messageSender) {
+      const nameText = messageSender.querySelector('.nameText');
+      if (nameText && typeof globalPlayerData !== 'undefined') {
+        const playerName = nameText.textContent.trim();
+        for (let uuid in globalPlayerData) {
+          if (globalPlayerData[uuid].name === playerName) {
+            return uuid;
+          }
+        }
+      }
     }
 
     return null;
@@ -195,13 +209,19 @@
   }
 
   function openScreenshotModal(screenshotId, isTemp, flags, messageContainer, uuidFromUrl = null, directUrl = null) {
-    let uuid = uuidFromUrl || getCurrentPlayerUuid();
+    let uuid = null;
 
-    if (!uuidFromUrl && messageContainer) {
+    if (uuidFromUrl) {
+      uuid = uuidFromUrl;
+    } else if (messageContainer) {
       const posterUuid = resolveSenderUuid(messageContainer);
       if (posterUuid) {
         uuid = posterUuid;
       }
+    }
+
+    if (!uuid) {
+      uuid = getCurrentPlayerUuid();
     }
 
     const imageUrl = buildScreenshotUrl(uuid, screenshotId, isTemp, directUrl);
