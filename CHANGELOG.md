@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-11-11] - Version 1.4.1
+
+### Fixed
+- Fixed an issue where badge slots could become empty after re-importing a preset after manually rearranging badges in the gallery.
+
+
 ## [2025-11-10] - Version 1.4.0
 
 ### Added
