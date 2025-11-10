@@ -124,18 +124,31 @@
     URL.revokeObjectURL(url);
   }
 
-  async function setAllSlots(badgeSlots, rows, cols) {
-    const promises = [];
+  function computeChanges(targetSlots, currentSlots, rows, cols) {
+    const changes = [];
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const id = badgeSlots[r][c];
+        const targetId = targetSlots[r]?.[c] ?? 'null';
+        const currentId = currentSlots?.[r]?.[c] ?? 'null';
+        if (targetId !== currentId) {
+          changes.push({ r, c, targetId, currentId });
+        }
+      }
+    }
+    return changes;
+  }
+
+  async function clearChangedSlotsFromChanges(changes) {
+    const promises = [];
+    for (const { r, c, currentId } of changes) {
+      if (currentId !== 'null') {
         promises.push(
-          apiFetch(`badge?command=slotSet&id=${id}&row=${r + 1}&col=${c + 1}`)
+          apiFetch(`badge?command=slotSet&id=null&row=${r + 1}&col=${c + 1}`)
             .then(resp => ({
               ok: resp.ok,
               row: r + 1,
               col: c + 1,
-              id,
+              id: 'null',
               status: resp.status,
               statusText: resp.statusText
             }))
@@ -143,13 +156,46 @@
               ok: false,
               row: r + 1,
               col: c + 1,
-              id,
+              id: 'null',
               error: err?.message || String(err)
             }))
         );
       }
     }
-    return await Promise.all(promises);
+    return Promise.all(promises);
+  }
+
+  async function placeNonNullSlotsConcurrent(changes, concurrency = 8) {
+    const tasks = changes
+      .filter(ch => ch.targetId !== 'null')
+      .map(({ r, c, targetId }) => async () => {
+        try {
+          const resp = await apiFetch(`badge?command=slotSet&id=${targetId}&row=${r + 1}&col=${c + 1}`);
+          return {
+            ok: resp.ok,
+            row: r + 1,
+            col: c + 1,
+            id: targetId,
+            status: resp.status,
+            statusText: resp.statusText
+          };
+        } catch (err) {
+          return {
+            ok: false,
+            row: r + 1,
+            col: c + 1,
+            id: targetId,
+            error: err?.message || String(err)
+          };
+        }
+      });
+
+    const results = [];
+    for (let i = 0; i < tasks.length; i += concurrency) {
+      const batch = tasks.slice(i, i + concurrency).map(fn => fn());
+      results.push(...await Promise.all(batch));
+    }
+    return results;
   }
 
   async function rollbackSlots(backupSlots) {
@@ -371,12 +417,17 @@
 
       const { rows, cols } = getSlotDimensions(backupSlots);
       const normalized = normalizeBadgeSlots(badgeSlots, rows, cols);
-      const setResults = await setAllSlots(normalized, rows, cols);
+
+      const changes = computeChanges(normalized, backupSlots, rows, cols);
+      const clearResults = await clearChangedSlotsFromChanges(changes);
+      const placeResults = await placeNonNullSlotsConcurrent(changes, 8);
+
       changedServerSlots = true;
 
-      const failures = setResults.filter(r => !r.ok);
+      const failures = [...clearResults, ...placeResults].filter(r => !r.ok);
       if (failures.length) {
-        throw new Error(getMessage('importSetSlotsFailed', failures.length, setResults.length));
+        const total = clearResults.length + placeResults.length;
+        throw new Error(getMessage('importSetSlotsFailed', failures.length, total));
       }
 
       const saveResp = await apiFetch(`badge?command=presetSave&preset=${presetId}`);
