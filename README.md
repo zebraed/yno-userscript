@@ -115,6 +115,49 @@ The script simply makes screenshot IDs clickable in chat, using the same mechani
 
 ---
 
+## YNO Badge Preset IO [en]
+
+### Overview
+
+YNO Badge Preset IO is a Tampermonkey userscript that allows you to import and export badge presets on [YNO Project](https://ynoproject.net). You can export and import your badge presets as JSON files.
+
+### Features
+
+- **Export Badge Presets:**
+  Export the currently selected badge preset to a JSON file.
+
+- **Import Badge Presets:**
+  Import badge presets from JSON files. The script validates the data and applies it to the selected preset slot without modifying your current badge gallery.
+
+### Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/badge-preset-io.user.js and click the "Raw" button.
+3. Click on Install. It will be installed as a Tampermonkey script.
+4. Open any [YNO Project](https://ynoproject.net) game, go to Badge Gallery, and click "Manage Badge Gallery" -> "Manage Presets". You should see "Export" and "Import" buttons in the preset modal.
+
+### Usage
+
+1. **Export:**
+   1. Open Badge Gallery and click "Manage Badge Gallery" -> "Manage Presets".
+   2. Select the preset you want to export
+   3. Click "Export" button
+   4. A JSON file will be downloaded
+
+2. **Import:**
+   1. Open Badge Gallery and click "Manage Badge Gallery" -> "Manage Presets".
+   2. Select the preset slot where you want to import
+   3. Click "Import" button
+   4. Select the JSON file you want to import
+   5. The preset will be saved to the selected slot
+
+**Note:** Importing a preset only saves it to the preset slot. To apply it to your badge gallery, use the "Apply" button after importing.
+
+<br>
+<br>
+
+---
+
 # yno-userscript (日本語)
 
 > **⚠️ 免責事項 (Disclaimer)**
@@ -221,3 +264,43 @@ YNO SSSは、[YNO Project](https://ynoproject.net)のマップ、パーティー
 
 
 このスクリプトは、ゲームが既にサポートしている機能を使用して、スクリーンショットIDをチャット内でクリック可能にするだけです。
+
+---
+
+## YNO Badge Preset IO [ja]
+
+### 概要
+
+YNO Badge Preset IOは、[YNO Project](https://ynoproject.net)でバッジプリセットのインポートとエクスポートを可能にするTampermonkeyユーザースクリプトです。バッジプリセットをJSONファイルとしてローカルにファイルとしてエクスポート、インポートしたりすることができます。
+
+### 機能
+
+- **バッジプリセットのエクスポート:**
+  現在選択中のバッジプリセットをJSONファイルとしてエクスポートします。
+
+- **バッジプリセットのインポート:**
+  JSONファイルからバッジプリセットをインポートします。
+
+### インストール
+
+1. [Tampermonkey](https://www.tampermonkey.net/) または他のユーザースクリプトマネージャーをブラウザにインストールします。
+2. https://github.com/zebraed/yno-userscript/blob/main/monkey/badge-preset-io.user.js にアクセスし、「Raw」ボタンをクリックします。
+3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
+4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、バッジギャラリーを開いて「バッジギャラリー管理」->「プリセット」をクリックします。各プリセットモーダルに「エクスポート」と「インポート」ボタンが表示されます。
+
+### 使い方
+
+1. **エクスポート:**
+   1. バッジギャラリーを開き、「バッジギャラリー管理」->「プリセット」をクリック
+   2. エクスポートしたいプリセットを選択
+   3. 「エクスポート」ボタンをクリック
+   4. JSONファイルがダウンロードされます
+
+2. **インポート:**
+   1. バッジギャラリーを開き、「バッジギャラリー管理」->「プリセット」をクリック
+   2. インポート先のプリセットスロットを選択
+   3. 「インポート」ボタンをクリック
+   4. インポートしたいJSONファイルを選択
+   5. 選択したスロットにプリセットが保存されます
+
+**注意:** プリセットのインポートは、プリセットスロットに保存するだけです。バッジギャラリーに適用するには、インポート後に「適用」ボタンを押してください。

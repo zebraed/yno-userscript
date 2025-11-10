@@ -1,5 +1,15 @@
 # Changelog
 
+## [2025-11-10] - Version 1.4.0
+
+### Added
+- Added YNO Badge Preset IO userscript for exporting and importing badge presets.
+
+### Features
+- **Export Badge Presets:** Export the currently selected badge preset to a JSON file.
+- **Import Badge Presets:** Import badge presets from JSON files to the selected preset slot.
+
+
 ## [2025-10-21] - Version 1.3.1
 
 ### Fixed
@@ -9,13 +19,13 @@
 ## [2025-10-21] - Version 1.3.0
 
 ### Added
-- Added YNO SSS (Share Screenshot) userscript for enhanced screenshot sharing functionality
+- Added YNO SSS (Share Screenshot) userscript for enhanced screenshot sharing functionality.
 
 ### Features
-- **Screenshot ID Hyperlinks:** Automatically converts screenshot IDs to clickable links
-- **Chat Scope Control:** Only works in Map and Party chats (disabled in Global chat)
-- **Cross-User Compatibility:** Screenshot sharing works between users with the script installed
-- **Game Security Respect:** Without displaying images directly in chat
+- **Screenshot ID Hyperlinks:** Automatically converts screenshot IDs to clickable links.
+- **Chat Scope Control:** Only works in Map and Party chats. (disabled in Global chat)
+- **Cross-User Compatibility:** Screenshot sharing works between users with the script installed.
+- **Game Security Respect:** Without displaying images directly in chat.
 
 
 ## [2025-04-15] - Version 1.2.0
