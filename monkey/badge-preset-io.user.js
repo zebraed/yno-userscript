@@ -6,7 +6,7 @@
 // @author       Zebraed
 // @tag          Enhancement
 // @match        https://ynoproject.net/*
-// @icon         https://ynoproject.net/genie/images/badge/badge_amulet_2.png
+// @icon         https://ynoproject.net/2kki/images/badge/badge_amulet_2.png
 // @license      MIT
 // @supportURL   https://github.com/Zebraed/yno-userscript
 // @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/badge-preset-io.user.js
