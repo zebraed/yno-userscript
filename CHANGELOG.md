@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [2025-12-07] - Version 1.5.0
+
+### Added
+- Added YNO Badge Roulette userscript for Gambling & Merry Xmas :D
+
+
 ## [2025-11-11] - Version 1.4.1
 
 ### Fixed
