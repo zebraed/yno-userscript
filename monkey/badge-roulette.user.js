@@ -333,21 +333,23 @@
       const savedDataStr = localStorage.getItem('badgeRouletteState');
       if (savedDataStr) {
         const savedData = JSON.parse(savedDataStr);
+        const currentGameId = typeof gameId !== 'undefined' ? gameId : null;
 
-        const unlockedCheckbox = document.getElementById('rouletteIncludeUnlocked');
-        const lockedCheckbox = document.getElementById('rouletteIncludeLocked');
-        const loserCheckbox = document.getElementById('rouletteIncludeLoser');
-        if (unlockedCheckbox && savedData.includeUnlocked !== undefined) {
-          unlockedCheckbox.checked = savedData.includeUnlocked;
-        }
-        if (lockedCheckbox && savedData.includeLocked !== undefined) {
-          lockedCheckbox.checked = savedData.includeLocked;
-        }
-        if (loserCheckbox && savedData.includeLoser !== undefined) {
-          loserCheckbox.checked = savedData.includeLoser;
-        }
+        if (savedData.gameId === currentGameId) {
+          const unlockedCheckbox = document.getElementById('rouletteIncludeUnlocked');
+          const lockedCheckbox = document.getElementById('rouletteIncludeLocked');
+          const loserCheckbox = document.getElementById('rouletteIncludeLoser');
+          if (unlockedCheckbox && savedData.includeUnlocked !== undefined) {
+            unlockedCheckbox.checked = savedData.includeUnlocked;
+          }
+          if (lockedCheckbox && savedData.includeLocked !== undefined) {
+            lockedCheckbox.checked = savedData.includeLocked;
+          }
+          if (loserCheckbox && savedData.includeLoser !== undefined) {
+            loserCheckbox.checked = savedData.includeLoser;
+          }
 
-        if (typeof badgeCache !== 'undefined' && badgeCache && Array.isArray(badgeCache)) {
+          if (typeof badgeCache !== 'undefined' && badgeCache && Array.isArray(badgeCache)) {
           const restoredBadges = [];
           for (const savedBadge of savedData.badges || []) {
             const latestBadge = badgeCache.find(b =>
@@ -367,6 +369,7 @@
 
           if (filteredBadges.length > 0) {
             currentRouletteBadges = filteredBadges;
+          }
           }
         }
       }
@@ -407,7 +410,9 @@
         const unlockedCheckbox = document.getElementById('rouletteIncludeUnlocked');
         const lockedCheckbox = document.getElementById('rouletteIncludeLocked');
         const loserCheckbox = document.getElementById('rouletteIncludeLoser');
+        const currentGameId = typeof gameId !== 'undefined' ? gameId : null;
         const savedData = {
+          gameId: currentGameId,
           badges: currentRouletteBadges.map(badge => ({
             badgeId: badge.badgeId,
             game: badge.game
