@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO SSS (Share Screenshot)
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.1.0
 // @description  Add clickable links to screenshot IDs in YNO chat.
 // @author       Zebraed
 // @tag          Enhancement
@@ -357,43 +357,29 @@
     if (originalChatInputActionFired) {
       window.chatInputActionFired = function() {
         const chatInput = document.getElementById("chatInput");
-        if (!chatInput?.value.trim().length)
-          return;
-        const htmlTextEl = document.createElement("span");
-        htmlTextEl.innerHTML = parseMessageTextForMarkdown(chatInput.value);
-        if (!htmlTextEl.innerText.trim().length)
-          return;
-        const partyChat = document.getElementById("chatbox").classList.contains("partyChat");
-        if (!chatInput.dataset.global && !partyChat && (connStatus != 1 && connStatus != 3))
-          return;
-        if (chatInput.dataset.global && chatInput.dataset.blockGlobal)
-          return;
-        const chatTab = document.querySelector(".chatboxTab[data-tab-section='chat']");
-        if (!chatTab.classList.contains("active"))
-          chatTab.click();
-        let message = chatInput.value.trim();
+        if (!chatInput) {
+          return originalChatInputActionFired.apply(this, arguments);
+        }
 
+        const chatbox = document.getElementById("chatbox");
+        const partyChat = !!(chatbox && chatbox.classList && chatbox.classList.contains("partyChat"));
         const isGlobalChat = isGlobalChatInput(chatInput, partyChat);
 
-        if (message.includes('[screenshot]') && chatInput.dataset.screenshotId && !isGlobalChat) {
-          const flags = +chatInput.dataset.screenshotFlags;
-          const isTemp = chatInput.dataset.screenshotTemp === 'temp';
+        const raw = (chatInput.value || "").trim();
+        if (raw.includes("[screenshot]") && chatInput.dataset.screenshotId && !isGlobalChat) {
+          const flags = +chatInput.dataset.screenshotFlags || 0;
+          const isTemp = chatInput.dataset.screenshotTemp === "temp";
           const screenshotId = chatInput.dataset.screenshotId;
-          const idFormat = `[${isTemp ? 't' : ''}${screenshotId}${flags ? `:${flags}` : ''}]`;
-          message = message.replace('[screenshot]', idFormat);
+          const idFormat = `[${isTemp ? "t" : ""}${screenshotId}${flags ? `:${flags}` : ""}]`;
+
+          chatInput.value = raw.replace("[screenshot]", idFormat);
+
           delete chatInput.dataset.screenshotId;
           delete chatInput.dataset.screenshotTemp;
           delete chatInput.dataset.screenshotFlags;
         }
-        if (!chatInput.dataset.global || partyChat) {
-          if (!joinedPartyId || !partyChat) {
-            sendSessionCommand("say", [ message ]);
-          } else
-            sendSessionCommand("psay", [ message ]);
-        } else if (!trySendGlobalMessage(message))
-          return;
-        chatInput.value = "";
-        document.getElementById("ynomojiContainer").classList.add("hidden");
+
+        return originalChatInputActionFired.apply(this, arguments);
       };
     }
   }
