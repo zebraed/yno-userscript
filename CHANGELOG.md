@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026-01-04] - Version 1.5.1
+
+### Changed
+- Changed the chat send command with the original one as part of the site update.
+
 
 ## [2025-12-07] - Version 1.5.0
 
