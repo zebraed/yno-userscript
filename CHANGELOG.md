@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-02-23] - Version 1.5.2
+
+### Added
+- Added YNO Get Current Position userscript. Can be used for event checking and badge debugging on YNO.
+
+
 ## [2026-01-04] - Version 1.5.1
 
 ### Changed
