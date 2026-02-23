@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO Badge Roulette
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Roulette for Badges on YNO. Enjoy Gambling with Badges!
 // @author       Zebraed
 // @tag          Enhancement
@@ -583,7 +583,13 @@
         const badgeItem = getBadgeItem(badge, true, false, true, true, false, null, false);
         badgeItem.style.cssText = 'margin: 0 auto !important; display: block !important; float: none !important;';
         const badgeWrapper = document.createElement('div');
-        badgeWrapper.style.cssText = 'display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important;';
+        badgeWrapper.style.cssText = 'display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; cursor: pointer;';
+        badgeWrapper.addEventListener('click', () => {
+          if (typeof viewBadgeInModal === 'function') {
+            closeRouletteModal();
+            viewBadgeInModal(badge.badgeId, badge.game);
+          }
+        });
         badgeWrapper.appendChild(badgeItem);
         if (systemName) {
           badgeItem.classList.add(`theme_${systemName}`);
