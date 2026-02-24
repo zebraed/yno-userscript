@@ -45,7 +45,10 @@
         noBadgesAvailable: 'No badges available with current filters.',
         selectedBadge: 'Selected Badge',
         nextBadge: 'Next Badge',
-        includeLoser: 'Include Loser'
+        includeLoser: 'Include Loser',
+        normalMode: 'Normal Mode',
+        dartsMode: 'Darts Mode',
+        loserTitle: 'Penalty'
       },
       ja: {
         rouletteButton: 'バッジルーレット',
@@ -58,7 +61,10 @@
         noBadgesAvailable: '現在のフィルターで利用可能なバッジがありません。',
         selectedBadge: '当選バッジ',
         nextBadge: '次のバッジ',
-        includeLoser: String.fromCharCode(12383, 12431, 12375, 12434, 36861, 21152)
+        includeLoser: String.fromCharCode(12383, 12431, 12375, 12434, 36861, 21152),
+        normalMode: '通常モード',
+        dartsMode: 'ダーツモード',
+        loserTitle: String.fromCharCode(32624, 12466, 12540, 12512)
       }
     };
     let msg = messages[lang]?.[key] || messages.en[key] || key;
@@ -92,6 +98,9 @@
   let rouletteStopStartAngle = 0;
   let rouletteStopRotations = 0;
   let rouletteStopDuration = 0;
+  let rouletteMode = 'normal';
+  let reticleAngle = 0;
+  let reticleRadius = 0;
 
   function createRouletteModal() {
     if (rouletteModal) return rouletteModal;
@@ -109,6 +118,31 @@
         #roulettePointer path {
           stroke: rgb(var(--modal-base-color, 255 255 255));
           filter: drop-shadow(1.5px 1.5px rgb(var(--modal-shadow-color, 0 0 0)));
+        }
+        #dartReticleGroup circle,
+        #dartReticleGroup line {
+          stroke: rgb(var(--modal-base-color, 255 255 255));
+          filter: drop-shadow(1.5px 1.5px rgb(var(--modal-shadow-color, 0 0 0)));
+        }
+        #dartReticleGroup circle[fill]:not([fill="none"]) {
+          fill: rgb(var(--modal-base-color, 255 255 255));
+          stroke: none;
+          filter: drop-shadow(1.5px 1.5px rgb(var(--modal-shadow-color, 0 0 0)));
+        }
+        #rouletteLoserModal {
+          position: fixed !important;
+          top: 0 !important; left: 0 !important;
+          width: 100vw !important; height: 100vh !important;
+          max-width: none !important; min-width: unset !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: center !important;
+          align-items: center !important;
+          z-index: 99999 !important;
+          background: rgba(0, 0, 0, 0.88) !important;
+          padding: 0 !important;
+          box-sizing: border-box !important;
+          cursor: pointer;
         }
       `;
       document.head.appendChild(style);
@@ -189,6 +223,44 @@
     loserLabel.insertBefore(loserCheckbox, loserLabel.firstChild);
     optionsContainer.appendChild(loserLabel);
 
+    const modeRow = document.createElement('div');
+    modeRow.style.cssText = 'margin-top: 10px; display: flex; align-items: center;';
+
+    const normalRadio = document.createElement('input');
+    normalRadio.type = 'radio';
+    normalRadio.name = 'rouletteMode';
+    normalRadio.id = 'rouletteModeNormal';
+    normalRadio.value = 'normal';
+    normalRadio.checked = true;
+    normalRadio.style.cssText = 'cursor: pointer; margin-right: 6px; pointer-events: auto; z-index: 1; position: relative;';
+    normalRadio.onchange = () => { rouletteMode = 'normal'; };
+
+    const normalModeLabel = document.createElement('label');
+    normalModeLabel.htmlFor = 'rouletteModeNormal';
+    normalModeLabel.className = 'unselectable';
+    normalModeLabel.textContent = getMessage('normalMode');
+    normalModeLabel.style.cssText = 'cursor: pointer; display: inline-flex; align-items: center; pointer-events: auto; position: relative; z-index: 1; margin-right: 20px;';
+    normalModeLabel.insertBefore(normalRadio, normalModeLabel.firstChild);
+    modeRow.appendChild(normalModeLabel);
+
+    const dartsRadio = document.createElement('input');
+    dartsRadio.type = 'radio';
+    dartsRadio.name = 'rouletteMode';
+    dartsRadio.id = 'rouletteModeDarts';
+    dartsRadio.value = 'darts';
+    dartsRadio.style.cssText = 'cursor: pointer; margin-right: 6px; pointer-events: auto; z-index: 1; position: relative;';
+    dartsRadio.onchange = () => { rouletteMode = 'darts'; };
+
+    const dartsModeLabel = document.createElement('label');
+    dartsModeLabel.htmlFor = 'rouletteModeDarts';
+    dartsModeLabel.className = 'unselectable';
+    dartsModeLabel.textContent = getMessage('dartsMode');
+    dartsModeLabel.style.cssText = 'cursor: pointer; display: inline-flex; align-items: center; pointer-events: auto; position: relative; z-index: 1;';
+    dartsModeLabel.insertBefore(dartsRadio, dartsModeLabel.firstChild);
+    modeRow.appendChild(dartsModeLabel);
+
+    optionsContainer.appendChild(modeRow);
+
     content.appendChild(optionsContainer);
 
     const rouletteWrapper = document.createElement('div');
@@ -227,6 +299,37 @@
     rouletteGroup.id = 'rouletteGroup';
     rouletteGroup.setAttribute('transform', `translate(${svgSize / 2}, ${svgSize / 2})`);
     svg.appendChild(rouletteGroup);
+
+    const dartReticleGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    dartReticleGroup.id = 'dartReticleGroup';
+    dartReticleGroup.setAttribute('pointer-events', 'none');
+    dartReticleGroup.style.display = 'none';
+
+    const reticleOuterCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    reticleOuterCircle.setAttribute('cx', '0');
+    reticleOuterCircle.setAttribute('cy', '0');
+    reticleOuterCircle.setAttribute('r', '16');
+    reticleOuterCircle.setAttribute('fill', 'none');
+    reticleOuterCircle.setAttribute('stroke-width', '2.5');
+    dartReticleGroup.appendChild(reticleOuterCircle);
+
+    [[-26, 0, -18, 0], [18, 0, 26, 0], [0, -26, 0, -18], [0, 18, 0, 26]].forEach(([x1, y1, x2, y2]) => {
+      const reticleLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      reticleLine.setAttribute('x1', String(x1));
+      reticleLine.setAttribute('y1', String(y1));
+      reticleLine.setAttribute('x2', String(x2));
+      reticleLine.setAttribute('y2', String(y2));
+      reticleLine.setAttribute('stroke-width', '2.5');
+      dartReticleGroup.appendChild(reticleLine);
+    });
+
+    const reticleCenterDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    reticleCenterDot.setAttribute('cx', '0');
+    reticleCenterDot.setAttribute('cy', '0');
+    reticleCenterDot.setAttribute('r', '2.5');
+    dartReticleGroup.appendChild(reticleCenterDot);
+
+    svg.appendChild(dartReticleGroup);
 
     rouletteContainer.appendChild(svg);
     rouletteWrapper.appendChild(rouletteContainer);
@@ -454,6 +557,67 @@
       return localizedBadges[badge.game][badge.badgeId].name || badge.badgeId;
     }
     return badge.badgeId;
+  }
+
+  function showLoserModal() {
+    const modalContainer = document.getElementById('modalContainer');
+    if (!modalContainer) return;
+
+    const existing = document.getElementById('rouletteLoserModal');
+    if (existing) existing.remove();
+
+    const popup = document.createElement('div');
+    popup.id = 'rouletteLoserModal';
+    popup.className = 'modal hidden';
+
+    const closeLoser = () => {
+      popup.classList.add('hidden');
+      popup.remove();
+    };
+
+    const closeBtn = document.createElement('a');
+    closeBtn.href = 'javascript:void(0);';
+    closeBtn.className = 'modalClose';
+    closeBtn.textContent = '✖';
+    closeBtn.onclick = (e) => { e.stopPropagation(); closeLoser(); };
+    popup.appendChild(closeBtn);
+
+    const header = document.createElement('div');
+    header.className = 'modalHeader';
+    const title = document.createElement('h1');
+    title.className = 'modalTitle';
+    const iconStyle = 'height:1.2em;vertical-align:middle;';
+    const makeIcon = () => {
+      const ic = document.createElement('img');
+      ic.src = 'https://upload.wikimedia.org/wikipedia/commons/a/a8/BA-90.png';
+      ic.alt = '★';
+      ic.style.cssText = iconStyle;
+      return ic;
+    };
+    title.appendChild(makeIcon());
+    const titleText = document.createElement('span');
+    titleText.textContent = getMessage('loserTitle');
+    titleText.style.cssText = 'margin:0 0.3em;';
+    title.appendChild(titleText);
+    title.appendChild(makeIcon());
+    header.appendChild(title);
+    popup.appendChild(header);
+
+    const content = document.createElement('div');
+    content.className = 'modalContent';
+    content.style.cssText = 'justify-content:center;align-items:center;cursor:pointer;';
+
+    const img = document.createElement('img');
+    img.src = 'https://i.postimg.cc/tXVWsPC9/oops.png';
+    img.alt = 'oops';
+    img.style.cssText = 'max-width:80vw;max-height:80vh;object-fit:contain;';
+    content.appendChild(img);
+    popup.appendChild(content);
+
+    popup.addEventListener('click', closeLoser);
+
+    modalContainer.appendChild(popup);
+    popup.classList.remove('hidden');
   }
 
   function showSelectedBadgePopup(badge) {
@@ -880,6 +1044,13 @@
     currentSpeed = ROULETTE_SPEED_INITIAL;
     rouletteAngle = 0;
 
+    const dartReticleGroupReset = document.getElementById('dartReticleGroup');
+    if (dartReticleGroupReset) dartReticleGroupReset.style.display = 'none';
+    const pointerReset = document.getElementById('roulettePointer');
+    if (pointerReset) pointerReset.style.display = '';
+    const boardContainerReset = document.getElementById('rouletteBadgeContainer');
+    if (boardContainerReset) boardContainerReset.style.cursor = '';
+
     if (currentRouletteBadges.length === 0) {
       updateAvailableBadges();
       if (availableBadges.length === 0) {
@@ -978,6 +1149,34 @@
     if (lockedCheckbox) lockedCheckbox.disabled = true;
     if (loserCheckbox) loserCheckbox.disabled = true;
 
+    const pointerEl = document.getElementById('roulettePointer');
+    const dartReticleGroupEl = document.getElementById('dartReticleGroup');
+    if (rouletteMode === 'darts') {
+      if (pointerEl) pointerEl.style.display = 'none';
+    } else {
+      if (pointerEl) pointerEl.style.display = '';
+      if (dartReticleGroupEl) dartReticleGroupEl.style.display = 'none';
+    }
+
+    const reticleTimeOffset = Math.random() * 100000;
+
+    // Reticle animation constants
+    const PHI  = (1 + Math.sqrt(5)) / 2;   // golden ratio
+    const PHI2 = PHI * PHI;                 // squared
+    const PHI3 = PHI2 * PHI;                // cubed
+    const AF   = 0.2;                        // angle frequency base
+    const RF   = 0.1;                        // radius frequency base
+    // Generate Fibonacci sequence
+    let fa = 2, fb = 3;
+    const fibs = [];
+    for (let i = 0; i < 4; i++) { fibs.push(fb); [fa, fb] = [fb, fa + fb]; }
+    // Amplitude
+    const ANGLE_AMP  = 2 * Math.PI * 1.05 / Math.sqrt(5); // sum = 2π * 1.05
+    const RADIUS_AMP = 1 / PHI2;  // radius amplitude base
+    const RADIUS_MIN = 1 / PHI;   // minimum radius ratio
+
+    const reticleGroupCached = document.getElementById('dartReticleGroup');
+
     function animate(currentTime) {
       if (!isSpinning) return;
 
@@ -991,8 +1190,64 @@
         const elapsed = currentTime - startTime;
         rouletteAngle = (elapsed / speed) * Math.PI * 2;
         drawRoulette();
+
+        if (rouletteMode === 'darts') {
+          const t = (elapsed + reticleTimeOffset) * 0.001;
+          // Angle: Fibonacci frequency * AF
+          reticleAngle = Math.sin(t * fibs[0] * AF)        * ANGLE_AMP
+                       + Math.sin(t * fibs[1] * AF + PHI)  * (ANGLE_AMP / PHI)
+                       + Math.sin(t * fibs[2] * AF + PHI2) * (ANGLE_AMP / PHI2)
+                       + Math.sin(t * fibs[3] * AF + PHI3) * (ANGLE_AMP / PHI3);
+          reticleAngle = ((reticleAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+          const maxR = (svgSize / 2 - 30) * 0.9;
+          // Radius
+          const rFactor = Math.abs(Math.sin(t * fibs[2] * RF + 0.5) * (RADIUS_AMP / PHI)
+                                 + Math.sin(t * fibs[3] * RF + PHI)  * (RADIUS_AMP / PHI2)) + RADIUS_MIN;
+          reticleRadius = Math.min(rFactor, 1.0) * maxR;
+
+          const rx = svgSize / 2 + Math.cos(reticleAngle) * reticleRadius;
+          const ry = svgSize / 2 + Math.sin(reticleAngle) * reticleRadius;
+          if (reticleGroupCached) {
+            if (reticleGroupCached.style.display === 'none') reticleGroupCached.style.display = '';
+            reticleGroupCached.setAttribute('transform', `translate(${rx}, ${ry})`);
+          }
+        }
+
         rouletteAnimationId = requestAnimationFrame(animate);
       } else {
+        if (rouletteMode === 'darts') {
+          isSpinning = false;
+          rouletteStopping = false;
+
+          drawRoulette();
+
+          if (startButton) startButton.disabled = false;
+          if (stopButton) stopButton.disabled = true;
+          if (updateButton) updateButton.disabled = false;
+          if (unlockedCheckbox) unlockedCheckbox.disabled = false;
+          if (lockedCheckbox) lockedCheckbox.disabled = false;
+          if (loserCheckbox) loserCheckbox.disabled = false;
+
+          const dartBadgeCount = badgeImages.length;
+          const dartCorrectedAngle = ((rouletteAngle - reticleAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+          const dartSectorAngle = (2 * Math.PI) / dartBadgeCount;
+          const dartSectorIndex = Math.floor(dartCorrectedAngle / dartSectorAngle) % dartBadgeCount;
+          const dartBadgeIndex = (dartBadgeCount - 1 - dartSectorIndex) % dartBadgeCount;
+
+          if (badgeImages[dartBadgeIndex]) {
+            const selectedItem = badgeImages[dartBadgeIndex];
+            if (selectedItem.isLoser) {
+              setTimeout(() => { showLoserModal(); }, 1000);
+            } else if (selectedItem.badge) {
+              const selectedBadge = selectedItem.badge;
+              selectedBadgeIds.add(selectedBadge.badgeId);
+              setTimeout(() => { showSelectedBadgePopup(selectedBadge); }, 1000);
+            }
+          }
+          return;
+        }
+
         const stopElapsed = currentTime - rouletteStopStartTime;
 
         if (stopElapsed < rouletteStopDuration) {
@@ -1021,6 +1276,7 @@
           if (badgeImages[currentBadgeIndex]) {
             const selectedItem = badgeImages[currentBadgeIndex];
             if (selectedItem.isLoser) {
+              setTimeout(() => { showLoserModal(); }, 1000);
             } else if (selectedItem.badge) {
               const selectedBadge = selectedItem.badge;
               selectedBadgeIds.add(selectedBadge.badgeId);
