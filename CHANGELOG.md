@@ -4,6 +4,7 @@
 
 ### Added
 - Added YNO Get Current Position userscript. Can be used for event checking and badge debugging on YNO.
+- Added a secret feature to the roulette.
 
 
 ## [2026-01-04] - Version 1.5.1
