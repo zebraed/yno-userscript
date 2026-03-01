@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO Expeditions Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @description  Expansion Script for Expeditions on YNO.
 // @author       Zebraed
 // @tag          Enhancement
@@ -29,6 +29,11 @@
   let latestMapName = null;
   let lastToastTime = 0;
   const TOAST_INTERVAL = 3000;
+
+  function getGameId() {
+    if (typeof window === 'undefined' || window.gameId == null) return '';
+    return String(window.gameId);
+  }
 
   function startTemporaryPolling() {
     if (temporaryPollingInterval) clearInterval(temporaryPollingInterval);
@@ -724,7 +729,7 @@
             callExpeditionUpdate()
             .then(() => {
               if (config.enableExpeditionsLog) {
-                addExpeditionsLog(gameId, mapName, depthInfo);
+                addExpeditionsLog(getGameId(), mapName, depthInfo);
               }
             })
             .catch(err => {
@@ -1168,13 +1173,14 @@
     };
 
     openButton.onclick = () => {
-      refreshExpeditionsLogDates(gameId);
+      const gid = getGameId();
+      refreshExpeditionsLogDates(gid);
       openModal('expeditionSettingsModal', null, 'settingsModal');
 
       const select = document.getElementById('expeditionsLogDateSelect');
       if (select && select.options.length > 0) {
         const latestDate = select.options[0].value;
-        showExpeditionsLog(gameId, latestDate, getLangKey());
+        showExpeditionsLog(gid, latestDate, getLangKey());
       }
     };
 
@@ -1185,10 +1191,11 @@
     const expeditionsLogDateSelect = modal.querySelector('#expeditionsLogDateSelect');
     expeditionsLogDateSelect.innerHTML = '';
 
+    const initGid = getGameId();
     for (let i = 0; i < localStorage.length; i++) {
       const keyName = localStorage.key(i);
-      if (keyName && keyName.startsWith(`expeditionsLog_${gameId}_`)) {
-        const dateStr = keyName.replace(`expeditionsLog_${gameId}_`, '');
+      if (keyName && keyName.startsWith(`expeditionsLog_${initGid}_`)) {
+        const dateStr = keyName.replace(`expeditionsLog_${initGid}_`, '');
         const option = document.createElement('option');
         option.value = dateStr;
         option.textContent = dateStr;
@@ -1200,14 +1207,14 @@
     readExpeditionsLogButton.onclick = () => {
       const dateStr = expeditionsLogDateSelect.value;
       if (!dateStr) return;
-      showExpeditionsLog(gameId, dateStr, lang);
+      showExpeditionsLog(getGameId(), dateStr, lang);
     };
 
     const downloadExpeditionsLogButton = modal.querySelector('#downloadExpeditionsLogButton');
     downloadExpeditionsLogButton.onclick = () => {
       const dateStr = expeditionsLogDateSelect.value;
       if (!dateStr) return;
-      const key = `expeditionsLog_${gameId}_${dateStr}`;
+      const key = `expeditionsLog_${getGameId()}_${dateStr}`;
       const raw = localStorage.getItem(key);
       if (!raw) return;
       let logArr = [];
@@ -1221,7 +1228,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `expeditionsLog_${gameId}_${dateStr}.txt`;
+      a.download = `expeditionsLog_${getGameId()}_${dateStr}.txt`;
       a.click();
       URL.revokeObjectURL(url);
     };
@@ -1230,10 +1237,11 @@
     deleteExpeditionsLogButton.onclick = () => {
       const dateStr = expeditionsLogDateSelect.value;
       if (!dateStr) return;
-      const key = `expeditionsLog_${gameId}_${dateStr}`;
+      const gid = getGameId();
+      const key = `expeditionsLog_${gid}_${dateStr}`;
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key);
-        showExpeditionsLog(gameId, dateStr, lang);
+        showExpeditionsLog(gid, dateStr, lang);
       }
     };
   }
