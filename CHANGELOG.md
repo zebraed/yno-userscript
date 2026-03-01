@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-03-01] - Version 1.5.3
+
+### Fixed
+- Fixed undefined error. added null check for gameId.
+
+
 ## [2026-02-23] - Version 1.5.2
 
 ### Added
