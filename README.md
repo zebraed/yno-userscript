@@ -1,7 +1,7 @@
 # yno-userscript
 
 **Author:** Zebraed
-**License:** MIT
+**License:** [MIT License](LICENSE)
 
 > **⚠️ Disclaimer**
 >
@@ -76,6 +76,10 @@ Enjoy your expeditions!
 
 
 ## YNO SSS[en]
+
+> **⚠️ Deprecated**
+>
+> YNO SSS is deprecated because YNO Project now officially supports screenshot sharing between friends.
 
 **Screenshot sharing works between users who have this script installed**
 
@@ -158,6 +162,29 @@ YNO Badge Preset IO is a Tampermonkey userscript that allows you to import and e
 
 ---
 
+## YNO Get Current Position [en]
+
+### Overview
+
+A userscript that displays your current map ID and player coordinates (X, Y) in the chat box info area on [YNO Project](https://ynoproject.net). Useful for event checking and badge debugging on YNO.
+
+### Features
+
+- **Live Position Display:**
+  Shows the current Map ID and player X, Y coordinates below the location text in the chat box info area in real time
+
+### Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/get-current-pos.user.js and click the "Raw" button.
+3. Click on Install. It will be installed as a Tampermonkey script.
+4. Open any [YNO Project](https://ynoproject.net) game and confirm that Map ID and coordinates appear in the chat box info area (below the location name).
+
+<br>
+<br>
+
+---
+
 # yno-userscript (日本語)
 
 > **⚠️ 免責事項 (Disclaimer)**
@@ -229,6 +256,10 @@ Micro Soft Edge: https://platform.kobot.jp/support/solutions/articles/4700117612
 <br>
 
 ## YNO SSS [ja]
+
+> **⚠️ 非推奨**
+>
+> YNO SSSは、公式がフレンド同士のスクリーンショット共有をサポートしたため非推奨になりました。
 
 **このスクリプトを導入しているユーザー同士であればスクリーンショットを見せ合うことが可能です。**
 
@@ -304,3 +335,27 @@ YNO Badge Preset IOは、[YNO Project](https://ynoproject.net)でバッジプリ
    5. 選択したスロットにプリセットが保存されます
 
 **注意:** プリセットのインポートは、プリセットスロットに保存するだけです。バッジギャラリーに適用するには、インポート後に「適用」ボタンを押してください。
+
+<br>
+<br>
+
+---
+
+## YNO Get Current Position [ja]
+
+### 概要
+
+[YNO Project](https://ynoproject.net)のチャットボックス情報エリアに、現在のマップIDとプレイヤー座標（X, Y）を表示するユーザースクリプトです。YNO上で、イベント確認やバッジのデバッグに利用できます。
+
+### 機能
+
+- **座標のリアルタイム表示:**
+  チャットボックス情報エリアの場所名の下に、現在のマップIDとプレイヤーのX, Y座標をリアルタイム表示
+
+
+### インストール
+
+1. [Tampermonkey](https://www.tampermonkey.net/) または他のユーザースクリプトマネージャーをブラウザにインストールします。
+2. https://github.com/zebraed/yno-userscript/blob/main/monkey/get-current-pos.user.js にアクセスし、「Raw」ボタンをクリックします。
+3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
+4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、チャットボックス情報エリア（場所名の下）にマップIDと座標が表示されることを確認してください。
