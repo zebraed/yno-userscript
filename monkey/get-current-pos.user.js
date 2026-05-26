@@ -9,8 +9,8 @@
 // @icon         https://ynoproject.net/2kki/images/badge/compass.png
 // @license      MIT
 // @supportURL   https://github.com/Zebraed/yno-userscript
-// @installURL   https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/get-current-pos.js
-// @updateURL    https://raw.githubusercontent.com/Zebraed/yno-userscript/refs/heads/main/monkey/get-current-pos.js
+// @installURL   https://github.com/zebraed/yno-userscript/raw/refs/heads/main/monkey/get-current-pos.user.js
+// @updateURL    https://github.com/zebraed/yno-userscript/raw/refs/heads/main/monkey/get-current-pos.user.js
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==
