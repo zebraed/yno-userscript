@@ -164,6 +164,9 @@ YNO Badge Preset IO is a Tampermonkey userscript that allows you to import and e
 
 ## YNO Get Current Position [en]
 
+<img width="462" height="130" alt="image" src="https://github.com/user-attachments/assets/66a7f16d-79b2-4ee8-8779-215f4798ac0b" />
+
+
 ### Overview
 
 A userscript that displays your current map ID and player coordinates (X, Y) in the chat box info area on [YNO Project](https://ynoproject.net). Useful for event checking and badge debugging on YNO.
@@ -342,6 +345,8 @@ YNO Badge Preset IOは、[YNO Project](https://ynoproject.net)でバッジプリ
 ---
 
 ## YNO Get Current Position [ja]
+
+<img width="462" height="130" alt="image" src="https://github.com/user-attachments/assets/66a7f16d-79b2-4ee8-8779-215f4798ac0b" />
 
 ### 概要
 
