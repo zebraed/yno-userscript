@@ -35,6 +35,32 @@
 
   let video = null;
   let activeStream = null;
+  let pipWindow = null;
+
+  function getBrowserPipSupportState() {
+    return {
+      videoPip: typeof HTMLVideoElement.prototype.requestPictureInPicture === 'function',
+      documentPip: typeof window.documentPictureInPicture?.requestWindow === 'function',
+      firefoxNativePipLikely:
+        navigator.userAgent.includes('Firefox') &&
+        typeof HTMLVideoElement.prototype.requestPictureInPicture !== 'function',
+    };
+  }
+
+  function supportsPip() {
+    const state = getBrowserPipSupportState();
+    return state.videoPip || state.documentPip;
+  }
+
+  function isPipActive() {
+    if (video && document.pictureInPictureElement === video) {
+      return true;
+    }
+    if (pipWindow && !pipWindow.closed) {
+      return true;
+    }
+    return false;
+  }
 
   function injectButtonStyle() {
     if (document.getElementById('yno-pip-button-style')) {
@@ -64,7 +90,7 @@
   }
 
   function updateButtonState() {
-    const inPip = video && document.pictureInPictureElement === video;
+    const inPip = isPipActive();
     button.classList.toggle('toggled', inPip);
     if (inPip) {
       button.setAttribute('aria-label', 'Exit Picture in Picture');
@@ -92,6 +118,18 @@
     }
   }
 
+  function closePip() {
+    if (pipWindow && !pipWindow.closed) {
+      pipWindow.close();
+    }
+    pipWindow = null;
+
+    if (video && document.pictureInPictureElement === video) {
+      document.exitPictureInPicture();
+    }
+    releasePipVideo();
+  }
+
   function getOrCreateVideo() {
     if (video) {
       return video;
@@ -116,6 +154,97 @@
     return video;
   }
 
+  function getGameCanvas() {
+    const canvas = document.querySelector('canvas');
+    if (!canvas) {
+      console.warn('YNO PiP: Canvas not found. Please reload the game screen and try again.');
+      return null;
+    }
+    if (!canvas.captureStream) {
+      console.warn('YNO PiP: This browser does not support canvas.captureStream().');
+      return null;
+    }
+    return canvas;
+  }
+
+  function createStreamFromCanvas(canvas) {
+    stopActiveStream();
+    activeStream = canvas.captureStream(30);
+    return activeStream;
+  }
+
+  async function openVideoPip(canvas) {
+    const pipVideo = getOrCreateVideo();
+    pipVideo.srcObject = createStreamFromCanvas(canvas);
+    await pipVideo.play();
+    await pipVideo.requestPictureInPicture();
+  }
+
+  async function openDocumentPip(canvas) {
+    const width = canvas.clientWidth || 640;
+    const height = canvas.clientHeight || 480;
+
+    pipWindow = await window.documentPictureInPicture.requestWindow({
+      width: width,
+      height: height,
+    });
+
+    const pipDocument = pipWindow.document;
+    pipDocument.body.style.margin = '0';
+    pipDocument.body.style.padding = '0';
+    pipDocument.body.style.overflow = 'hidden';
+    pipDocument.body.style.background = '#000';
+
+    const pipVideo = pipDocument.createElement('video');
+    pipVideo.muted = true;
+    pipVideo.playsInline = true;
+    pipVideo.autoplay = true;
+    pipVideo.style.width = '100%';
+    pipVideo.style.height = '100%';
+    pipVideo.style.display = 'block';
+    pipVideo.style.objectFit = 'contain';
+    pipVideo.srcObject = createStreamFromCanvas(canvas);
+    pipDocument.body.appendChild(pipVideo);
+
+    pipWindow.addEventListener('pagehide', () => {
+      pipWindow = null;
+      releasePipVideo();
+      updateButtonState();
+    });
+
+    await pipVideo.play();
+
+    if (typeof pipVideo.requestPictureInPicture === 'function') {
+      await pipVideo.requestPictureInPicture();
+      pipWindow.close();
+      pipWindow = null;
+    }
+  }
+
+  async function openPip(canvas) {
+    const state = getBrowserPipSupportState();
+
+    if (state.videoPip) {
+      await openVideoPip(canvas);
+      return;
+    }
+    if (state.firefoxNativePipLikely) {
+      console.warn(
+        'YNO PiP: Firefox does not support the requestPictureInPicture() Web API.' +
+        ' Opening Document PiP window. Hover over the video and click the PiP button.'
+      );
+      if (state.documentPip) {
+        await openDocumentPip(canvas);
+      }
+      return;
+    }
+    if (state.documentPip) {
+      await openDocumentPip(canvas);
+      return;
+    }
+    console.warn('YNO PiP: This browser does not support Picture in Picture.');
+  }
+
   function init() {
     if (!document.body) {
       return;
@@ -127,41 +256,27 @@
   }
 
   button.addEventListener('click', async () => {
-    const pipVideo = getOrCreateVideo();
-
     try {
-      if (!document.pictureInPictureEnabled || !pipVideo.requestPictureInPicture) {
+      if (!supportsPip()) {
         console.warn('YNO PiP: This browser does not support Picture in Picture.');
         return;
       }
 
-      if (document.pictureInPictureElement === pipVideo) {
-        await document.exitPictureInPicture();
+      if (isPipActive()) {
+        closePip();
         updateButtonState();
         return;
       }
 
-      const canvas = document.querySelector('canvas');
-
+      const canvas = getGameCanvas();
       if (!canvas) {
-        console.warn('YNO PiP: Canvas not found. Please reload the game screen and try again.');
         return;
       }
 
-      if (!canvas.captureStream) {
-        console.warn('YNO PiP: This browser does not support canvas.captureStream().');
-        return;
-      }
-
-      stopActiveStream();
-      activeStream = canvas.captureStream(30);
-      pipVideo.srcObject = activeStream;
-
-      await pipVideo.play();
-      await pipVideo.requestPictureInPicture();
+      await openPip(canvas);
       updateButtonState();
     } catch (err) {
-      releasePipVideo();
+      closePip();
       updateButtonState();
       console.warn(
         'YNO PiP: Failed to enable Picture in Picture:',
