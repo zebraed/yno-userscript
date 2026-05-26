@@ -190,6 +190,8 @@ A userscript that displays your current map ID and player coordinates (X, Y) in 
 
 ## YNO Picture in Picture [en]
 
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/a7e25c12-90de-4420-bd96-062e9a7545c7" />
+
 ### Overview
 
 YNO Picture in Picture is a Tampermonkey userscript that lets you watch the [YNO Project](https://ynoproject.net) game canvas in your browser's Picture in Picture window while playing.
@@ -393,6 +395,8 @@ YNO Badge Preset IOは、[YNO Project](https://ynoproject.net)でバッジプリ
 ---
 
 ## YNO Picture in Picture [ja]
+
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/a7e25c12-90de-4420-bd96-062e9a7545c7" />
 
 ### 概要
 
