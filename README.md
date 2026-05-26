@@ -188,6 +188,28 @@ A userscript that displays your current map ID and player coordinates (X, Y) in 
 
 ---
 
+## YNO Picture in Picture [en]
+
+### Overview
+
+YNO Picture in Picture is a Tampermonkey userscript that lets you watch the [YNO Project](https://ynoproject.net) game canvas in your browser's Picture in Picture window while playing.
+
+### Features
+
+- **PiP feature:** Toggle Picture in Picture and display the game canvas.
+
+### Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or another userscript manager for your browser.
+2. Go to https://github.com/zebraed/yno-userscript/blob/main/monkey/pip.user.js and click the "Raw" button.
+3. Click on Install. It will be installed as a Tampermonkey script.
+4. Open any [YNO Project](https://ynoproject.net) game and confirm that the PiP icon button appears on the game screen (bottom-right). Click it to start Picture in Picture.
+
+<br>
+<br>
+
+---
+
 # yno-userscript (日本語)
 
 > **⚠️ 免責事項 (Disclaimer)**
@@ -364,3 +386,25 @@ YNO Badge Preset IOは、[YNO Project](https://ynoproject.net)でバッジプリ
 2. https://github.com/zebraed/yno-userscript/blob/main/monkey/get-current-pos.user.js にアクセスし、「Raw」ボタンをクリックします。
 3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
 4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、チャットボックス情報エリア（場所名の下）にマップIDと座標が表示されることを確認してください。
+
+<br>
+<br>
+
+---
+
+## YNO Picture in Picture [ja]
+
+### 概要
+
+YNO Picture in Pictureは、[YNO Project](https://ynoproject.net)のゲーム画面をブラウザのPicture in Pictureウィンドウで表示できるTampermonkeyユーザースクリプトです。
+
+### 機能
+
+- **PiP機能:** ボタンでPicture in Pictureの開始/終了ができ、ゲームcanvasをPiP表示します。
+
+### インストール
+
+1. [Tampermonkey](https://www.tampermonkey.net/) または他のユーザースクリプトマネージャーをブラウザにインストールします。
+2. https://github.com/zebraed/yno-userscript/blob/main/monkey/pip.user.js にアクセスし、「Raw」ボタンをクリックします。
+3. インストールをクリックします。Tampermonkeyスクリプトとしてインストールされます。
+4. 任意の[YNO Project](https://ynoproject.net)ゲームを開き、ゲーム画面右下にPiPアイコンボタンが表示されることを確認してください。クリックでPicture in Pictureを開始できます。
