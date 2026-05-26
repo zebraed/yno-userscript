@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-05-26] - Version 1.6.0
+
+### Added
+- Added YNO Picture in Picture userscript for viewing the game canvas in Picture in Picture mode.
+
+
 ## [2026-03-01] - Version 1.5.3
 
 ### Fixed
