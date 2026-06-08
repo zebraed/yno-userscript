@@ -120,6 +120,10 @@ The script simply makes screenshot IDs clickable in chat, using the same mechani
 
 ## YNO Badge Preset IO [en]
 
+> **⚠️ Deprecated**
+>
+> YNO Badge Preset IO is deprecated because badge preset Export/Import is now built into [YNO Project](https://ynoproject.net). Open Badge Gallery → **Manage Badge Gallery** → **Manage Presets** to use the built-in buttons. Do not install this script. If you already have it, disable or remove **YNO Badge Preset IO** in Tampermonkey.
+
 ### Overview
 
 YNO Badge Preset IO is a Tampermonkey userscript that allows you to import and export badge presets on [YNO Project](https://ynoproject.net). You can export and import your badge presets as JSON files.
@@ -325,6 +329,10 @@ YNO SSSは、[YNO Project](https://ynoproject.net)のマップ、パーティー
 ---
 
 ## YNO Badge Preset IO [ja]
+
+> **⚠️ 非推奨**
+>
+> バッジプリセットのエクスポート/インポートは [YNO Project](https://ynoproject.net) に標準搭載されたため、YNO Badge Preset IO は非推奨です。バッジギャラリー → **バッジギャラリー管理** → **プリセット** から利用できます。このスクリプトは新規インストールしないでください。既に入れている場合は Tampermonkey から **YNO Badge Preset IO** を無効化または削除してください。
 
 ### 概要
 

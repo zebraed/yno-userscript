@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-06-08] - Version 1.7.0
+
+### Deprecated
+- YNO Badge Preset IO is deprecated. Badge preset Export/Import is now built into YNO Project. The userscript was replaced with a stub (v1.1.0) that notifies users to uninstall.
+
+
 ## [2026-05-26] - Version 1.6.0
 
 ### Added
