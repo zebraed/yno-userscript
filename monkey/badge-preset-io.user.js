@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YNO Badge Preset IO
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Import and Export for Badge Presets on YNO.
 // @author       Zebraed
 // @tag          Enhancement
@@ -235,6 +235,14 @@
     return await response.json();
   }
 
+  function isForestOrbBadgePresetIOAvailable() {
+    return typeof initBadgePresetIO === 'function';
+  }
+
+  function isPlayJsLoaded() {
+    return typeof fetchAndUpdatePlayerInfo === 'function';
+  }
+
   // Initialization
   function waitForInit() {
     if (typeof badgeSlotCache === 'undefined' ||
@@ -247,6 +255,15 @@
       setTimeout(waitForInit, INIT_CHECK_INTERVAL);
       return;
     }
+
+    if (!isPlayJsLoaded()) {
+      setTimeout(waitForInit, INIT_CHECK_INTERVAL);
+      return;
+    }
+
+    if (isForestOrbBadgePresetIOAvailable())
+      return;
+
     init();
   }
 
